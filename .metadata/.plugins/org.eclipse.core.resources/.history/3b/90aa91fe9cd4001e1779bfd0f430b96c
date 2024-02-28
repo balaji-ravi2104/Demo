@@ -1,0 +1,44 @@
+package com.banking.view;
+
+import java.util.logging.Logger;
+
+import com.banking.model.Account;
+import com.banking.utils.CustomException;
+import com.banking.utils.ErrorMessages;
+import com.banking.utils.InputValidator;
+
+public class AccountView {
+	private static final Logger log = Logger.getLogger(AccountView.class.getName());
+	public void displayAccountCreationSuccessMessage() {
+		log.info("Account Created Successfully!!");
+	}
+
+	public void displayAccountCreationFailureMessage() {
+		log.info("Account Creation Failed!! Try Again!!");
+	}
+
+	public void displayAccountClosureSuccessMessage() {
+		log.info("Account Closed Successfully!!!");
+	}
+
+	public void displayAccountClosureFailureMessage() {
+		log.info("Account Closing Failed!! Try Again");
+	}
+
+	public void displayAccountDetails(Account account) throws CustomException {
+		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
+		log.info("-".repeat(60));
+		log.info("User Id : "+account.getUserId());
+		log.info("Account Number : "+account.getAccountNumber());
+		log.info("Branch Id : "+account.getBranchId());
+		log.info("Account Type : "+account.getAccountType());
+		log.info("Balance : "+account.getBalance());
+		log.info("Account Status : "+account.getStatus());
+		log.info("-".repeat(60));
+	}
+
+	public void displayBalance(Account selectedAccount) throws CustomException {
+		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
+		log.info("Account Number : "+selectedAccount.getAccountNumber()+" - Balance is : "+selectedAccount.getBalance());
+	}
+}

@@ -1,0 +1,14 @@
+package com.banking.dao;
+
+import java.util.List;
+
+import com.banking.model.CustomerDetails;
+import com.banking.model.User;
+import com.banking.utils.CustomException;
+
+public interface UserDao {
+	User getUser(int userID,String password) throws CustomException;
+	int addCustomer(User user) throws CustomException;
+	boolean checkUserIdExists(int userId) throws CustomException;
+	List<CustomerDetails> getAllUserDetails(int userID,int branchID);
+}

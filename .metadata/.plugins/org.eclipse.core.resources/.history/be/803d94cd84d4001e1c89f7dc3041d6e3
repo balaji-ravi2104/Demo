@@ -1,0 +1,33 @@
+package com.banking.view;
+
+import java.util.logging.Logger;
+
+import com.banking.controller.MainController;
+import com.banking.model.Account;
+import com.banking.utils.CustomException;
+import com.banking.utils.ErrorMessages;
+import com.banking.utils.InputValidator;
+
+public class AccountView {
+	private static final Logger log = Logger.getLogger(AccountView.class.getName());
+	public void displayAccountCreationSuccessMessage() {
+		System.out.println("Account Created Successfully!!");
+	}
+
+	public void displayAccountCreationFailureMessage() {
+		System.out.println("Account Creation Failed!! Try Again!!");
+	}
+
+	public void displayAccountClosureSuccessMessage() {
+		System.out.println("Account Closed Successfully!!!");
+	}
+
+	public void displayAccountClosureFailureMessage() {
+		System.out.println("Account Closing Failed!! Try Again");
+	}
+
+	public void displayAccountDetails(Account account) throws CustomException {
+		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
+		
+	}
+}

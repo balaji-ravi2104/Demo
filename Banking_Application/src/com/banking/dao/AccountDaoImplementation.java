@@ -1,0 +1,157 @@
+
+package com.banking.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.banking.model.Account;
+import com.banking.utils.CustomException;
+import com.banking.utils.DatabaseConnection;
+import com.banking.utils.ErrorMessages;
+import com.banking.utils.InputValidator;
+
+public class AccountDaoImplementation implements AccountDao {
+
+	private static final String ACCOUNT_EXIXTS_QUERY = "SELECT COUNT(*) AS account_count FROM Accounts\n"
+			+ "WHERE user_id = ? AND branch_id = ?;";
+	private static final String CREATE_NEW_ACCOUNT = "INSERT INTO Accounts (user_id, account_number, branch_id, account_type, balance)\n"
+			+ "VALUES (?,?,?,?,?);";
+	private static final String GET_COUNT_FOR_BRANCH_QUERY = "SELECT COUNT(*) FROM Accounts WHERE branch_id = ?";
+	private static final String CLOSE_ACCOUNT_QUERY = "UPDATE Accounts SET status = 'INACTIVE' where user_id = ?;";
+	private static final String GET_ACCOUNT_DETAILS = "SELECT Account_id,user_id,branch_id,account_type,balance,status FROM Accounts WHERE account_number = ?;";
+	private static final String GET_ALL_ACCOUNTS_OF_CUSTOMER = "SELECT * FROM Accounts WHERE user_id = ?;";
+
+	@Override
+	public boolean checkAccountExists(int userId, int branchId) throws CustomException {
+		boolean isAccountExists = false;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(ACCOUNT_EXIXTS_QUERY)) {
+			preparedStatement.setInt(1, userId);
+			preparedStatement.setInt(2, branchId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					int count = resultSet.getInt(1);
+					isAccountExists = (count > 0);
+				}
+			}
+
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error While Checking Account Existing!!!", e);
+		}
+		return isAccountExists;
+	}
+
+	@Override
+	public boolean createNewAccount(Account account) throws CustomException {
+		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
+		boolean isAccountCreated = false;
+		String accountNumber = String.format("%04d%08d", account.getBranchId(),
+				getCountForBranchId(account.getBranchId()) + 1);
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(CREATE_NEW_ACCOUNT)) {
+			preparedStatement.setInt(1, account.getUserId());
+			preparedStatement.setString(2, accountNumber);
+			preparedStatement.setInt(3, account.getBranchId());
+			preparedStatement.setString(4, account.getAccountType());
+			preparedStatement.setDouble(5, account.getBalance());
+
+			int rowsAffected = preparedStatement.executeUpdate();
+			isAccountCreated = rowsAffected > 0;
+
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error While Creating new Account!!!", e);
+		}
+		return isAccountCreated;
+	}
+
+	@Override
+	public boolean closeBankAccount(int userId) throws CustomException {
+		boolean isAccountClosed = false;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(CLOSE_ACCOUNT_QUERY)) {
+			preparedStatement.setInt(1, userId);
+
+			int rowsAffected = preparedStatement.executeUpdate();
+			isAccountClosed = (rowsAffected > 0);
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error While Closing Account!!!", e);
+		}
+		return isAccountClosed;
+	}
+
+	@Override
+	public Account getAccountDetail(String accountNumber) throws CustomException {
+		Account accountDetails = null;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(GET_ACCOUNT_DETAILS)) {
+
+			preparedStatement.setString(1, accountNumber);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					accountDetails = new Account();
+					accountDetails.setAccountId(resultSet.getInt(1));
+					accountDetails.setUserId(resultSet.getInt(2));
+					accountDetails.setBranchId(resultSet.getInt(3));
+					accountDetails.setAccountType(resultSet.getString(4));
+					accountDetails.setBalance(resultSet.getDouble(5));
+					accountDetails.setStatus(resultSet.getString(6));
+					accountDetails.setAccountNumber(accountNumber);
+				}
+			}
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error While Reterving Account!!!", e);
+		}
+		return accountDetails;
+	}
+
+	@Override
+	public List<Account> getAllAccountsOfCustomer(int userId) throws CustomException {
+		List<Account> accounts = null;
+		Account account = null;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_ACCOUNTS_OF_CUSTOMER)) {
+
+			preparedStatement.setInt(1, userId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				accounts = new ArrayList<Account>();
+				while (resultSet.next()) {
+					account = new Account();
+					account.setAccountId(resultSet.getInt(1));
+					account.setUserId(resultSet.getInt(2));
+					account.setAccountNumber(resultSet.getString(3));
+					account.setBranchId(resultSet.getInt(4));
+					account.setAccountType(resultSet.getString(5));
+					account.setBalance(resultSet.getDouble(6));
+					account.setStatus(resultSet.getString(7));
+					
+					accounts.add(account);
+				}
+			}
+
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error While Reterving All Account of a Customer!!!", e);
+		}
+		return accounts;
+	}
+
+	private int getCountForBranchId(int branchId) throws CustomException {
+		int accountCount = 0;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(GET_COUNT_FOR_BRANCH_QUERY)) {
+			preparedStatement.setInt(1, branchId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					accountCount = resultSet.getInt(1);
+				}
+			}
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error getting account count for branch ID: " + branchId, e);
+		}
+		return accountCount;
+	}
+}

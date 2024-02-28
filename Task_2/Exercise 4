@@ -1,0 +1,32 @@
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ javac *.java -d ../myclasses
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ jar cf myclasses.jar -C myclasses .
+myclasses/. : no such file or directory
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ jar cf myclasses.jar -C ../myclasses .
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ cd ..
+bala-pt-7360@bala-pt-7360:~/Java$ jar cf myclasses.jar -C ../myclasses .
+../myclasses/. : no such file or directory
+bala-pt-7360@bala-pt-7360:~/Java$ jar cf myclasses.jar -C myclasses .
+bala-pt-7360@bala-pt-7360:~/Java$ mkdir jarfolder
+bala-pt-7360@bala-pt-7360:~/Java$ cd jarfolder
+bala-pt-7360@bala-pt-7360:~/Java/jarfolder$ cd ..
+bala-pt-7360@bala-pt-7360:~/Java$ jar cf jarfolder/myclasses.jar -C myclasses .
+bala-pt-7360@bala-pt-7360:~/Java$ cd my
+myclasses/      myclassfiles/   myprojectfiles/ 
+bala-pt-7360@bala-pt-7360:~/Java$ cd myprojectfiles/
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ cd ../myclasses
+bala-pt-7360@bala-pt-7360:~/Java/myclasses$ rm -r *
+bala-pt-7360@bala-pt-7360:~/Java/myclasses$ cd ../myprojectfiles
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java ../jarfolder -jar myclasses.jar
+Error: Could not find or load main class ...jarfolder
+Caused by: java.lang.ClassNotFoundException: ///jarfolder
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ cd .
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ cd ..
+bala-pt-7360@bala-pt-7360:~/Java$ cd jarfolder
+bala-pt-7360@bala-pt-7360:~/Java/jarfolder$ java -jar myclasses.jar
+no main manifest attribute, in myclasses.jar
+bala-pt-7360@bala-pt-7360:~/Java/jarfolder$ cd ../myprojectfiles
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../jarfolder/myclasses.jar test.TestRunner
+Am Flying
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ 
+

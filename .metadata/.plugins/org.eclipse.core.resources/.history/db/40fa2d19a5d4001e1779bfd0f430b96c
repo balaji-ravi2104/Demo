@@ -1,0 +1,38 @@
+package com.banking.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import com.banking.model.Account;
+import com.banking.model.User;
+import com.banking.utils.CustomException;
+import com.banking.utils.DatabaseConnection;
+import com.banking.utils.ErrorMessages;
+import com.banking.utils.InputValidator;
+
+public class TransactionDaoImplementation implements TransactionDao {
+
+	private static final String DEPOSITE_MONEY = "UPDATE Accounts SET balance = balance + ? WHERE account_number = ?;";
+
+	@Override
+	public boolean deposit(User user, Account selectedAccount, double amountToDeposite) throws CustomException {
+		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
+		InputValidator.isNull(user, ErrorMessages.INPUT_NULL_MESSAGE);
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(DEPOSITE_MONEY)) {
+
+			preparedStatement.setDouble(1, amountToDeposite);
+			preparedStatement.setString(2, selectedAccount.getAccountNumber());
+
+			int rowsAffected = preparedStatement.executeUpdate();
+			if (rowsAffected > 0) {
+				
+			}
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error While Depositing Money", e);
+		}
+		return false;
+	}
+
+}

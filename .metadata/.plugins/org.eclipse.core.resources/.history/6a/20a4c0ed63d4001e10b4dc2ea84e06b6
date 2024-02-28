@@ -1,0 +1,19 @@
+package com.banking.utils;
+
+import java.util.List;
+
+public class CommonUtils {
+	 private static final List<String> fields = List.of(
+	            "Password",
+	            "FirstName",
+	            "LastName",
+	            "Gender",
+	            "Email",
+	            "ContactNumber",
+	            "Address",
+	            "DateOfBirth",
+	            "Pan",
+	            "Aadhar"
+	        );
+
+}

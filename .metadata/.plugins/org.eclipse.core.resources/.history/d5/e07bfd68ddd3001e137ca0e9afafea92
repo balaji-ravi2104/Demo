@@ -1,0 +1,55 @@
+package com.banking.controller;
+
+import com.banking.dao.UserDao;
+import com.banking.model.CustomerDetails;
+import com.banking.model.User;
+import com.banking.utils.CustomException;
+import com.banking.utils.ErrorMessages;
+import com.banking.utils.InputValidator;
+
+public class UserController {
+
+	private final UserDao userDao;
+
+	public UserController(UserDao userDao) {
+		this.userDao = userDao;
+	}
+
+	public User login(int userId, String password) throws CustomException {
+		InputValidator.isNull(password, ErrorMessages.INPUT_NULL_MESSAGE);
+		User user = null;
+		try {
+			user = userDao.getUser(userId, password);
+		}catch (Exception e) {
+			throw new CustomException("Error while loggin!!",e);
+		}
+		return user;
+	}
+	
+	public boolean registerNewUser(User user) throws CustomException{
+		InputValidator.isNull(user, ErrorMessages.INPUT_NULL_MESSAGE);
+		try {
+			//int count = userDao.addCustomer(user);
+			return userDao.addCustomer(user) > 0;
+		}catch (Exception e) {
+			throw new CustomException("Error while creating new User!!",e);
+		}
+	}
+	
+	public boolean isUserExists(int userId) throws CustomException{
+		try {
+			return userDao.checkUserIdExists(userId,branchId);
+		}catch (Exception e) {
+			throw new CustomException("Error while Checking User Exists!!",e);
+		}
+	}
+
+	public CustomerDetails getUserDetails(int userID, int branchId) throws CustomException {
+		try {
+			return userDao.getUserDetails(userID, branchId);
+		}catch (Exception e) {
+			throw new CustomException("Error while Getting User Exists!!",e);
+		}
+	}
+	
+}

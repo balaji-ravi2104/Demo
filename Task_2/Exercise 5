@@ -1,0 +1,97 @@
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ javac Bird.java ../myclasses
+error: invalid flag: ../myclasses
+Usage: javac <options> <source files>
+use --help for a list of possible options
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ javac Bird.java -d ../myclassesbala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java *.java -d ../my
+myclasses/      myclassfiles/   myprojectfiles/ 
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java *.java -d ../myclasses
+error: can't find main(String[]) method in class: birds.Bird
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ javac *.java -d ../myclasses
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../myclasses test.TestRunner
+Am Flying
+Am flying so high
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ javac -cp ../jarfolder/myclasses.jar test.TestRunner
+error: Class names, 'test.TestRunner', are only accepted if annotation processing is explicitly requested
+1 error
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../jarfolder/myclasses.jar test.TestRunner
+Am Flying
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../myclasses test.TestRunner; ../jarfoldr/myclasses.jar test.TestRunner
+Am Flying
+Am flying so high
+Am speaking
+bash: ../jarfoldr/myclasses.jar: No such file or directory
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../myclasses test.TestRunner; -cp ../jarfoldr/myclasses.jar test.TestRunner
+Am Flying
+Am flying so high
+Am speaking
+Command '-cp' not found, did you mean:
+  command 'bcp' from deb libboost1.74-tools-dev (1.74.0-14ubuntu3)
+  command 'lcp' from deb lsh-client (2.1-13)
+  command 'pcp' from deb pcp (5.3.6-1build1)
+  command 'icp' from deb renameutils (0.12.0-9)
+  command 'qcp' from deb renameutils (0.12.0-9)
+  command 'scp' from deb openssh-client (1:8.9p1-3ubuntu0.4)
+  command 'mcp' from deb mmv (1.01b-19build1)
+  command 'ocp' from deb opencubicplayer (1:0.2.94-1)
+  command 'gcp' from deb gcp (0.2.1-1)
+  command 'rcp' from deb openssh-client (1:8.9p1-3ubuntu0.4)
+  command 'rcp' from deb rsh-client (0.17-22)
+  command 'hcp' from deb lam4-dev (7.1.4-7)
+  command 'cp' from deb coreutils (8.32-4.1ubuntu1)
+Try: sudo apt install <deb name>
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../jarfolder/myclasses.jar:../myclasses test.TestRunner
+Am Flying
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../myclasses:../jarfolder/myclasses.jar test.TestRunner
+Am Flying
+Am flying so high
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../jarfolder/myclasses.jar:../myclasses test.TestRunner
+Am Flying
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../myclasses test.TestRunner; -cp ../jarfoldr/myclasses.jar test.TestRunner
+Error: Could not find or load main class test.TestRunner
+Caused by: java.lang.ClassNotFoundException: test.TestRunner
+Command '-cp' not found, did you mean:
+  command 'gcp' from deb gcp (0.2.1-1)
+  command 'lcp' from deb lsh-client (2.1-13)
+  command 'qcp' from deb renameutils (0.12.0-9)
+  command 'hcp' from deb lam4-dev (7.1.4-7)
+  command 'icp' from deb renameutils (0.12.0-9)
+  command 'scp' from deb openssh-client (1:8.9p1-3ubuntu0.4)
+  command 'mcp' from deb mmv (1.01b-19build1)
+  command 'pcp' from deb pcp (5.3.6-1build1)
+  command 'cp' from deb coreutils (8.32-4.1ubuntu1)
+  command 'bcp' from deb libboost1.74-tools-dev (1.74.0-14ubuntu3)
+  command 'ocp' from deb opencubicplayer (1:0.2.94-1)
+  command 'rcp' from deb openssh-client (1:8.9p1-3ubuntu0.4)
+  command 'rcp' from deb rsh-client (0.17-22)
+Try: sudo apt install <deb name>
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../myclasses:../jarfoldr/myclasses.jar test.TestRunner
+Error: Could not find or load main class test.TestRunner
+Caused by: java.lang.ClassNotFoundException: test.TestRunner
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../myclasses:../jarfolder/myclasses.jar test.TestRunner
+Am Flying
+Am flying so high
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../jarfolder/myclasses.jar:../myclasses test.TestRunner
+Am Flying
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../myclasses:../jarfolder/myclasses.jar test.TestRunner
+Am Flying
+Am flying so high
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../myclasses:../jarfolder/myclasses.jar test.TestRunner
+Am Flying
+Am flying so high
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../myclasses:../jarfolder/myclasses.jar test.TestRunner
+Am Flying
+Am flying so high
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../jarfolder/myclasses.jar:../myclasses test.TestRunner
+Am Flying
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ 
+

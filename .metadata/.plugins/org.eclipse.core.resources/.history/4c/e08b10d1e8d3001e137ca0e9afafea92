@@ -1,0 +1,331 @@
+package com.banking.controller;
+
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.banking.dao.AccountDao;
+import com.banking.dao.AccountDaoImplementation;
+import com.banking.dao.UserDao;
+import com.banking.dao.UserDaoImplementation;
+import com.banking.model.Account;
+import com.banking.model.CustomerDetails;
+import com.banking.model.User;
+import com.banking.model.UserType;
+import com.banking.utils.InputValidator;
+import com.banking.utils.PasswordGenerator;
+import com.banking.view.MainView;
+import com.banking.view.UserView;
+
+public class MainController {
+	private static final Logger log = Logger.getLogger(MainController.class.getName());
+
+	private MainView mainView;
+	private UserView userView;
+	private UserController userController;
+	private AccountController accountController;
+	public User user;
+	public UserDao userDao;
+	public AccountDao accountDao;
+	private boolean isAppliactionAlive;
+	private boolean isLoggedIn;
+
+	public MainController() {
+		this.mainView = new MainView();
+		this.userView = new UserView();
+		this.userDao = new UserDaoImplementation();
+		this.accountDao = new AccountDaoImplementation();
+		this.userController = new UserController(userDao);
+		this.accountController = new AccountController(accountDao);
+		this.isLoggedIn = false;
+	}
+
+	public void startApplication() {
+		this.isAppliactionAlive = true;
+		while (isAppliactionAlive) {
+			try {
+				mainView.displayWelcomeMessage();
+				log.info("1. Login");
+				log.info("2. Logout");
+				log.info("3. Exit");
+				log.info("Enter your choice: ");
+				int choice = mainView.promptForMainMenuChoice();
+				switch (choice) {
+				case 1:
+					if (!isLoggedIn) {
+						login();
+					} else {
+						log.info("You are already logged in!");
+					}
+					break;
+				case 2:
+					if (isLoggedIn) {
+						logout();
+					} else {
+						log.info("You are not Logged In !!");
+					}
+					break;
+				case 3:
+					isAppliactionAlive = false;
+					log.log(Level.WARNING, "Exiting");
+					break;
+				default:
+					log.info("Invalid choice. Please try again.");
+					break;
+				}
+			} catch (InputMismatchException e) {
+				mainView.displayInputMissMatchMessage();
+				continue;
+			} catch (Exception e) {
+				mainView.displayExceptionMessage(e);
+			}
+		}
+	}
+
+	private void login() {
+		while (!isLoggedIn) {
+			try {
+				log.info("Please login to continue:");
+				int userId = mainView.promptForUserID();
+				if (userId <= 0) {
+					throw new IllegalArgumentException("UserId must be greater the ZERO!!!");
+				}
+				mainView.promptNewLine();
+				String password = mainView.promptForPassword();
+
+				user = userController.login(userId, password);
+				// log.info(user);
+				if (user != null) {
+					log.info("Logged in Successfully!!");
+					isLoggedIn = true;
+					performUserOperations(user);
+				} else {
+					log.info("Invalid username or password!");
+				}
+			} catch (IllegalArgumentException e) {
+				log.log(Level.WARNING, e.getMessage());
+			} catch (InputMismatchException e) {
+				mainView.displayInputMissMatchMessage();
+			} catch (Exception e) {
+				mainView.displayExceptionMessage(e);
+			}
+		}
+	}
+
+	private void logout() {
+		isLoggedIn = false;
+		log.info("Logged out successfully!");
+	}
+
+	private void performUserOperations(User user) {
+		boolean isUserAlive = true;
+		switch (user.getTypeOfUser()) {
+		case "Employee":
+			try {
+				while (isUserAlive) {
+					log.info("Employee Operations");
+					log.info("1.Create Customer");
+					log.info("2.Create Account");
+					log.info("3.Update Customer");
+					log.info("4.View Particular Customer Details");
+					log.info("5.View All Customer Details");
+					log.info("6.Close Account");
+					log.info("7.View Transaction History");
+					log.info("8.Exit");
+					log.info("Enter the choice");
+					int employeeChoice = mainView.promptForMainMenuChoice();
+					mainView.promptNewLine();
+					switch (employeeChoice) {
+					case 1:
+						log.info("1.Create User");
+						String password = PasswordGenerator.generatePassword();
+						// log.info(password);
+						log.info("Enter the First Name");
+						String firstName = mainView.promptStringInput().trim();
+						if (InputValidator.validateUserName(firstName)) {
+							log.log(Level.WARNING, "First Name Cannot be Empty");
+							continue;
+						}
+						log.info("Enter the Last Name");
+						String lastName = mainView.promptStringInput().trim();
+						log.info("Enter the Gender");
+						if (InputValidator.validateUserName(lastName)) {
+							log.log(Level.WARNING, "First Name Cannot be Empty");
+							continue;
+						}
+						String gender = mainView.promptStringInput().trim();
+						if (InputValidator.validateUserName(gender)) {
+							log.log(Level.WARNING, "Gender Cannot be Empty");
+							continue;
+						}
+						log.info("Enter the Email");
+						String email = mainView.promptStringInput().trim();
+						if (!InputValidator.validateEmail(email)) {
+							log.log(Level.WARNING, "Invalid Email Address");
+							continue;
+						}
+						log.info("Enter the Contact Number");
+						String number = mainView.promptStringInput().trim();
+						if (!InputValidator.validateMobileNumber(number)) {
+							log.log(Level.WARNING, "Invalid Mobile Number");
+							continue;
+						}
+						log.info("Enter the Address");
+						String address = mainView.promptStringInput().trim();
+						if (InputValidator.validateUserName(address)) {
+							log.log(Level.WARNING, "Address Cannot be Empty");
+							continue;
+						}
+						log.info("Enter the date of birth(YYYY-MM-DD)");
+						String dob = mainView.promptStringInput().trim();
+						if (!InputValidator.validateDateOfBirth(dob)) {
+							log.log(Level.WARNING, "Invalid Date Of Birth!! Please Provide(YYYY-MM-DD)");
+							continue;
+						}
+						UserType typeOfUser = UserType.CUSTOMER;
+						User newUser = new User();
+						newUser.setPassword(password);
+						newUser.setFirstName(firstName);
+						newUser.setLastName(lastName);
+						newUser.setGender(gender);
+						newUser.setEmail(email);
+						newUser.setContactNumber(number);
+						newUser.setAddress(address);
+						newUser.setDateOfBirth(dob);
+						newUser.setTypeOfUser(typeOfUser.toString());
+						boolean isUserCreated = userController.registerNewUser(newUser);
+						if (isUserCreated) {
+							userView.displaySuccessMessage();
+						} else {
+							userView.displayFailureMessage();
+						}
+						break;
+					case 2:
+						log.info("2.Create Account");
+						log.info("Enter the userID");
+						int userId = mainView.promptForUserID();
+						mainView.promptNewLine();
+						boolean isUserIdPresent = userController.isUserExists(userId);
+						if (!isUserIdPresent) {
+							log.warning("Invalid UserID!!!");
+							break;
+						}
+						boolean isAccountAlreadExists = accountController.isAccountExists(userId, user.getBranchId());
+						if (isAccountAlreadExists) {
+							log.warning("Account is Already Exists For this UserID!!!");
+							break;
+						}
+						log.info("Enter the Type of Account");
+						String typeOfAccount = mainView.promptStringInput();
+						log.info("Enter the PAN Number");
+						String panNumber = mainView.promptStringInput();
+						if (!InputValidator.validatepanNumber(panNumber)) {
+							log.log(Level.WARNING, "Invalid PAN Number!! Please Provide Valid PAN Number");
+							continue;
+						}
+						log.info("Enter the Aadhar Number");
+						String aadharNumber = mainView.promptStringInput();
+						if (!InputValidator.validateaadharNumber(aadharNumber)) {
+							log.log(Level.WARNING, "Invalid Aadhar Number!! Please Provide Valid Aadhar Number");
+							continue;
+						}
+						log.info("Enter the Balance");
+						double balance = mainView.promptDoubleInput();
+						if (InputValidator.validateBalance(balance)) {
+							mainView.displayInvalidBalanceMessage();
+						}
+						Account account = new Account();
+						account.setUserId(userId);
+						account.setBranchId(user.getBranchId());
+						account.setAccountType(typeOfAccount);
+						account.setPanNumber(panNumber);
+						account.setAadharNumber(aadharNumber);
+						account.setBalance(balance);
+						boolean isAccountCreated = accountController.createAccount(account);
+						if (isAccountCreated) {
+							System.out.println("Account Created Successfully!!");
+						} else {
+							System.out.println("Account Creation Failed!! Try Again!!");
+						}
+						break;
+					case 3:
+						log.info("3.Update User");
+						break;
+					case 4:
+						log.info("4.View Particual Customer Details");
+						log.info("Enter the userID");
+						int userID = mainView.promptForUserID();
+						boolean isUserIDPresentInBranch = userController.isUserExistsInTheBranch(userID,
+								user.getBranchId());
+						if (!isUserIDPresentInBranch) {
+							log.warning("Invalid UserID or UserID is Not present in this Branch!!");
+							break;
+						}
+						CustomerDetails customerDetails = userController.getCustomerDetails(userID, user.getBranchId());
+						if (customerDetails == null) {
+							userView.displayUserDetailsFailedMessage();
+							break;
+						}
+						userView.displayCustomerDetails(customerDetails);
+						break;
+					case 5:
+						log.info("5.Get All Customer Details");
+						List<CustomerDetails> allCustomerDetails = userController
+								.getAllCustomerDetails(user.getBranchId());
+						if (allCustomerDetails == null) {
+							userView.displayCustomerNotFoundMessage();
+						}
+						userView.displayAllCustomerDetails(allCustomerDetails);
+						break;
+					case 6:
+						log.info("6.Close Account");
+						break;
+					case 7:
+						log.info("7.View Transaction History");
+						break;
+					case 8:
+						isUserAlive = false;
+						log.info("Exiting!");
+						break;
+					default:
+						log.info("Invalid option! Please choose again.");
+						break;
+					}
+				}
+			} catch (InputMismatchException e) {
+				mainView.displayInputMissMatchMessage();
+			} catch (Exception e) {
+				mainView.displayExceptionMessage(e);
+			}
+			break;
+		case "Customer":
+			break;
+		case "Admin":
+			while (isUserAlive) {
+				log.info("Admin Operations");
+				log.info("1. Add new employee");
+				log.info("2. Delete employee");
+				log.info("3. View employee details");
+				log.info("4. Logout");
+				log.info("Enter the choice");
+				int adminChoice = mainView.promptForMainMenuChoice();
+				switch (adminChoice) {
+				case 1:
+					log.info("1. Add new employee");
+					break;
+				case 4:
+					isUserAlive = false;
+					break;
+				default:
+					log.info("Invalid option! Please choose again.");
+					break;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+}

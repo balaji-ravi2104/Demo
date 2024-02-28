@@ -1,0 +1,24 @@
+package com.banking.controller;
+
+import com.banking.dao.UserDao;
+import com.banking.model.Account;
+
+public class AccountController {
+
+	private final UserDao userDao;
+
+	public AccountController(UserDao userDao) {
+		this.userDao = userDao;
+	}
+	
+	public boolean createAccount(Account account) {
+		boolean isAccountCreated = false;
+		try {
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		return isAccountCreated;
+	}
+
+}

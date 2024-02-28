@@ -1,0 +1,10 @@
+package com.banking.dao;
+
+import com.banking.model.Account;
+import com.banking.utils.CustomException;
+
+public interface AccountDao {
+
+	boolean createNewAccount(Account account) throws CustomException;
+	
+}

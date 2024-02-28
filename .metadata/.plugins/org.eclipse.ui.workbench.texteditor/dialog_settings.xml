@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="wrap" value="true"/>
+		<item key="casesensitive" value="false"/>
+		<item key="wholeword" value="false"/>
+		<item key="incremental" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<item key="selection" value=" getCountForBranchId"/>
+		<list key="findhistory">
+			<item value=" getCountForBranchId"/>
+			<item value="System.out.println"/>
+			<item value="user"/>
+			<item value="object2"/>
+			<item value="err"/>
+			<item value="MyClass"/>
+			<item value="hjk"/>
+			<item value="&quot;.txt&quot;"/>
+			<item value="mills"/>
+			<item value="catch (DateTimeException | ZoneRulesException | IllegalArgumentException | SecurityException e) {&#x0A;            &#x0A;        }"/>
+			<item value="storeProperties"/>
+			<item value="addOneAndOneValue"/>
+			<item value="addDiffKeyAndValue"/>
+			<item value="ArrayList"/>
+			<item value="@Override"/>
+		</list>
+		<list key="replacehistory">
+			<item value=""/>
+			<item value="log.info"/>
+			<item value="dataArrayObject1"/>
+			<item value="out"/>
+			<item value="Student"/>
+			<item value="logger.info"/>
+			<item value="milliSeconds"/>
+			<item value=" "/>
+			<item value="E"/>
+			<item value="ArrayList&lt;E&gt;"/>
+			<item value="getNewArrayList"/>
+			<item value="MISMATCH"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="20"/>
+		<item key="DIALOG_Y_ORIGIN" value="20"/>
+		<item key="DIALOG_WIDTH" value="357"/>
+		<item key="DIALOG_HEIGHT" value="408"/>
+		<item key="DIALOG_FONT_NAME" value="1|Ubuntu|11.0|0|GTK|1|"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="20"/>
+		<item key="DIALOG_Y_ORIGIN" value="20"/>
+	</section>
+</section>

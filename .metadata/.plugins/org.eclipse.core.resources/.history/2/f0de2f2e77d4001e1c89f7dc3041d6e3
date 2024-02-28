@@ -1,0 +1,83 @@
+package com.banking.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import com.banking.dao.UserDao;
+import com.banking.model.CustomerDetails;
+import com.banking.model.User;
+import com.banking.utils.CustomException;
+import com.banking.utils.ErrorMessages;
+import com.banking.utils.InputValidator;
+
+public class UserController {
+
+	private final UserDao userDao;
+
+	public UserController(UserDao userDao) {
+		this.userDao = userDao;
+	}
+
+	public User login(int userId, String password) throws CustomException {
+		InputValidator.isNull(password, ErrorMessages.INPUT_NULL_MESSAGE);
+		User user = null;
+		try {
+			user = userDao.authendicateUser(userId, password);
+		}catch (Exception e) {
+			throw new CustomException("Error while loggin!!",e);
+		}
+		return user;
+	}
+	
+	public boolean registerNewUser(User user) throws CustomException{
+		InputValidator.isNull(user, ErrorMessages.INPUT_NULL_MESSAGE);
+		try {
+			//int count = userDao.addCustomer(user);
+			return userDao.addUser(user) > 0;
+		}catch (Exception e) {
+			throw new CustomException("Error while creating new User!!",e);
+		}
+	}
+	
+	public boolean isUserExists(int userId) throws CustomException{
+		try {
+			return userDao.checkUserIdExists(userId);
+		}catch (Exception e) {
+			throw new CustomException("Error while Checking User Exists!!",e);
+		}
+	}
+
+	public CustomerDetails getCustomerDetails(int userID, int branchId) throws CustomException {
+		try {
+			return userDao.getCustomerDetails(userID, branchId);
+		}catch (Exception e) {
+			throw new CustomException("Error while Getting User Exists!!",e);
+		}
+	}
+
+	public boolean isUserExistsInTheBranch(int userID, int branchId) throws CustomException {
+		try {
+			return userDao.checkUserIdPresentInBranch(userID,branchId);
+		}catch (Exception e) {
+			throw new CustomException("Error while Checking User Exists!!",e);
+		}
+	}
+
+	public List<CustomerDetails> getAllCustomerDetails(int branchId) throws CustomException {
+		try {
+			return userDao.getAllCustomerDetails(branchId);
+		}catch (Exception e) {
+			throw new CustomException("Error while Getting All User Exists!!",e);
+		}
+	}
+
+	public <K,V> boolean updateCustomer(int userIdToUpdate, Map<K,V> fieldsToUpdate) throws CustomException {
+		InputValidator.isNull(fieldsToUpdate, ErrorMessages.INPUT_NULL_MESSAGE);
+		try {
+			return userDao.updateCustomerDetails(userIdToUpdate,fieldsToUpdate);
+		}catch (Exception e) {
+			throw new CustomException("Error while Updating User",e);
+		}
+	}
+	
+}

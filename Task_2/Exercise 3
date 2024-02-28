@@ -1,0 +1,59 @@
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ if [ ! -d ../file1 ]; then mkdir -p ../file1; fi && javac -d ../file1 Bird.java
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ if [ ! -d ../file2 ]; then mkdir -p ../file2; fi && javac -d ../file2 Parrot.java
+Parrot.java:3: error: package birds does not exist
+import birds.Bird;
+            ^
+Parrot.java:5: error: cannot find symbol
+public class Parrot extends Bird{
+                            ^
+  symbol: class Bird
+2 errors
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ ^C
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ if [ ! -d ../file2 ]; then mkdir -p ../file2; fi && javac -cp .. -d ../file2 Parrot.java
+Parrot.java:3: error: package birds does not exist
+import birds.Bird;
+            ^
+Parrot.java:5: error: cannot find symbol
+public class Parrot extends Bird{
+                            ^
+  symbol: class Bird
+2 errors
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ javac Parrot.java -d ../file2
+Parrot.java:3: error: package birds does not exist
+import birds.Bird;
+            ^
+Parrot.java:5: error: cannot find symbol
+public class Parrot extends Bird{
+                            ^
+  symbol: class Bird
+2 errors
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ if [ ! -d ../file1 ]; then mkdir -p ../file1; fi && javac -d ../file1 Bird.java
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ if [ ! -d ../file2 ]; then mkdir -p ../file2; fi && javac -d ../file2 Parrot.java
+Parrot.java:3: error: package birds does not exist
+import birds.Bird;
+            ^
+Parrot.java:5: error: cannot find symbol
+public class Parrot extends Bird{
+                            ^
+  symbol: class Bird
+2 errors
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ if [ ! -d ../file2 ]; then mkdir -p ../file2; fi && javac -cp .. -d ../file2 Parrot.java
+Parrot.java:3: error: package birds does not exist
+import birds.Bird;
+            ^
+Parrot.java:5: error: cannot find symbol
+public class Parrot extends Bird{
+                            ^
+  symbol: class Bird
+2 errors
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ javac -cp ../file1:  -d ../file2 Parrot.java
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ javac -cp ../file1: ../file2:   -d ../runfile TestRunner.java
+error: invalid flag: ../file2:
+Usage: javac <options> <source files>
+use --help for a list of possible options
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ javac -cp ../file1:../file2:   -d ../runfile TestRunner.java
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ java -cp ../file1:../file2:../runfile test.TestRunner
+Am Flying
+Am speaking
+bala-pt-7360@bala-pt-7360:~/Java/myprojectfiles$ 
+

@@ -1,0 +1,10 @@
+package com.banking.model;
+
+import java.sql.Date;
+
+public class Transaction {
+	private String transactionType;
+	private double amount;
+	private Date dateOfTransaction;
+	
+}

@@ -1,0 +1,48 @@
+package com.banking.controller;
+
+import com.banking.dao.AccountDao;
+import com.banking.model.Account;
+import com.banking.utils.CustomException;
+import com.banking.utils.ErrorMessages;
+import com.banking.utils.InputValidator;
+
+public class AccountController {
+
+	private final AccountDao accountDao;
+
+	public AccountController(AccountDao accountDao) {
+		this.accountDao = accountDao;
+	}
+	
+	public boolean isAccountExists(int userId, int branchId) throws CustomException {
+		boolean isAccountExists = false;
+		try {
+			isAccountExists = accountDao.checkAccountExists(userId, branchId);
+		}catch (Exception e) {
+			throw new CustomException("Error while Checking Account",e);
+		}
+		return isAccountExists;
+	}
+	
+	public boolean createAccount(Account account) throws CustomException {
+		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
+		boolean isAccountCreated = false;
+		try {
+			isAccountCreated = accountDao.createNewAccount(account);
+		}catch (Exception e) {
+			throw new CustomException("Erroe While Creating Account!!",e);
+		}
+		return isAccountCreated;
+	}
+	
+	public boolean closeAccount(int userIdToClose) throws CustomException {
+		boolean isAccountClosed = false;
+		try {
+			isAccountClosed = accountDao.closeBankAccount(userIdToClose);
+		}catch (Exception e) {
+			throw new CustomException("Error while Closing the Account!!",e);
+		}
+		return isAccountClosed;
+	}
+
+}

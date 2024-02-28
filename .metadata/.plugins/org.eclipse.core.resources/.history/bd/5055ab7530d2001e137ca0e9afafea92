@@ -1,0 +1,50 @@
+package com.banking.utils;
+
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+
+
+public class InputValidator {
+
+	public static final Pattern PASSWORD_VALIDATE_PATTERN = Pattern
+			.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+])[A-Za-z\\d!@#$%^&*()_+]{8,}$");
+	public static final Pattern EMAIL_VALIDATE_PATTERN = Pattern
+			.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+	public static final Pattern MOBILE_NUMBER_PATTERN = Pattern.compile("^[7-9]{1}[0-9]{9}$");
+	
+	public static final Pattern DATE_OF_BIRTH_PATTERN = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
+	String dobPattern = "^\\d{4}-\\d{2}-\\d{2}$";
+
+	public static void isStringNull(Object object, String ErrorMessage) throws CustomException {
+		if (object == null) {
+			throw new CustomException(ErrorMessage);
+		}
+	}
+
+	public static boolean validatePassword(String password) throws CustomException, PatternSyntaxException {
+		isStringNull(password, ErrorMessages.INPUT_NULL_MESSAGE);
+		return PASSWORD_VALIDATE_PATTERN.matcher(password).matches();
+	}
+	
+	public static boolean validateEmail(String email) throws CustomException, PatternSyntaxException {
+		isStringNull(email, ErrorMessages.INPUT_NULL_MESSAGE);
+		return EMAIL_VALIDATE_PATTERN.matcher(email).matches();
+	}
+	
+	public static boolean validateMobileNumber(String mobileNumber) throws CustomException, PatternSyntaxException {
+		isStringNull(mobileNumber, ErrorMessages.INPUT_NULL_MESSAGE);
+		return MOBILE_NUMBER_PATTERN.matcher(mobileNumber).matches();
+	}
+	
+	public static boolean validateDateOfBirth(String dateOfBirth) throws CustomException, PatternSyntaxException{
+		isStringNull(dateOfBirth, ErrorMessages.INPUT_NULL_MESSAGE);
+		return DATE_OF_BIRTH_PATTERN.matcher(dateOfBirth).matches();
+	}
+	
+	public static boolean validateUserName(String userName) throws CustomException{
+		isStringNull(userName, ErrorMessages.INPUT_NULL_MESSAGE);
+		return userName.isEmpty();
+	}
+	
+}

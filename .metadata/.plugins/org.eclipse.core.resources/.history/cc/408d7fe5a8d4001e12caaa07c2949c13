@@ -1,0 +1,22 @@
+package com.banking.view;
+
+import java.util.logging.Logger;
+
+public class TransactionView {
+
+	private static final Logger log = Logger.getLogger(TransactionView.class.getName());
+
+	public void displayInvalidAmmountMessage() {
+		log.info("Deposite or Withdrawal Amount Should be greater than ZERO!!");
+	}
+
+	public void displayDepositSuccessMessage() {
+		log.info("Amount Deposited Successfully!!");
+	}
+
+	public void displayDepositFailedMessage() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

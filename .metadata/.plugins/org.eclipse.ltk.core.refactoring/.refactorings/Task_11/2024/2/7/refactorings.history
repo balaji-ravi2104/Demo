@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy package &apos;exception&apos; to &apos;S_and_DS_Demo/src&apos;&#x0A;- Original project: &apos;Task_11&apos;&#x0A;- Destination element: &apos;S_and_DS_Demo/src&apos;&#x0A;- Original element: &apos;Task_11/src/exception&apos;" description="Copy package" destination="=S_and_DS_Demo/src" element1="/src&lt;exception" flags="589830" fragments="1" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyPackages" stamp="1707713066366" version="1.0"/>
+</session>

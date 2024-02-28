@@ -1,0 +1,22 @@
+package com.banking.view;
+
+import java.util.logging.Logger;
+
+import com.banking.model.CustomerDetails;
+
+public class UserView {
+	private static final Logger log = Logger.getLogger(UserView.class.getName());
+
+	public void displaySuccessMessage() {
+		log.info("User Created Successfully");
+	}
+
+	public void displayFailureMessage() {
+		log.info("User Creation Failed!! Try Again");
+	}
+
+	public void displayUserDetails(CustomerDetails customerDetails) {
+		
+	}
+
+}

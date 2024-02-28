@@ -1,0 +1,22 @@
+Java class loader is an abstract class that belongs to java.lang package.
+
+The java class loader is based on 3 principles, Delegation, Visibility, and Uniqueness
+
+Types of the class loader in java In Java, there are three types of class loaders:
+
+Bootstrap class loader
+Extension class loader
+System class loader(Application class loader)..
+
+Bootstrap ClassLoader: It is a machine code that starts the operation when called by JVM. Its job is to only load a class from the location rt.jar(runtime).doesn’t have any parent class loader.
+
+Extension ClassLoader: It is a child of BootStrap ClassLoader. It is used for loading the extension of core classes of Java by using the respective extension library of JDK
+
+System ClassLoader: The application of ClassLoader is also known as System ClassLoader. It is used for loading application-type classes which can be found in the environment variable CLASSPATH, -classpath, or -cp command-line option
+
+loadClass() 
+
+findLoadedClass() 
+
+
+

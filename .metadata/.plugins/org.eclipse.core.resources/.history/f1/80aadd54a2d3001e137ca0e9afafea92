@@ -1,0 +1,26 @@
+package com.banking.controller;
+
+import com.banking.dao.AccountDao;
+import com.banking.dao.UserDao;
+import com.banking.model.Account;
+import com.banking.utils.CustomException;
+
+public class AccountController {
+
+	private final AccountDao accountDao;
+
+	public AccountController(AccountDao accountDao) {
+		this.accountDao = accountDao;
+	}
+	
+	public boolean createAccount(Account account) throws CustomException {
+		boolean isAccountCreated = false;
+		try {
+			return accountDao.createNewAccount(account);
+		}catch (Exception e) {
+			throw new CustomException("Erroe While Creating Account!!",e);
+		}
+		return isAccountCreated;
+	}
+
+}
