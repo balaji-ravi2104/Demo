@@ -15,22 +15,22 @@ import com.banking.utils.InputValidator;
 
 public class AccountDaoImplementation implements AccountDao {
 
-	private static final String ACCOUNT_EXIXTS_QUERY = "SELECT COUNT(*) AS account_count FROM Accounts\n"
-			+ "WHERE user_id = ? AND branch_id = ?;";
+//	private static final String ACCOUNT_EXIXTS_QUERY = "SELECT COUNT(*) AS account_count FROM Accounts\n"
+//			+ "WHERE user_id = ? AND branch_id = ?;";
 	private static final String CREATE_NEW_ACCOUNT = "INSERT INTO Accounts (user_id, account_number, branch_id, account_type, balance)\n"
 			+ "VALUES (?,?,?,?,?);";
-	private static final String CREATE_CUSTOMER = "INSERT INTO Customer (User_id, Pan, Aadhar)\n" + "VALUES (?, ?, ?);";
 	private static final String GET_COUNT_FOR_BRANCH_QUERY = "SELECT COUNT(*) FROM Accounts WHERE branch_id = ?";
-	private static final String CLOSE_ACCOUNT_QUERY = "UPDATE Accounts SET status = 'INACTIVE' where user_id = ?;";
+	private static final String CLOSE_ACCOUNT_QUERY = "UPDATE Accounts SET status = 'INACTIVE' where account_number = ?;";
 	private static final String GET_ACCOUNT_DETAILS = "SELECT Account_id,user_id,branch_id,account_type,balance,status FROM Accounts WHERE account_number = ?;";
 	private static final String GET_ALL_ACCOUNTS_OF_CUSTOMER = "SELECT * FROM Accounts WHERE user_id = ?;";
+	private static final String CHECK_CUSTOMER_ACCOUNT_EXISTS_QUERY_IN_BRANCH = "SELECT COUNT(*) FROM Accounts WHERE account_number = ? and branch_id = ?;";
 
 	@Override
-	public boolean checkAccountExists(int userId, int branchId) throws CustomException {
+	public boolean checkAccountExists(String accountNumber , int branchId) throws CustomException {
 		boolean isAccountExists = false;
 		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(ACCOUNT_EXIXTS_QUERY)) {
-			preparedStatement.setInt(1, userId);
+				PreparedStatement preparedStatement = connection.prepareStatement(CHECK_CUSTOMER_ACCOUNT_EXISTS_QUERY_IN_BRANCH)) {
+			preparedStatement.setString(1, accountNumber);
 			preparedStatement.setInt(2, branchId);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -61,9 +61,7 @@ public class AccountDaoImplementation implements AccountDao {
 			preparedStatement.setDouble(5, account.getBalance());
 
 			int rowsAffected = preparedStatement.executeUpdate();
-			if (rowsAffected > 0) {
-				isAccountCreated = addCustomer(account) > 0;
-			}
+			isAccountCreated = rowsAffected > 0;
 
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new CustomException("Error While Creating new Account!!!", e);
@@ -72,11 +70,11 @@ public class AccountDaoImplementation implements AccountDao {
 	}
 
 	@Override
-	public boolean closeBankAccount(int userId) throws CustomException {
+	public boolean closeBankAccount(String accountNumber) throws CustomException {
 		boolean isAccountClosed = false;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(CLOSE_ACCOUNT_QUERY)) {
-			preparedStatement.setInt(1, userId);
+			preparedStatement.setString(1, accountNumber);
 
 			int rowsAffected = preparedStatement.executeUpdate();
 			isAccountClosed = (rowsAffected > 0);
@@ -130,7 +128,7 @@ public class AccountDaoImplementation implements AccountDao {
 					account.setAccountType(resultSet.getString(5));
 					account.setBalance(resultSet.getDouble(6));
 					account.setStatus(resultSet.getString(7));
-					
+
 					accounts.add(account);
 				}
 			}
@@ -141,17 +139,24 @@ public class AccountDaoImplementation implements AccountDao {
 		return accounts;
 	}
 
-	private int addCustomer(Account account) throws CustomException {
+	@Override
+	public boolean checkCustomerAccountPresentInBranch(String accountNumber, int branchId) throws CustomException {
+		boolean userIdExists = false;
 		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement createCustomerStatement = connection.prepareStatement(CREATE_CUSTOMER)) {
-			createCustomerStatement.setInt(1, account.getUserId());
-			createCustomerStatement.setString(2, account.getPanNumber());
-			createCustomerStatement.setString(3, account.getAadharNumber());
-
-			return createCustomerStatement.executeUpdate();
+				PreparedStatement preparedStatement = connection
+						.prepareStatement(CHECK_CUSTOMER_ACCOUNT_EXISTS_QUERY_IN_BRANCH)) {
+			preparedStatement.setString(1, accountNumber);
+			preparedStatement.setInt(2, branchId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					int count = resultSet.getInt(1);
+					userIdExists = (count > 0);
+				}
+			}
 		} catch (SQLException | ClassNotFoundException e) {
-			throw new CustomException("Error While Creating Customer ", e);
+			throw new CustomException("Error While Checking User Details", e);
 		}
+		return userIdExists;
 	}
 
 	private int getCountForBranchId(int branchId) throws CustomException {

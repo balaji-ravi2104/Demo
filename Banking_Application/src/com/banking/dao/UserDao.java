@@ -10,17 +10,31 @@ import com.banking.utils.CustomException;
 public interface UserDao {
 	User authendicateUser(int userID, String password) throws CustomException;
 
-	int addUser(User user) throws CustomException;
+	boolean addUser(User user) throws CustomException;
 
-	boolean checkUserIdExists(int userId) throws CustomException;
+	boolean checkCustomerIdExists(int userId) throws CustomException;
 
-	CustomerDetails getCustomerDetails(int userID, int branchID) throws CustomException;
+	CustomerDetails getCustomerDetails(String accountNumber, int branchID) throws CustomException;
 
 	List<CustomerDetails> getAllCustomerDetails(int branchID) throws CustomException;
 
-	boolean checkUserIdPresentInBranch(int userID, int branchId) throws CustomException;
+	boolean checkCustomerIdPresentInBranch(int userId, int branchId) throws CustomException;
 
 	<K, V> boolean updateCustomerDetails(int userIdToUpdate, Map<K, V> fieldsToUpdate) throws CustomException;
 
 	boolean updateCustomerPassword(User user, String password) throws CustomException;
+
+	boolean checkEmployeeExists(int employeeId) throws CustomException;
+
+	User getEmployeeDetails(int employeeId) throws CustomException;
+
+	List<User> getAllEmployeeFromOneBranch(int branchId) throws CustomException;
+
+	List<User> getAllEmployeeFromAllBranch() throws CustomException;
+
+	List<CustomerDetails> getAllCustomersFromAllBranch() throws CustomException;
+
+	List<CustomerDetails> getAllDetailsOfOneCustomerInOneBranch(int userId, int branchId) throws CustomException;
+
+	List<CustomerDetails> getAllDetailsOfOneCustomerInAllBranch(int userId) throws CustomException;
 }

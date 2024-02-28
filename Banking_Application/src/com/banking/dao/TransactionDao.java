@@ -20,7 +20,7 @@ public interface TransactionDao {
 
 	List<Transaction> getUsersStatement(Account account, int numberOfMonths) throws CustomException;
 
-	List<Transaction> getCustomerTransactionHistory(int userIdToGetTransaction,int branchId) throws CustomException;
+	List<Transaction> getCustomerTransactionHistory(String accountNumber) throws CustomException;
 
 	List<Transaction> getAllCustomerTransactionHistory(int branchId) throws CustomException;
 

@@ -76,10 +76,10 @@ public class TransactionController {
 		return statement;
 	}
 
-	public List<Transaction> getCustomerTransaction(int userIdToGetTransaction,int branchId) throws CustomException {
+	public List<Transaction> getCustomerTransaction(String accountNumber) throws CustomException {
 		List<Transaction> transactionHistory = null;
 		try {
-			transactionHistory = transactionDao.getCustomerTransactionHistory(userIdToGetTransaction,branchId);
+			transactionHistory = transactionDao.getCustomerTransactionHistory(accountNumber);
 		}catch (Exception e) {
 			throw new CustomException("Error while Getting Transaction History!!!",e);
 		}

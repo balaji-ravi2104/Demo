@@ -46,7 +46,7 @@ public class InputValidator {
 		return DATE_OF_BIRTH_PATTERN.matcher(dateOfBirth).matches();
 	}
 	
-	public static boolean validateUserName(String userName) throws CustomException{
+	public static boolean validateString(String userName) throws CustomException{
 		isNull(userName, ErrorMessages.INPUT_NULL_MESSAGE);
 		return userName.isEmpty();
 	}

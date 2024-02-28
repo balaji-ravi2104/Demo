@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 import com.banking.dao.AccountDao;
 import com.banking.dao.AccountDaoImplementation;
+import com.banking.dao.BranchDao;
+import com.banking.dao.BranchDaoImplementation;
 import com.banking.dao.TransactionDao;
 import com.banking.dao.TransactionDaoImplementation;
 import com.banking.dao.UserDao;
@@ -23,6 +25,7 @@ import com.banking.utils.CustomException;
 import com.banking.utils.InputValidator;
 import com.banking.utils.PasswordGenerator;
 import com.banking.view.AccountView;
+import com.banking.view.BranchView;
 import com.banking.view.MainView;
 import com.banking.view.TransactionView;
 import com.banking.view.UserView;
@@ -34,13 +37,16 @@ public class MainController {
 	private UserView userView;
 	private AccountView accountView;
 	private TransactionView transactionView;
+	private BranchView branchView;
 	private UserController userController;
 	private AccountController accountController;
 	private TransactionController transactionController;
+	private BranchController branchController;
 	public User user;
 	public UserDao userDao;
 	public AccountDao accountDao;
 	public TransactionDao transactionDao;
+	public BranchDao branchDao;
 	private boolean isAppliactionAlive;
 	private boolean isLoggedIn;
 
@@ -49,12 +55,15 @@ public class MainController {
 		this.userView = new UserView();
 		this.accountView = new AccountView();
 		this.transactionView = new TransactionView();
+		this.branchView = new BranchView();
 		this.userDao = new UserDaoImplementation();
 		this.accountDao = new AccountDaoImplementation();
 		this.transactionDao = new TransactionDaoImplementation();
-		this.userController = new UserController(userDao);
-		this.accountController = new AccountController(accountDao);
+		this.branchDao = new BranchDaoImplementation();
+		this.branchController = new BranchController(branchDao);
+		this.userController = new UserController(userDao,branchController);
 		this.transactionController = new TransactionController(transactionDao);
+		this.accountController = new AccountController(accountDao, userController, branchController);
 		this.isLoggedIn = false;
 	}
 
@@ -175,7 +184,7 @@ public class MainController {
 				switch (customerChoice) {
 				case 1:
 					log.info("1.View My Profile");
-					userView.displayCustomerProfile(user);
+					userView.displayUserProfile(user);
 					break;
 				case 2:
 					log.info("2.Account Details");
@@ -372,58 +381,35 @@ public class MainController {
 				log.info("4.View Particular Customer Details");
 				log.info("5.View All Customer Details");
 				log.info("6.Close Account");
-				log.info("7.View Transaction History For a Particular Customer");
-				log.info("8.View Transaction History OF All the Customers");
+				log.info("7.View Transaction History For a Particular Customer(Account)");
+				log.info("8.View All Transaction of One Customer by Customer ID");
+				log.info("8.View All Transaction History OF All the Customers");
 				log.info("9.Exit");
 				log.info("Enter the choice");
 				int employeeChoice = mainView.promptForMainMenuChoice();
 				mainView.promptNewLine();
 				switch (employeeChoice) {
 				case 1:
-					log.info("1.Create User");
+					log.info("1.Create Customer");
 					String password = PasswordGenerator.generatePassword();
 					log.info("Enter the First Name");
-					String firstName = mainView.promptStringInput().trim();
-					if (InputValidator.validateUserName(firstName)) {
-						log.log(Level.WARNING, "First Name Cannot be Empty");
-						continue;
-					}
+					String firstName = mainView.promptStringInput();
 					log.info("Enter the Last Name");
-					String lastName = mainView.promptStringInput().trim();
+					String lastName = mainView.promptStringInput();
 					log.info("Enter the Gender");
-					if (InputValidator.validateUserName(lastName)) {
-						log.log(Level.WARNING, "First Name Cannot be Empty");
-						continue;
-					}
-					String gender = mainView.promptStringInput().trim();
-					if (InputValidator.validateUserName(gender)) {
-						log.log(Level.WARNING, "Gender Cannot be Empty");
-						continue;
-					}
+					String gender = mainView.promptStringInput();
 					log.info("Enter the Email");
 					String email = mainView.promptStringInput().trim();
-					if (!InputValidator.validateEmail(email)) {
-						log.log(Level.WARNING, "Invalid Email Address");
-						continue;
-					}
 					log.info("Enter the Contact Number");
 					String number = mainView.promptStringInput().trim();
-					if (!InputValidator.validateMobileNumber(number)) {
-						log.log(Level.WARNING, "Invalid Mobile Number");
-						continue;
-					}
 					log.info("Enter the Address");
 					String address = mainView.promptStringInput().trim();
-					if (InputValidator.validateUserName(address)) {
-						log.log(Level.WARNING, "Address Cannot be Empty");
-						continue;
-					}
 					log.info("Enter the date of birth(YYYY-MM-DD)");
 					String dob = mainView.promptStringInput().trim();
-					if (!InputValidator.validateDateOfBirth(dob)) {
-						log.log(Level.WARNING, "Invalid Date Of Birth!! Please Provide(YYYY-MM-DD)");
-						continue;
-					}
+					log.info("Enter the PAN Number");
+					String panNumber = mainView.promptStringInput();
+					log.info("Enter the Aadhar Number");
+					String aadharNumber = mainView.promptStringInput();
 					UserType typeOfUser = UserType.CUSTOMER;
 					User newUser = new User();
 					newUser.setPassword(password);
@@ -435,6 +421,8 @@ public class MainController {
 					newUser.setAddress(address);
 					newUser.setDateOfBirth(dob);
 					newUser.setTypeOfUser(typeOfUser.toString());
+					newUser.setPanNumber(panNumber);
+					newUser.setAadharNumber(aadharNumber);
 					boolean isUserCreated = userController.registerNewUser(newUser);
 					if (isUserCreated) {
 						userView.displaySuccessMessage();
@@ -447,42 +435,14 @@ public class MainController {
 					log.info("Enter the userID");
 					int userId = mainView.promptForUserID();
 					mainView.promptNewLine();
-					boolean isUserIdPresent = userController.isUserExists(userId);
-					if (!isUserIdPresent) {
-						log.warning("Invalid UserID!!!");
-						break;
-					}
-					boolean isAccountAllreadExists = accountController.isAccountExistsInTheBranch(userId,
-							user.getBranchId());
-					if (isAccountAllreadExists) {
-						log.warning("Account is Already Exists For this UserID!!!");
-						break;
-					}
 					log.info("Enter the Type of Account");
 					String typeOfAccount = mainView.promptStringInput();
-					log.info("Enter the PAN Number");
-					String panNumber = mainView.promptStringInput();
-					if (!InputValidator.validatepanNumber(panNumber)) {
-						log.log(Level.WARNING, "Invalid PAN Number!! Please Provide Valid PAN Number");
-						continue;
-					}
-					log.info("Enter the Aadhar Number");
-					String aadharNumber = mainView.promptStringInput();
-					if (!InputValidator.validateaadharNumber(aadharNumber)) {
-						log.log(Level.WARNING, "Invalid Aadhar Number!! Please Provide Valid Aadhar Number");
-						continue;
-					}
 					log.info("Enter the Balance");
 					double balance = mainView.promptDoubleInput();
-					if (InputValidator.validateBalance(balance)) {
-						mainView.displayInvalidBalanceMessage();
-					}
 					Account account = new Account();
 					account.setUserId(userId);
 					account.setBranchId(user.getBranchId());
 					account.setAccountType(typeOfAccount);
-					account.setPanNumber(panNumber);
-					account.setAadharNumber(aadharNumber);
 					account.setBalance(balance);
 					boolean isAccountCreated = accountController.createAccount(account);
 					if (isAccountCreated) {
@@ -497,11 +457,6 @@ public class MainController {
 					mainView.displayFieldName(fieldMap);
 					log.info("Enter the UserId to Update");
 					int userIdToUpdate = mainView.promptForUserID();
-					boolean isValidId = userController.isUserExistsInTheBranch(userIdToUpdate, user.getBranchId());
-					if (!isValidId) {
-						log.warning("Invalid UserID or UserID is Not present in this Branch!!");
-						break;
-					}
 					Map<String, String> fieldsToUpdate = new HashMap<>();
 					log.info("Enter the Number Of Field To be Updated");
 					int count = mainView.promtForIntegerInput();
@@ -515,42 +470,11 @@ public class MainController {
 						}
 						mainView.promptNewLine();
 						log.info("Enter the Value to Update");
-						String value = mainView.promptStringInput().trim();
-						if (choice == 2 || choice == 3 || choice == 4 || choice == 7) {
-							if (InputValidator.validateUserName(value)) {
-								log.log(Level.WARNING, "Input Value Cannot be Empty or Null");
-								break;
-							}
-						} else if (choice == 5) {
-							if (!InputValidator.validateEmail(value)) {
-								log.log(Level.WARNING, "Invalid Email!!");
-								break;
-							}
-						} else if (choice == 6) {
-							if (!InputValidator.validateMobileNumber(value)) {
-								log.log(Level.WARNING, "Invalid Contact Number!!");
-								break;
-							}
-						} else if (choice == 8) {
-							if (!InputValidator.validateDateOfBirth(value)) {
-								log.log(Level.WARNING, "Invalid Date Of Birth!! Please Provide(YYYY-MM-DD)");
-								break;
-							}
-						} else if (choice == 9) {
-							if (!InputValidator.validatepanNumber(value)) {
-								log.log(Level.WARNING, "Invalid PAN Number!! Please Provide Valid PAN Number");
-								break;
-							}
-						} else if (choice == 10) {
-							if (!InputValidator.validateaadharNumber(value)) {
-								log.log(Level.WARNING, "Invalid Aadhar Number!! Please Provide Valid Aadhar Number");
-								break;
-							}
-						}
+						String value = mainView.promptStringInput();
 						fieldsToUpdate.put(fieldMap.get(choice), value);
 					}
 					if (fieldsToUpdate.size() == count) {
-						boolean isUserUpdated = userController.updateCustomer(userIdToUpdate, fieldsToUpdate);
+						boolean isUserUpdated = userController.updateCustomer(userIdToUpdate, fieldsToUpdate,user.getBranchId());
 						if (isUserUpdated) {
 							userView.displayUpdateSuccessMessage();
 						} else {
@@ -560,15 +484,17 @@ public class MainController {
 					break;
 				case 4:
 					log.info("4.View Particual Customer Details");
-					log.info("Enter the userID");
-					int userID = mainView.promptForUserID();
-					boolean isUserIDPresentInBranch = userController.isUserExistsInTheBranch(userID,
+					log.info("Enter the Account Number");
+					String accountNumber = mainView.promptStringInput();
+
+					boolean isUserIDPresentInBranch = accountController.isAccountExistsInTheBranch(accountNumber,
 							user.getBranchId());
 					if (!isUserIDPresentInBranch) {
-						log.warning("Invalid UserID or UserID is Not present in this Branch!!");
+						log.warning("Invalid Account Number  or Account is Not present in this Branch!!");
 						break;
 					}
-					CustomerDetails customerDetails = userController.getCustomerDetails(userID, user.getBranchId());
+					CustomerDetails customerDetails = userController.getCustomerDetails(accountNumber,
+							user.getBranchId());
 					if (customerDetails == null) {
 						userView.displayUserDetailsFailedMessage();
 						break;
@@ -586,14 +512,15 @@ public class MainController {
 					break;
 				case 6:
 					log.info("6.Close Account");
-					log.info("Enter the UserId to Close the Account");
-					int userIdToClose = mainView.promptForUserID();
-					boolean isValidUserId = userController.isUserExistsInTheBranch(userIdToClose, user.getBranchId());
-					if (!isValidUserId) {
-						log.warning("Invalid UserID or UserID is Not present in this Branch!!");
+					log.info("Enter the Account Number to Close the Account");
+					String accountNumberToClose = mainView.promptStringInput();
+					isUserIDPresentInBranch = accountController.isAccountExistsInTheBranch(accountNumberToClose,
+							user.getBranchId());
+					if (!isUserIDPresentInBranch) {
+						log.warning("Invalid Account Number  or Account is Not present in this Branch!!");
 						break;
 					}
-					boolean isAccountClosed = accountController.closeAccount(userIdToClose);
+					boolean isAccountClosed = accountController.closeAccount(accountNumberToClose);
 					if (isAccountClosed) {
 						accountView.displayAccountClosureSuccessMessage();
 					} else {
@@ -601,17 +528,17 @@ public class MainController {
 					}
 					break;
 				case 7:
-					log.info("7.View Transaction History of a Particular Customer");
-					log.info("Enter the UserId to Get Transaction History");
-					int userIdToGetTransaction = mainView.promtForIntegerInput();
-					boolean isValidUser = userController.isUserExistsInTheBranch(userIdToGetTransaction,
-							user.getBranchId());
-					if (!isValidUser) {
-						log.warning("Invalid UserID or UserID is Not present in this Branch!!");
+					log.info("7.View Transaction History of a Particular Account(Account)");
+					log.info("Enter the Account Number to Get Transaction History");
+					String accountNumberToGetTransaction = mainView.promptStringInput();
+					isUserIDPresentInBranch = accountController
+							.isAccountExistsInTheBranch(accountNumberToGetTransaction, user.getBranchId());
+					if (!isUserIDPresentInBranch) {
+						log.warning("Invalid Account Number  or Account is Not present in this Branch!!");
 						break;
 					}
 					List<Transaction> transactionsHistory = transactionController
-							.getCustomerTransaction(userIdToGetTransaction, user.getBranchId());
+							.getCustomerTransaction(accountNumberToGetTransaction);
 					if (transactionsHistory.isEmpty()) {
 						transactionView.displayNoHistoryMessage();
 						break;
@@ -648,31 +575,371 @@ public class MainController {
 		}
 	}
 
-	private void preformAdminOperation(User user2) {
+	private void preformAdminOperation(User user) {
 		boolean isAdminAlive = true;
 		while (isAdminAlive) {
-			log.info("Admin Operations");
-			log.info("1. Add new employee");
-			log.info("2. Remove employee");
-			log.info("3. View employee details");
-			log.info("4. Create User");
-			log.info("5. Create Account");
-			log.info("6. Remove Customer");
-			log.info("7. View All Customer");
-			log.info("8. View Particular Customer");
-			log.info("9. Exit");
-			log.info("Enter the choice");
-			int adminChoice = mainView.promptForMainMenuChoice();
-			switch (adminChoice) {
-			case 1:
+			try {
+				log.info("Admin Operations");
 				log.info("1. Add new employee");
-				break;
-			case 4:
-				isAdminAlive = false;
-				break;
-			default:
-				log.info("Invalid option! Please choose again.");
-				break;
+				log.info("2. Remove employee");
+				log.info("3. View Particular Employee details");
+				log.info("4. View All Employees in One Branch");
+				log.info("5. View All Employees From Accross All Branch");
+				log.info("6. Create Customer");
+				log.info("7. Create Account");
+				log.info("8. Remove Customer");
+				log.info("9. View Particular Customer(Account) Details");
+				log.info("10.View All Account Details of One Customer in One Branch");
+				log.info("11.View All Account Details of One Customer in All Branch");
+				log.info("12.View All Customer Details in One Branch");
+				log.info("13. View All Customer Details Accross All Branch");
+				log.info("14. View Particular Customer One Branch Transaction");
+				log.info("15. View Particular Customer All Branch Transaction");
+				log.info("16. View Particular Branch Transaction");
+				log.info("17. View All Branch Transaction");
+				log.info("18. Exit");
+				log.info("Enter the choice");
+				int adminChoice = mainView.promptForMainMenuChoice();
+				mainView.promptNewLine();
+				switch (adminChoice) {
+				case 1:
+					log.info("1. Add new employee");
+					String password = PasswordGenerator.generatePassword();
+					log.info("Enter the First Name");
+					String firstName = mainView.promptStringInput().trim();
+					if (InputValidator.validateString(firstName)) {
+						log.log(Level.WARNING, "First Name Cannot be Empty");
+						continue;
+					}
+					log.info("Enter the Last Name");
+					String lastName = mainView.promptStringInput().trim();
+					log.info("Enter the Gender");
+					if (InputValidator.validateString(lastName)) {
+						log.log(Level.WARNING, "First Name Cannot be Empty");
+						continue;
+					}
+					String gender = mainView.promptStringInput().trim();
+					if (InputValidator.validateString(gender)) {
+						log.log(Level.WARNING, "Gender Cannot be Empty");
+						continue;
+					}
+					log.info("Enter the Email");
+					String email = mainView.promptStringInput().trim();
+					if (!InputValidator.validateEmail(email)) {
+						log.log(Level.WARNING, "Invalid Email Address");
+						continue;
+					}
+					log.info("Enter the Contact Number");
+					String number = mainView.promptStringInput().trim();
+					if (!InputValidator.validateMobileNumber(number)) {
+						log.log(Level.WARNING, "Invalid Mobile Number");
+						continue;
+					}
+					log.info("Enter the Address");
+					String address = mainView.promptStringInput().trim();
+					if (InputValidator.validateString(address)) {
+						log.log(Level.WARNING, "Address Cannot be Empty");
+						continue;
+					}
+					log.info("Enter the date of birth(YYYY-MM-DD)");
+					String dob = mainView.promptStringInput().trim();
+					if (!InputValidator.validateDateOfBirth(dob)) {
+						log.log(Level.WARNING, "Invalid Date Of Birth!! Please Provide(YYYY-MM-DD)");
+						continue;
+					}
+					log.info("Enter the Branch Id:");
+					int branchId = mainView.promtForIntegerInput();
+					boolean isValidBranchId = branchController.isBranchExists(branchId);
+					if (!isValidBranchId) {
+						branchView.displayInvalidBranchMessage();
+						break;
+					}
+					UserType typeOfUser = UserType.EMPLOYEE;
+					User newUser = new User();
+					newUser.setPassword(password);
+					newUser.setFirstName(firstName);
+					newUser.setLastName(lastName);
+					newUser.setGender(gender);
+					newUser.setEmail(email);
+					newUser.setContactNumber(number);
+					newUser.setAddress(address);
+					newUser.setDateOfBirth(dob);
+					newUser.setTypeOfUser(typeOfUser.toString());
+					newUser.setBranchId(branchId);
+					boolean isEmployeeCreated = userController.registerNewUser(newUser);
+					if (isEmployeeCreated) {
+						userView.displaySuccessMessage();
+					} else {
+						userView.displayFailureMessage();
+					}
+					break;
+				case 2:
+					break;
+				case 3:
+					log.info("3. View Particular Employee details");
+					log.info("Enter the Employee Id");
+					int employeeId = mainView.promtForIntegerInput();
+					boolean isUserIdPresent = userController.isEmployeeExists(employeeId);
+					if (!isUserIdPresent) {
+						log.warning("Invalid EmployeeID!!!");
+						break;
+					}
+					User employeeDetails = userController.getEmployeeDetails(employeeId);
+					if (employeeDetails == null) {
+						userView.displayUserDetailsFailedMessage();
+						break;
+					}
+					userView.displayUserProfile(employeeDetails);
+					break;
+				case 4:
+					log.info("4. View All Employees in One Branch");
+					log.info("Enter the Branch Id");
+					int branchIdToGetEmployees = mainView.promtForIntegerInput();
+					boolean isValidBranch = branchController.isBranchExists(branchIdToGetEmployees);
+					if (!isValidBranch) {
+						branchView.displayInvalidBranchMessage();
+						break;
+					}
+					List<User> employeeList = userController.getEmployeeFromOneBranch(branchIdToGetEmployees);
+					if (employeeList.isEmpty()) {
+						log.info("No Employee Avaliable in this Branch");
+						break;
+					}
+					userView.displayListOfEmployees(employeeList);
+					break;
+				case 5:
+					log.info("5. View All Employees From Accross All Branch");
+					List<User> allEmployeeList = userController.getEmployeeFromAllBranch();
+					if (allEmployeeList.isEmpty()) {
+						log.info("No Employee Avaliable in this Branch");
+						break;
+					}
+					userView.displayListOfEmployees(allEmployeeList);
+					break;
+				case 6:
+					log.info("Create Customer");
+					password = PasswordGenerator.generatePassword();
+					log.info("Enter the First Name");
+					firstName = mainView.promptStringInput().trim();
+					if (InputValidator.validateString(firstName)) {
+						log.log(Level.WARNING, "First Name Cannot be Empty");
+						continue;
+					}
+					log.info("Enter the Last Name");
+					lastName = mainView.promptStringInput().trim();
+					log.info("Enter the Gender");
+					if (InputValidator.validateString(lastName)) {
+						log.log(Level.WARNING, "First Name Cannot be Empty");
+						continue;
+					}
+					gender = mainView.promptStringInput().trim();
+					if (InputValidator.validateString(gender)) {
+						log.log(Level.WARNING, "Gender Cannot be Empty");
+						continue;
+					}
+					log.info("Enter the Email");
+					email = mainView.promptStringInput().trim();
+					if (!InputValidator.validateEmail(email)) {
+						log.log(Level.WARNING, "Invalid Email Address");
+						continue;
+					}
+					log.info("Enter the Contact Number");
+					number = mainView.promptStringInput().trim();
+					if (!InputValidator.validateMobileNumber(number)) {
+						log.log(Level.WARNING, "Invalid Mobile Number");
+						continue;
+					}
+					log.info("Enter the Address");
+					address = mainView.promptStringInput().trim();
+					if (InputValidator.validateString(address)) {
+						log.log(Level.WARNING, "Address Cannot be Empty");
+						continue;
+					}
+					log.info("Enter the date of birth(YYYY-MM-DD)");
+					dob = mainView.promptStringInput().trim();
+					if (!InputValidator.validateDateOfBirth(dob)) {
+						log.log(Level.WARNING, "Invalid Date Of Birth!! Please Provide(YYYY-MM-DD)");
+						continue;
+					}
+					log.info("Enter the PAN Number");
+					String panNumber = mainView.promptStringInput();
+					if (!InputValidator.validatepanNumber(panNumber)) {
+						log.log(Level.WARNING, "Invalid PAN Number!! Please Provide Valid PAN Number");
+						continue;
+					}
+					log.info("Enter the Aadhar Number");
+					String aadharNumber = mainView.promptStringInput();
+					if (!InputValidator.validateaadharNumber(aadharNumber)) {
+						log.log(Level.WARNING, "Invalid Aadhar Number!! Please Provide Valid Aadhar Number");
+						continue;
+					}
+					typeOfUser = UserType.CUSTOMER;
+					User newCustomer = new User();
+					newCustomer.setPassword(password);
+					newCustomer.setFirstName(firstName);
+					newCustomer.setLastName(lastName);
+					newCustomer.setGender(gender);
+					newCustomer.setEmail(email);
+					newCustomer.setContactNumber(number);
+					newCustomer.setAddress(address);
+					newCustomer.setDateOfBirth(dob);
+					newCustomer.setTypeOfUser(typeOfUser.toString());
+					newCustomer.setPanNumber(panNumber);
+					newCustomer.setAadharNumber(aadharNumber);
+					boolean isUserCreated = userController.registerNewUser(newCustomer);
+					if (isUserCreated) {
+						userView.displaySuccessMessage();
+					} else {
+						userView.displayFailureMessage();
+					}
+					break;
+				case 7:
+					log.info("7. Create Account");
+					log.info("Enter the userID");
+					int userId = mainView.promptForUserID();
+					mainView.promptNewLine();
+					boolean isUserIdPresent1 = userController.isUserExists(userId);
+					if (!isUserIdPresent1) {
+						log.warning("Invalid UserID!!!");
+						break;
+					}
+					log.info("Enter the Branch Id");
+					branchId = mainView.promtForIntegerInput();
+					isValidBranch = branchController.isBranchExists(branchId);
+					if (!isValidBranch) {
+						branchView.displayInvalidBranchMessage();
+						break;
+					}
+					mainView.promptNewLine();
+					log.info("Enter the Type of Account");
+					String typeOfAccount = mainView.promptStringInput();
+					log.info("Enter the Balance");
+					double balance = mainView.promptDoubleInput();
+					if (InputValidator.validateBalance(balance)) {
+						mainView.displayInvalidBalanceMessage();
+					}
+					Account account = new Account();
+					account.setUserId(userId);
+					account.setBranchId(branchId);
+					account.setAccountType(typeOfAccount);
+					account.setBalance(balance);
+					boolean isAccountCreated = accountController.createAccount(account);
+					if (isAccountCreated) {
+						accountView.displayAccountCreationSuccessMessage();
+					} else {
+						accountView.displayAccountCreationFailureMessage();
+					}
+					break;
+				case 8:
+					log.info("8.Remove Customer");
+				case 9:
+					log.info("9. View Particular Customer(Account) Details");
+					log.info("Enter the Account Number");
+					String accountNumber = mainView.promptStringInput();
+					log.info("Enter the Branch Id");
+					branchId = mainView.promtForIntegerInput();
+					isValidBranchId = branchController.isBranchExists(branchId);
+					if (!isValidBranchId) {
+						branchView.displayInvalidBranchMessage();
+						break;
+					}
+					boolean isUserIDPresentInBranch = accountController.isAccountExistsInTheBranch(accountNumber,
+							branchId);
+					if (!isUserIDPresentInBranch) {
+						log.warning("Invalid Account Number  or Account is Not present in this Branch!!");
+						break;
+					}
+					CustomerDetails customerDetails = userController.getCustomerDetails(accountNumber, branchId);
+					if (customerDetails == null) {
+						userView.displayUserDetailsFailedMessage();
+						break;
+					}
+					userView.displayCustomerDetails(customerDetails);
+					break;
+				case 10:
+					log.info("10.View All Account Details of One Customer in One Branch");
+					log.info("Enter the userID");
+					userId = mainView.promptForUserID();
+					isUserIdPresent1 = userController.isUserExists(userId);
+					if (!isUserIdPresent1) {
+						log.warning("Invalid UserID!!!");
+						break;
+					}
+					log.info("Enter the Branch Id");
+					branchId = mainView.promtForIntegerInput();
+					isValidBranchId = branchController.isBranchExists(branchId);
+					if (!isValidBranchId) {
+						branchView.displayInvalidBranchMessage();
+						break;
+					}
+					List<CustomerDetails> customerDetails2 = userController
+							.getAllDetailsOfOneCustomerInOneBranch(userId, branchId);
+					if (customerDetails2.isEmpty()) {
+						log.info("The User Doesn't Have Any Account");
+						break;
+					}
+					userView.displayAllCustomerDetails(customerDetails2);
+					break;
+				case 11:
+					log.info("10.View All Account Details of One Customer in All Branch");
+					log.info("Enter the userID");
+					userId = mainView.promptForUserID();
+					isUserIdPresent1 = userController.isUserExists(userId);
+					if (!isUserIdPresent1) {
+						log.warning("Invalid UserID!!!");
+						break;
+					}
+					List<CustomerDetails> customerDetails3 = userController
+							.getAllDetailsOfOneCustomerInAllBranch(userId);
+					if (customerDetails3.isEmpty()) {
+						log.info("The User Doesn't Have Any Account");
+						break;
+					}
+					userView.displayAllCustomerDetails(customerDetails3);
+					break;
+				case 12:
+					log.info("10.View All Customer in One Branch");
+					log.info("Enter the Branch Id");
+					branchId = mainView.promtForIntegerInput();
+					isValidBranch = branchController.isBranchExists(branchId);
+					if (!isValidBranch) {
+						branchView.displayInvalidBranchMessage();
+						break;
+					}
+					List<CustomerDetails> allCustomerDetails = userController.getAllCustomerDetails(branchId);
+					if (allCustomerDetails.isEmpty()) {
+						userView.displayCustomerNotFoundMessage();
+						break;
+					}
+					userView.displayAllCustomerDetails(allCustomerDetails);
+					break;
+				case 13:
+					log.info("13. View All Customer Accross All Branch");
+					List<CustomerDetails> customersFromAllBranch = userController.getAllCustomerFromAllBranch();
+					if (customersFromAllBranch.isEmpty()) {
+						userView.displayCustomerNotFoundMessage();
+						break;
+					}
+					userView.displayAllCustomerDetails(customersFromAllBranch);
+					break;
+				case 14:
+					log.info("14. View Particular Customer One Branch Transaction");
+					break;
+				case 18:
+					isAdminAlive = false;
+					break;
+				default:
+					log.info("Invalid option! Please choose again.");
+					break;
+				}
+			} catch (InputMismatchException e) {
+				mainView.displayInputMissMatchMessage();
+				mainView.promptNewLine();
+				continue;
+			} catch (Exception e) {
+				mainView.displayExceptionMessage(e);
+				mainView.promptNewLine();
+				continue;
 			}
 		}
 	}

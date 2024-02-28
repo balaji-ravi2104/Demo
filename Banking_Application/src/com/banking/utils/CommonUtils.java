@@ -6,7 +6,6 @@ import java.util.Map;
 
 public class CommonUtils {
 	 private static final List<String> fields = List.of(
-	            "Password",
 	            "FirstName",
 	            "LastName",
 	            "Gender",

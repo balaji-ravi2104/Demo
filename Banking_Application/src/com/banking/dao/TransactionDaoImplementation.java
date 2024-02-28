@@ -26,16 +26,12 @@ public class TransactionDaoImplementation implements TransactionDao {
 	private static final String GET_STATEMENT = "SELECT transaction_date, transaction_type,transaction_amount, balance FROM Transaction "
 			+ "WHERE viewer_account_number = ? AND status = 'Success' AND transaction_date >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) "
 			+ "order by transaction_id DESC";
+	
+	private static final String GET_TRANSACTION_HISTORY = "SELECT t.transaction_id,t.user_id,t.viewer_account_number,t.transacted_account_number,t.transaction_type,t.transaction_amount,t.balance,t. transaction_date,t.remark,t.status \n"
+			+ "FROM Transaction t WHERE t.viewer_account_number = ? ORDER BY t.transaction_id DESC;";
 
-	private static final String GET_TRANSACTION_HISTORY = "SELECT t.transaction_id,t.user_id,t.viewer_account_number,t.transacted_account_number,"
-			+ "t.transaction_type,t.transaction_amount,t.balance,t. transaction_date,t.remark,t.status \n"
-			+ "FROM Transaction t INNER JOIN Accounts a on t.viewer_account_number = a.account_number WHERE a.user_id = ? "
-			+ "AND a.branch_id = ? ORDER BY t.transaction_date DESC, t.transaction_id DESC;";
-
-	private static final String GET_ALL_TRANSACTION_HISTORY = "SELECT t.transaction_id,t.user_id,t.viewer_account_number,"
-			+ "t.transacted_account_number,t.transaction_type,t.transaction_amount,t.balance,t. transaction_date,t.remark,"
-			+ "t.status FROM Transaction t INNER JOIN Accounts a ON t.viewer_account_number = a.account_number INNER JOIN "
-			+ "Employee e ON a.branch_id = e.branch_id WHERE e.branch_id = ? ORDER BY t.transaction_id DESC;";
+	private static final String GET_ALL_TRANSACTION_HISTORY = "SELECT t.transaction_id, t.user_id, t.viewer_account_number, t.transacted_account_number, t.transaction_type, t.transaction_amount, t.balance, t.transaction_date, t.remark, t.status \n"
+			+ "FROM Transaction t JOIN Accounts a ON t.viewer_account_number = a.account_number WHERE a.branch_id = ? ORDER BY t.transaction_id DESC;";
 
 	@Override
 	public boolean deposit(Account selectedAccount, double amountToDeposite) throws CustomException {
@@ -160,14 +156,13 @@ public class TransactionDaoImplementation implements TransactionDao {
 	}
 
 	@Override
-	public List<Transaction> getCustomerTransactionHistory(int userIdToGetTransaction, int branchId)
+	public List<Transaction> getCustomerTransactionHistory(String accountNumber)
 			throws CustomException {
 		List<Transaction> historyList = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_TRANSACTION_HISTORY)) {
 
-			preparedStatement.setInt(1, userIdToGetTransaction);
-			preparedStatement.setInt(2, branchId);
+			preparedStatement.setString(1, accountNumber);
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				historyList = new ArrayList<Transaction>();
 				getCustomerTransactionHistoryDetail(resultSet, historyList);

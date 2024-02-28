@@ -20,23 +20,6 @@ public class UserView {
 		log.warning("User Creation Failed!! Try Again");
 	}
 
-	public void displayCustomerDetails(CustomerDetails customerDetails) throws CustomException {
-		InputValidator.isNull(customerDetails, ErrorMessages.INPUT_NULL_MESSAGE);
-		log.info("-------------------------------------------------------");
-		log.info("Customer Id : "+customerDetails.getUserId());
-		log.info("First Name :"+customerDetails.getFirstName());
-		log.info("Last Name :"+customerDetails.getLastName());
-		log.info("Gender : "+customerDetails.getGender());
-		log.info("Email :"+customerDetails.getEmail());
-		log.info("PAN Number : "+customerDetails.getPan());
-		log.info("Aadhar Number : "+customerDetails.getAadhar());
-		log.info("Account Id : "+customerDetails.getAccountId());
-		log.info("Account Number : "+customerDetails.getAccountNumber());
-		log.info("Balance : "+customerDetails.getBalance());
-		log.info("Account Status : "+customerDetails.getStatus());
-		log.info("-------------------------------------------------------");
-	}
-
 	public void displayUserDetailsFailedMessage() {
 		log.warning("Error While Reterving User Detail!! Please Try Again!!");
 	}
@@ -59,7 +42,7 @@ public class UserView {
 		log.info("Customer Updation Failed!! Try Again!!");
 	}
 
-	public void displayCustomerProfile(User user) throws CustomException {
+	public void displayUserProfile(User user) throws CustomException {
 		InputValidator.isNull(user, ErrorMessages.INPUT_NULL_MESSAGE);
 		log.info("-".repeat(60));
 		log.info("User Id : "+user.getUserId());
@@ -70,9 +53,33 @@ public class UserView {
 		log.info("Contact Number : "+user.getContactNumber());
 		log.info("Address : "+user.getAddress());
 		log.info("DOB : "+user.getDateOfBirth());
-		log.info("PAN Number : "+user.getPanNumber());
-		log.info("Aadhar Number : "+user.getAadharNumber());
+		if(user.getPanNumber()!=null) {
+			log.info("PAN Number : "+user.getPanNumber());
+		}
+		if(user.getAadharNumber()!=null) {
+			log.info("Aadhar Number : "+user.getAadharNumber());
+		}
+		if(user.getBranchId()!=0) {
+			log.info("Branch Id : "+user.getBranchId());
+		}
 		log.info("-".repeat(60));
+	}
+	
+	public void displayCustomerDetails(CustomerDetails customerDetails) throws CustomException {
+		InputValidator.isNull(customerDetails, ErrorMessages.INPUT_NULL_MESSAGE);
+		log.info("-------------------------------------------------------");
+		log.info("Customer Id : "+customerDetails.getUserId());
+		log.info("First Name :"+customerDetails.getFirstName());
+		log.info("Last Name :"+customerDetails.getLastName());
+		log.info("Gender : "+customerDetails.getGender());
+		log.info("Email :"+customerDetails.getEmail());
+		log.info("PAN Number : "+customerDetails.getPan());
+		log.info("Aadhar Number : "+customerDetails.getAadhar());
+		log.info("Account Id : "+customerDetails.getAccountId());
+		log.info("Account Number : "+customerDetails.getAccountNumber());
+		log.info("Balance : "+customerDetails.getBalance());
+		log.info("Account Status : "+customerDetails.getStatus());
+		log.info("-------------------------------------------------------");
 	}
 
 	public void displayPasswordUpdatedSuccessMessage() {
@@ -81,6 +88,13 @@ public class UserView {
 	
 	public void displayPasswordUpdatedFailedMessage() {
 		log.info("Password Updated Failed!!");
+	}
+
+	public void displayListOfEmployees(List<User> employeeList) throws CustomException {
+		InputValidator.isNull(employeeList,ErrorMessages.INPUT_NULL_MESSAGE);
+		for(User user:employeeList) {
+			displayUserProfile(user);
+		}
 	}
 	
 
