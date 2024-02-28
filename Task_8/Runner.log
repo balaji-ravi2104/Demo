@@ -1,0 +1,143 @@
+Feb 05, 2024 2:55:26 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Feb 05, 2024 2:55:26 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Feb 05, 2024 2:55:26 PM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+Feb 05, 2024 2:55:26 PM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+Feb 05, 2024 2:55:26 PM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+Feb 05, 2024 2:55:26 PM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+Feb 05, 2024 2:55:26 PM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+Feb 05, 2024 2:55:26 PM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+Feb 05, 2024 2:55:26 PM runner.Runner printDetails
+INFO: 8.Working with Enums
+Feb 05, 2024 2:55:26 PM runner.Runner printDetails
+INFO: 9.Singletom Demo
+Feb 05, 2024 2:55:26 PM runner.Runner printDetails
+INFO: 10.Time Based Operations
+Feb 05, 2024 2:55:26 PM runner.Runner main
+INFO: Enter your choice
+Feb 05, 2024 2:55:31 PM runner.Runner main
+INFO: 6.POJO class Operations with Parametrized Constructor
+Feb 05, 2024 2:55:31 PM runner.Runner main
+INFO: Enter the String
+Feb 05, 2024 2:55:35 PM runner.Runner main
+INFO: Enter the Integer
+Feb 05, 2024 2:55:37 PM runner.Runner main
+INFO: string=balaji, num=123
+Feb 05, 2024 2:55:37 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Feb 05, 2024 2:55:37 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Feb 05, 2024 2:55:37 PM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+Feb 05, 2024 2:55:37 PM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+Feb 05, 2024 2:55:37 PM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+Feb 05, 2024 2:55:37 PM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+Feb 05, 2024 2:55:37 PM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+Feb 05, 2024 2:55:37 PM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+Feb 05, 2024 2:55:37 PM runner.Runner printDetails
+INFO: 8.Working with Enums
+Feb 05, 2024 2:55:37 PM runner.Runner printDetails
+INFO: 9.Singletom Demo
+Feb 05, 2024 2:55:37 PM runner.Runner printDetails
+INFO: 10.Time Based Operations
+Feb 05, 2024 2:55:37 PM runner.Runner main
+INFO: Enter your choice
+Feb 05, 2024 2:55:38 PM runner.Runner main
+INFO: Exiting
+Feb 05, 2024 6:02:20 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Feb 05, 2024 6:02:20 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Feb 05, 2024 6:02:20 PM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+Feb 05, 2024 6:02:20 PM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+Feb 05, 2024 6:02:20 PM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+Feb 05, 2024 6:02:20 PM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+Feb 05, 2024 6:02:20 PM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+Feb 05, 2024 6:02:20 PM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+Feb 05, 2024 6:02:20 PM runner.Runner printDetails
+INFO: 8.Working with Enums
+Feb 05, 2024 6:02:20 PM runner.Runner printDetails
+INFO: 9.Singletom Demo
+Feb 05, 2024 6:02:20 PM runner.Runner printDetails
+INFO: 10.Time Based Operations
+Feb 05, 2024 6:02:20 PM runner.Runner main
+INFO: Enter your choice
+Feb 05, 2024 6:02:23 PM runner.Runner main
+INFO: Exiting
+Feb 05, 2024 6:20:21 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Feb 05, 2024 6:20:21 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Feb 05, 2024 6:20:21 PM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+Feb 05, 2024 6:20:21 PM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+Feb 05, 2024 6:20:21 PM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+Feb 05, 2024 6:20:21 PM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+Feb 05, 2024 6:20:21 PM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+Feb 05, 2024 6:20:21 PM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+Feb 05, 2024 6:20:21 PM runner.Runner printDetails
+INFO: 8.Working with Enums
+Feb 05, 2024 6:20:21 PM runner.Runner printDetails
+INFO: 9.Singletom Demo
+Feb 05, 2024 6:20:21 PM runner.Runner printDetails
+INFO: 10.Time Based Operations
+Feb 05, 2024 6:20:21 PM runner.Runner main
+INFO: Enter your choice
+Feb 05, 2024 6:20:27 PM runner.Runner main
+INFO: Exiting
+Feb 07, 2024 11:40:29 AM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Feb 07, 2024 11:40:29 AM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Feb 07, 2024 11:40:29 AM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+Feb 07, 2024 11:40:29 AM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+Feb 07, 2024 11:40:29 AM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+Feb 07, 2024 11:40:29 AM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+Feb 07, 2024 11:40:29 AM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+Feb 07, 2024 11:40:29 AM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+Feb 07, 2024 11:40:29 AM runner.Runner printDetails
+INFO: 8.Working with Enums
+Feb 07, 2024 11:40:29 AM runner.Runner printDetails
+INFO: 9.Singletom Demo
+Feb 07, 2024 11:40:29 AM runner.Runner printDetails
+INFO: 10.Time Based Operations
+Feb 07, 2024 11:40:29 AM runner.Runner main
+INFO: Enter your choice
+Feb 07, 2024 11:14:46 PM runner.Runner main
+WARNING: An Exception Occured
+java.util.NoSuchElementException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:937)
+	at java.base/java.util.Scanner.next(Scanner.java:1594)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2258)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2212)
+	at Task_8/runner.Runner.main(Runner.java:52)
+
