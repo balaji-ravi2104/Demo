@@ -452,6 +452,7 @@ public class MainController {
 					}
 					break;
 				case 3:
+					log.info("3.Update Customer");
 					Map<Integer, String> fieldMap = CommonUtils.generateFieldMap();
 					mainView.displayFieldName(fieldMap);
 					log.info("Enter the UserId to Update");
