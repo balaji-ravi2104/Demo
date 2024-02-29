@@ -6,10 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.banking.model.CustomerDetails;
 import com.banking.model.User;
@@ -21,7 +21,7 @@ import com.banking.utils.InputValidator;
 
 public class UserDaoImplementation implements UserDao {
 
-	private static final String GET_USER = "SELECT  u.userId,u.FirstName,u.LastName,u.Gender,u.Email,u.ContactNumber,u.Address,u.DateOfBirth,u.Type FROM Users u WHERE u.userId = ? and u.password = ?";
+	private static final String GET_USER = "SELECT  u.userId,u.FirstName,u.LastName,u.Gender,u.Email,u.ContactNumber,u.Address,u.DateOfBirth,u.Type,u.Status FROM Users u WHERE u.userId = ? and u.password = ?";
 
 	private static final String GET_EMPLOYEE_BRANCH = "SELECT branch_id FROM Employee WHERE User_id = ?";
 
@@ -45,7 +45,7 @@ public class UserDaoImplementation implements UserDao {
 
 	private static final String GET_ALL_CUSTOMER_DETAIL = "SELECT u.UserId, u.FirstName, u.LastName, u.Gender, u.Email,c.Pan, c.Aadhar,a.Account_id, a.account_number, a.balance,a.status\n"
 			+ " FROM Users u JOIN Customer c ON u.UserId = c.User_id\n"
-			+ " JOIN Accounts a ON u.UserId = a.user_id WHERE a.branch_id = ?;";
+			+ " JOIN Accounts a ON u.UserId = a.user_id WHERE a.branch_id = ? ORDER BY u.UserId;";
 
 	private static final String UPDATE_PASSWORD = "UPDATE Users SET Password = ? WHERE UserId = ?;";
 
@@ -69,7 +69,7 @@ public class UserDaoImplementation implements UserDao {
 
 	private static final String GET_ALL_DETAIL_OF_CUSTOMER_IN_ALL_BRANCH = "SELECT u.UserId, u.FirstName, u.LastName, u.Gender, u.Email, "
 			+ "c.Pan, c.Aadhar, a.account_id, a.account_number, a.balance, a.status FROM Users u INNER JOIN Customer c ON u.UserId = c.User_id "
-			+ "INNER JOIN Accounts a ON u.UserId = a.user_id WHERE u.UserId = ? ORDER BY a.account_number;";
+			+ "INNER JOIN Accounts a ON u.UserId = a.user_id WHERE u.UserId = ?;";
 
 	@Override
 	public User authendicateUser(int userID, String password) throws CustomException {
@@ -203,7 +203,7 @@ public class UserDaoImplementation implements UserDao {
 
 	@Override
 	public Map<String, CustomerDetails> getAllCustomerDetailsInOneBranch(int branchID) throws CustomException {
-		Map<String, CustomerDetails> customerDetails = new HashMap<>();
+		Map<String, CustomerDetails> customerDetails = new TreeMap<>();
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_CUSTOMER_DETAIL)) {
 			preparedStatement.setInt(1, branchID);
@@ -354,19 +354,20 @@ public class UserDaoImplementation implements UserDao {
 	}
 
 	@Override
-	public List<CustomerDetails> getAllDetailsOfOneCustomerInOneBranch(int userId, int branchId)
+	public Map<String, CustomerDetails> getAllDetailsOfCustomerFromOneBranch(int userId, int branchId)
 			throws CustomException {
-		List<CustomerDetails> allDetails = null;
+		System.out.println(userId+" "+branchId);
+		Map<String, CustomerDetails> allDetails = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection
 						.prepareStatement(GET_ALL_DETAIL_OF_CUSTOMER_IN_ONE_BRANCH)) {
-
 			preparedStatement.setInt(1, userId);
 			preparedStatement.setInt(2, branchId);
 
-//			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-//				allDetails = generateAllCustomerDetails(resultSet);
-//			}
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				allDetails = new TreeMap<String, CustomerDetails>();
+				generateAllCustomerDetails(resultSet, allDetails);
+			}
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new CustomException("Error While Reterving User Details", e);
 		}
@@ -374,17 +375,18 @@ public class UserDaoImplementation implements UserDao {
 	}
 
 	@Override
-	public List<CustomerDetails> getAllDetailsOfOneCustomerInAllBranch(int userId) throws CustomException {
-		List<CustomerDetails> allDetails = null;
+	public Map<String, CustomerDetails> getAllDetailsOfOneCustomerInAllBranch(int userId) throws CustomException {
+		Map<String, CustomerDetails> allDetails = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection
 						.prepareStatement(GET_ALL_DETAIL_OF_CUSTOMER_IN_ALL_BRANCH)) {
 
 			preparedStatement.setInt(1, userId);
 
-//			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-//				allDetails = generateAllCustomerDetails(resultSet);
-//			}
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				allDetails = new TreeMap<String, CustomerDetails>();
+				generateAllCustomerDetails(resultSet, allDetails);
+			}
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new CustomException("Error While Reterving User Details", e);
 		}
@@ -450,7 +452,9 @@ public class UserDaoImplementation implements UserDao {
 	private void generateAllCustomerDetails(ResultSet resultSet, Map<String, CustomerDetails> customerMap)
 			throws SQLException, CustomException {
 		while (resultSet.next()) {
-			customerMap.put(resultSet.getString(9), getCustomerDetails(resultSet));
+			CustomerDetails customerDetails = getCustomerDetails(resultSet);
+			System.out.println(customerDetails.getAccountNumber());
+			customerMap.put(customerDetails.getAccountNumber(), getCustomerDetails(resultSet));
 		}
 	}
 
@@ -475,6 +479,7 @@ public class UserDaoImplementation implements UserDao {
 		user.setAddress(resultSet.getString(7));
 		user.setDateOfBirth(resultSet.getString(8));
 		user.setTypeOfUser(resultSet.getString(9));
+		user.setStatus(resultSet.getString(10));
 	}
 
 	private void getEmployeeDetail(ResultSet resultSet, User employeeDetails) throws SQLException {

@@ -1,6 +1,7 @@
 package com.banking.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.banking.model.Account;
 import com.banking.model.Transaction;
@@ -22,6 +23,8 @@ public interface TransactionDao {
 
 	List<Transaction> getCustomerTransactionHistory(String accountNumber) throws CustomException;
 
-	List<Transaction> getAllCustomerTransactionHistory(int branchId) throws CustomException;
+	Map<String,List<Transaction>> getAllCustomersTransactionHistory(int branchId) throws CustomException;
+
+	Map<String, List<Transaction>> getAllTransactionHistorys(int userId, int branchId) throws CustomException;
 
 }

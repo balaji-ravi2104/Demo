@@ -1,12 +1,9 @@
 package com.banking.view;
 
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Logger;
-
-import com.banking.model.User;
 
 public class MainView {
 	private static final Logger log = Logger.getLogger(MainView.class.getName());

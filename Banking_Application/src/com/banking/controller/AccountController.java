@@ -1,8 +1,10 @@
 package com.banking.controller;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.banking.dao.AccountDao;
+import com.banking.dao.AccountDaoImplementation;
 import com.banking.model.Account;
 import com.banking.utils.CustomException;
 import com.banking.utils.ErrorMessages;
@@ -11,20 +13,21 @@ import com.banking.utils.InputValidator;
 public class AccountController {
 
 	private static final Logger log = Logger.getLogger(MainController.class.getName());
-	private final AccountDao accountDao;
-	private final UserController userController;
-	private final BranchController branchController;
+	private AccountDao accountDao = new AccountDaoImplementation();
+	private UserController userController;
+	private BranchController branchController = new BranchController();
 
-	public AccountController(AccountDao accountDao, UserController userController, BranchController branchController) {
-		this.accountDao = accountDao;
+	public AccountController(UserController userController) {
 		this.userController = userController;
-		this.branchController = branchController;
+	}
+
+	public AccountController() {
 	}
 
 	public boolean isAccountExistsInTheBranch(String accountNumber, int branchId) throws CustomException {
 		InputValidator.isNull(accountNumber, "Account Number Cannot be Null!!!");
 		boolean isAccountExists = false;
-		if (validateAccountNumber(accountNumber) || !validateBranchId(branchId)) {
+		if (validateAccountNumber(accountNumber) || !branchController.validateBranchId(branchId)) {
 			return isAccountExists;
 		}
 		try {
@@ -39,7 +42,8 @@ public class AccountController {
 		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isAccountCreated = false;
 
-		if (!validateUserId(account.getUserId()) || !validateBranchId(account.getBranchId())
+		if (!userController.validateUserId(account.getUserId())
+				|| !branchController.validateBranchId(account.getBranchId())
 				|| validateAccountType(account.getAccountType()) || validateBalance(account.getBalance())) {
 			return isAccountCreated;
 		}
@@ -52,9 +56,9 @@ public class AccountController {
 		return isAccountCreated;
 	}
 
-	public boolean closeAccount(String accountNumber) throws CustomException {
+	public boolean closeAccount(String accountNumber, int branchId) throws CustomException {
 		boolean isAccountClosed = false;
-		if (validateAccountNumber(accountNumber)) {
+		if (!validateAccountAndBranch(accountNumber, branchId)) {
 			return isAccountClosed;
 		}
 		try {
@@ -106,14 +110,6 @@ public class AccountController {
 		return isValid;
 	}
 
-	private boolean validateUserId(int userId) throws CustomException {
-		boolean isUserIdPresent = userController.isUserExists(userId);
-		if (!isUserIdPresent) {
-			log.warning("Invalid User Id!!!");
-		}
-		return isUserIdPresent;
-	}
-
 	private boolean validateAccountNumber(String accountNumber) throws CustomException {
 		boolean isValid = false;
 		if (InputValidator.validateString(accountNumber)) {
@@ -123,12 +119,13 @@ public class AccountController {
 		return isValid;
 	}
 
-	private boolean validateBranchId(int branchId) throws CustomException {
-		boolean isValidBranchId = branchController.isBranchExists(branchId);
-		if (!isValidBranchId) {
-			log.warning("Invalid Branch Id!!!");
+	public boolean validateAccountAndBranch(String accountNumber, int branchId) throws CustomException {
+		boolean isValid = true;
+		if (!isAccountExistsInTheBranch(accountNumber, branchId)) {
+			log.log(Level.WARNING, "Account Number Doesn't Exists in this Branch!!!");
+			isValid = false;
 		}
-		return isValidBranchId;
+		return isValid;
 	}
 
 }

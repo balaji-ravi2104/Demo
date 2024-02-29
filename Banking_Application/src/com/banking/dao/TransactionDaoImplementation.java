@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.banking.model.Account;
 import com.banking.model.Transaction;
@@ -26,9 +28,12 @@ public class TransactionDaoImplementation implements TransactionDao {
 	private static final String GET_STATEMENT = "SELECT transaction_date, transaction_type,transaction_amount, balance FROM Transaction "
 			+ "WHERE viewer_account_number = ? AND status = 'Success' AND transaction_date >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) "
 			+ "order by transaction_id DESC";
-	
+
 	private static final String GET_TRANSACTION_HISTORY = "SELECT t.transaction_id,t.user_id,t.viewer_account_number,t.transacted_account_number,t.transaction_type,t.transaction_amount,t.balance,t. transaction_date,t.remark,t.status \n"
 			+ "FROM Transaction t WHERE t.viewer_account_number = ? ORDER BY t.transaction_id DESC;";
+
+	private static final String GET_ALL_TRANSACTION_OF_CUSTOMER = "SELECT t.transaction_id, t.user_id, t.viewer_account_number, t.transacted_account_number, t.transaction_type, t.transaction_amount, t.balance, t.transaction_date, t.remark, t.status \n"
+			+ "FROM Transaction t JOIN Accounts a ON t.viewer_account_number = a.account_number WHERE a.user_id = ? AND a.branch_id = ? ORDER BY t.transaction_id DESC;";
 
 	private static final String GET_ALL_TRANSACTION_HISTORY = "SELECT t.transaction_id, t.user_id, t.viewer_account_number, t.transacted_account_number, t.transaction_type, t.transaction_amount, t.balance, t.transaction_date, t.remark, t.status \n"
 			+ "FROM Transaction t JOIN Accounts a ON t.viewer_account_number = a.account_number WHERE a.branch_id = ? ORDER BY t.transaction_id DESC;";
@@ -156,8 +161,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 	}
 
 	@Override
-	public List<Transaction> getCustomerTransactionHistory(String accountNumber)
-			throws CustomException {
+	public List<Transaction> getCustomerTransactionHistory(String accountNumber) throws CustomException {
 		List<Transaction> historyList = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_TRANSACTION_HISTORY)) {
@@ -165,7 +169,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 			preparedStatement.setString(1, accountNumber);
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				historyList = new ArrayList<Transaction>();
-				getCustomerTransactionHistoryDetail(resultSet, historyList);
+				getOneCustomerTransactionHistoryDetail(resultSet, historyList);
 			}
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new CustomException("Error While Reterving Transaction!!!", e);
@@ -174,40 +178,74 @@ public class TransactionDaoImplementation implements TransactionDao {
 	}
 
 	@Override
-	public List<Transaction> getAllCustomerTransactionHistory(int branchId) throws CustomException {
-		List<Transaction> historyList = null;
+	public Map<String, List<Transaction>> getAllTransactionHistorys(int userId, int branchId) throws CustomException {
+		Map<String, List<Transaction>> transactionMap = null;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_TRANSACTION_OF_CUSTOMER)) {
+			preparedStatement.setInt(1, userId);
+			preparedStatement.setInt(2, branchId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				transactionMap = new HashMap<String, List<Transaction>>();
+				getAllCustomerTransactionHistoryDetail(resultSet, transactionMap);
+			}
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error While Reterving Transaction!!!", e);
+		}
+		return transactionMap;
+	}
+
+	@Override
+	public Map<String, List<Transaction>> getAllCustomersTransactionHistory(int branchId) throws CustomException {
+		Map<String, List<Transaction>> transactionMap = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_TRANSACTION_HISTORY)) {
 
 			preparedStatement.setInt(1, branchId);
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				historyList = new ArrayList<Transaction>();
-				getCustomerTransactionHistoryDetail(resultSet, historyList);
+				transactionMap = new HashMap<String, List<Transaction>>();
+				getAllCustomerTransactionHistoryDetail(resultSet, transactionMap);
 			}
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new CustomException("Error While Reterving Transaction!!!", e);
 		}
-		return historyList;
+		return transactionMap;
 	}
 
-	private void getCustomerTransactionHistoryDetail(ResultSet resultSet, List<Transaction> historyList)
+	private void getOneCustomerTransactionHistoryDetail(ResultSet resultSet, List<Transaction> historyList)
 			throws SQLException {
-		Transaction transaction;
 		while (resultSet.next()) {
-			transaction = new Transaction();
-			transaction.setTransactionId(resultSet.getInt(1));
-			transaction.setUserId(resultSet.getInt(2));
-			transaction.setViwerAccount(resultSet.getString(3));
-			transaction.setTransactedAccount(resultSet.getString(4));
-			transaction.setTransactionType(resultSet.getString(5));
-			transaction.setTransactedAmount(resultSet.getDouble(6));
-			transaction.setBalance(resultSet.getDouble(7));
-			transaction.setDateOfTransaction(resultSet.getDate(8));
-			transaction.setRemark(resultSet.getString(9));
-			transaction.setStatus(resultSet.getString(10));
-
-			historyList.add(transaction);
+			historyList.add(getTransactionDetail(resultSet));
 		}
+	}
+
+	private void getAllCustomerTransactionHistoryDetail(ResultSet resultSet,
+			Map<String, List<Transaction>> transactionMap) throws SQLException {
+
+		while (resultSet.next()) {
+			Transaction transaction = getTransactionDetail(resultSet);
+			String accountNumber = transaction.getViwerAccount();
+
+			if (!transactionMap.containsKey(accountNumber)) {
+				transactionMap.put(accountNumber, new ArrayList<>());
+			}
+
+			transactionMap.get(accountNumber).add(transaction);
+		}
+	}
+
+	private Transaction getTransactionDetail(ResultSet resultSet) throws SQLException {
+		Transaction transaction = new Transaction();
+		transaction.setTransactionId(resultSet.getInt(1));
+		transaction.setUserId(resultSet.getInt(2));
+		transaction.setViwerAccount(resultSet.getString(3));
+		transaction.setTransactedAccount(resultSet.getString(4));
+		transaction.setTransactionType(resultSet.getString(5));
+		transaction.setTransactedAmount(resultSet.getDouble(6));
+		transaction.setBalance(resultSet.getDouble(7));
+		transaction.setDateOfTransaction(resultSet.getDate(8));
+		transaction.setRemark(resultSet.getString(9));
+		transaction.setStatus(resultSet.getString(10));
+		return transaction;
 	}
 
 	private void getStatementDetails(ResultSet resultSet, List<Transaction> statements) throws SQLException {

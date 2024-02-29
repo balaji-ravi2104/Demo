@@ -14,6 +14,15 @@ public class User {
 	private String typeOfUser;
 	private String panNumber;
 	private String aadharNumber;
+	private String Status;
+
+	public String getStatus() {
+		return Status;
+	}
+
+	public void setStatus(String status) {
+		Status = status;
+	}
 
 	public int getUserId() {
 		return userId;
@@ -38,7 +47,7 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public String getFirstName() {
 		return firstName;
 	}
@@ -121,9 +130,9 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", branchId=" + branchId + ", firstName="
-				+ firstName + ", lastName=" + lastName + ", gender=" + gender + ", email=" + email + ", contactNumber="
-				+ contactNumber + ", address=" + address + ", dateOfBirth=" + dateOfBirth + ", typeOfUser=" + typeOfUser
+		return "User [userId=" + userId + ", branchId=" + branchId + ", firstName=" + firstName + ", lastName="
+				+ lastName + ", gender=" + gender + ", email=" + email + ", contactNumber=" + contactNumber
+				+ ", address=" + address + ", dateOfBirth=" + dateOfBirth + ", typeOfUser=" + typeOfUser
 				+ ", panNumber=" + panNumber + ", aadharNumber=" + aadharNumber + "]";
 	}
 

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import java.util.regex.PatternSyntaxException;
 
 import com.banking.dao.UserDao;
+import com.banking.dao.UserDaoImplementation;
 import com.banking.model.CustomerDetails;
 import com.banking.model.User;
 import com.banking.utils.CustomException;
@@ -16,15 +17,16 @@ import com.banking.utils.InputValidator;
 
 public class UserController {
 
-	private final UserDao userDao;
-	private final BranchController branchController;
-	private final AccountController accountController;
 	private static final Logger log = Logger.getLogger(MainController.class.getName());
+	private UserDao userDao = new UserDaoImplementation();;
+	private BranchController branchController = new BranchController();;
+	private AccountController accountController;
 
-	public UserController(UserDao userDao, BranchController branchController, AccountController accountController) {
-		this.userDao = userDao;
-		this.branchController = branchController;
+	public UserController(AccountController accountController) {
 		this.accountController = accountController;
+	}
+
+	public UserController() {
 	}
 
 	public User login(int userId, String password) throws CustomException {
@@ -70,7 +72,8 @@ public class UserController {
 	public CustomerDetails getCustomerDetails(String accountNumber, int branchId) throws CustomException {
 		InputValidator.isNull(accountNumber, "Account Number Cannot be Empty or Null!!!");
 		CustomerDetails customerDetails = null;
-		if (!validateAccountAndBranch(accountNumber, branchId)) {
+		if (!branchController.validateBranchId(branchId)
+				|| !accountController.validateAccountAndBranch(accountNumber, branchId)) {
 			return customerDetails;
 		}
 		try {
@@ -81,9 +84,9 @@ public class UserController {
 		return customerDetails;
 	}
 
-	public Map<String,CustomerDetails> getAllCustomerDetails(int branchId) throws CustomException {
-		Map<String,CustomerDetails> customerDetails = null;
-		if(!validateBranchId(branchId)) {
+	public Map<String, CustomerDetails> getAllCustomerDetails(int branchId) throws CustomException {
+		Map<String, CustomerDetails> customerDetails = null;
+		if (!branchController.validateBranchId(branchId)) {
 			return customerDetails;
 		}
 		try {
@@ -98,11 +101,11 @@ public class UserController {
 			throws CustomException {
 		InputValidator.isNull(fieldsToUpdate, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isCustomerUpdated = false;
-		if (validateUserId(userIdToUpdate) || validateBranchId(branchId)
-				|| validateUserIdAndBranchId(userIdToUpdate, branchId)) {
+		if (!validateUserId(userIdToUpdate) || !branchController.validateBranchId(branchId)
+				|| !validateUserIdAndBranchId(userIdToUpdate, branchId)) {
 			return isCustomerUpdated;
 		}
-		if (validateFieldAndValuesToUpdate(fieldsToUpdate)) {
+		if (!validateFieldAndValuesToUpdate(fieldsToUpdate)) {
 			return isCustomerUpdated;
 		}
 		try {
@@ -164,21 +167,31 @@ public class UserController {
 		}
 	}
 
-	public List<CustomerDetails> getAllDetailsOfOneCustomerInOneBranch(int userId, int branchId)
+	public Map<String, CustomerDetails> getAllDetailsOfOneCustomerInOneBranch(int userId, int branchId)
 			throws CustomException {
+		Map<String, CustomerDetails> allDetails = null;
+		if (!validateUserIdAndBranchId(userId, branchId)) {
+			return allDetails;
+		}
 		try {
-			return userDao.getAllDetailsOfOneCustomerInOneBranch(userId, branchId);
+			allDetails = userDao.getAllDetailsOfCustomerFromOneBranch(userId, branchId);
 		} catch (Exception e) {
 			throw new CustomException("Error while Reterving Employee Details!!", e);
 		}
+		return allDetails;
 	}
 
-	public List<CustomerDetails> getAllDetailsOfOneCustomerInAllBranch(int userId) throws CustomException {
+	public Map<String, CustomerDetails> getAllDetailsOfOneCustomerInAllBranch(int userId) throws CustomException {
+		Map<String, CustomerDetails> allDetails = null;
+		if(!validateUserId(userId)) {
+			return allDetails;
+		}
 		try {
-			return userDao.getAllDetailsOfOneCustomerInAllBranch(userId);
+			allDetails = userDao.getAllDetailsOfOneCustomerInAllBranch(userId);
 		} catch (Exception e) {
 			throw new CustomException("Error while Reterving Employee Details!!", e);
 		}
+		return allDetails;
 	}
 
 	private boolean validateUserInput(User user) throws CustomException {
@@ -227,15 +240,7 @@ public class UserController {
 		return isValid;
 	}
 
-	private boolean validateBranchId(int branchId) throws CustomException {
-		boolean isValidBranchId = branchController.isBranchExists(branchId);
-		if (!isValidBranchId) {
-			log.warning("Invalid Branch Id!!!");
-		}
-		return isValidBranchId;
-	}
-
-	private boolean validateUserId(int userId) throws CustomException {
+	public boolean validateUserId(int userId) throws CustomException {
 		boolean isUserIdPresent = isUserExists(userId);
 		if (!isUserIdPresent) {
 			log.warning("Invalid User Id!!!");
@@ -243,21 +248,12 @@ public class UserController {
 		return isUserIdPresent;
 	}
 
-	private boolean validateUserIdAndBranchId(int userId, int branchId) throws CustomException {
+	public boolean validateUserIdAndBranchId(int userId, int branchId) throws CustomException {
 		boolean isValidId = isUserExistsInTheBranch(userId, branchId);
 		if (!isValidId) {
 			log.warning("Invalid UserID or UserID is Not present in this Branch!!");
 		}
 		return isValidId;
-	}
-
-	private boolean validateAccountAndBranch(String accountNumber, int branchId) throws CustomException {
-		boolean isValid = true;
-		if (!accountController.isAccountExistsInTheBranch(accountNumber, branchId)) {
-			log.log(Level.WARNING,"Account Number Doesn't Exists in this Branch!!!");
-			isValid = false;
-		}
-		return isValid;
 	}
 
 	private <K, V> boolean validateFieldAndValuesToUpdate(Map<K, V> fieldsToUpdate)

@@ -1,6 +1,7 @@
 package com.banking.view;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.banking.model.Transaction;
@@ -74,19 +75,27 @@ public class TransactionView {
 
 	public void displayTransActionHistory(List<Transaction> transactionsHistory) throws CustomException {
 		InputValidator.isNull(transactionsHistory, ErrorMessages.INPUT_NULL_MESSAGE);
-		for(Transaction transaction:transactionsHistory) {
+		for (Transaction transaction : transactionsHistory) {
 			log.info("-".repeat(60));
-			log.info("Transaction Id : "+transaction.getTransactionId());
-			log.info("User Id : "+transaction.getUserId());
-			log.info("Viewer Account : "+transaction.getViwerAccount());
-			log.info("Transacted Account : "+transaction.getTransactedAccount());
-			log.info("Transaction Type : "+transaction.getTransactionType());
-			log.info("Transaction Amount : "+transaction.getTransactedAmount());
-			log.info("Balance : "+transaction.getBalance());
-			log.info("Transaction Date : "+transaction.getDateOfTransaction());
-			log.info("Remark : "+transaction.getRemark());
-			log.info("Status : "+transaction.getStatus());
+			log.info("Transaction Id : " + transaction.getTransactionId());
+			log.info("User Id : " + transaction.getUserId());
+			log.info("Viewer Account : " + transaction.getViwerAccount());
+			log.info("Transacted Account : " + transaction.getTransactedAccount());
+			log.info("Transaction Type : " + transaction.getTransactionType());
+			log.info("Transaction Amount : " + transaction.getTransactedAmount());
+			log.info("Balance : " + transaction.getBalance());
+			log.info("Transaction Date : " + transaction.getDateOfTransaction());
+			log.info("Remark : " + transaction.getRemark());
+			log.info("Status : " + transaction.getStatus());
 			log.info("-".repeat(60));
+		}
+	}
+
+	public void displayAllTransActionHistory(Map<String, List<Transaction>> allTransactionHistoryMap) throws CustomException {
+		for (String accountNumber : allTransactionHistoryMap.keySet()) {
+			List<Transaction> transactionList = allTransactionHistoryMap.get(accountNumber);
+			log.info("Transaction History OF Account Number :" +accountNumber);
+			displayTransActionHistory(transactionList);
 		}
 	}
 

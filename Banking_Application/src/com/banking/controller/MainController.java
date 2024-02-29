@@ -7,14 +7,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.banking.dao.AccountDao;
-import com.banking.dao.AccountDaoImplementation;
-import com.banking.dao.BranchDao;
-import com.banking.dao.BranchDaoImplementation;
-import com.banking.dao.TransactionDao;
-import com.banking.dao.TransactionDaoImplementation;
-import com.banking.dao.UserDao;
-import com.banking.dao.UserDaoImplementation;
 import com.banking.model.Account;
 import com.banking.model.CustomerDetails;
 import com.banking.model.Transaction;
@@ -38,15 +30,11 @@ public class MainController {
 	private AccountView accountView;
 	private TransactionView transactionView;
 	private BranchView branchView;
-	private UserController userController;
-	private AccountController accountController;
-	private TransactionController transactionController;
-	private BranchController branchController;
+	public UserController userController;
+	public AccountController accountController;
+	public TransactionController transactionController;
+	public BranchController branchController;
 	public User user;
-	public UserDao userDao;
-	public AccountDao accountDao;
-	public TransactionDao transactionDao;
-	public BranchDao branchDao;
 	private boolean isAppliactionAlive;
 	private boolean isLoggedIn;
 
@@ -56,14 +44,10 @@ public class MainController {
 		this.accountView = new AccountView();
 		this.transactionView = new TransactionView();
 		this.branchView = new BranchView();
-		this.userDao = new UserDaoImplementation();
-		this.accountDao = new AccountDaoImplementation();
-		this.transactionDao = new TransactionDaoImplementation();
-		this.branchDao = new BranchDaoImplementation();
-		this.branchController = new BranchController(branchDao);
-		this.transactionController = new TransactionController(transactionDao);
-		this.accountController = new AccountController(accountDao, userController, branchController);
-		this.userController = new UserController(userDao,branchController,accountController);
+		this.userController = new UserController(new AccountController());
+		this.accountController = new AccountController(new UserController());
+		this.branchController = new BranchController();
+		this.transactionController = new TransactionController();
 		this.isLoggedIn = false;
 	}
 
@@ -124,6 +108,10 @@ public class MainController {
 				String password = mainView.promptForPassword();
 
 				user = userController.login(userId, password);
+				if (user != null && user.getStatus().equals("InActive")) {
+					log.warning("Your Account Have Been Blocked!! Please Contact Bank!!");
+					break;
+				}
 				if (user != null) {
 					log.info("Logged in Successfully!!");
 					isLoggedIn = true;
@@ -198,10 +186,6 @@ public class MainController {
 					log.info("4.Deposite Money");
 					log.info("Enter the Amount to Deposite");
 					double amountToDeposite = mainView.promptDoubleInput();
-					if (amountToDeposite <= 0) {
-						transactionView.displayInvalidAmmountMessage();
-						break;
-					}
 					boolean isAmountDeposited = transactionController.depositAmount(selectedAccount, amountToDeposite);
 					if (isAmountDeposited) {
 						transactionView.displayDepositSuccessMessage();
@@ -358,7 +342,7 @@ public class MainController {
 				int selectedAccountNumber = mainView.promptForAccountNumber();
 				selectedAccount = accountMap.get(selectedAccountNumber);
 				if (selectedAccount == null) {
-					log.info("Invalid account selected! Please enter a valid choice.");
+					log.info("Invalid account selected! Please enter a valid choice Or INACTIVE ACCOUNT SELECTED!!!.");
 				} else {
 					log.info("Account Selected Successfully");
 					isAccountSelected = true;
@@ -379,12 +363,13 @@ public class MainController {
 				log.info("2.Create Account");
 				log.info("3.Update Customer");
 				log.info("4.View Particular Customer Details");
-				log.info("5.View All Customer Details");
-				log.info("6.Close Account");
-				log.info("7.View Transaction History For a Particular Customer(Account)");
-				log.info("8.View All Transaction of One Customer by Customer ID");
-				log.info("8.View All Transaction History OF All the Customers");
-				log.info("9.Exit");
+				log.info("5.View Particular Customer All Details");
+				log.info("6.View All Customer Details");
+				log.info("7.Close Account");
+				log.info("8.View Transaction History For a Particular Customer(Account)");
+				log.info("9.View All Transaction of One Customer by Customer ID");
+				log.info("10.View All Transaction History OF All the Customers");
+				log.info("11.Exit");
 				log.info("Enter the choice");
 				int employeeChoice = mainView.promptForMainMenuChoice();
 				mainView.promptNewLine();
@@ -474,7 +459,8 @@ public class MainController {
 						fieldsToUpdate.put(fieldMap.get(choice), value);
 					}
 					if (fieldsToUpdate.size() == count) {
-						boolean isUserUpdated = userController.updateCustomer(userIdToUpdate, fieldsToUpdate,user.getBranchId());
+						boolean isUserUpdated = userController.updateCustomer(userIdToUpdate, fieldsToUpdate,
+								user.getBranchId());
 						if (isUserUpdated) {
 							userView.displayUpdateSuccessMessage();
 						} else {
@@ -495,9 +481,26 @@ public class MainController {
 					userView.displayCustomerDetails(customerDetails);
 					break;
 				case 5:
-					log.info("5.Get All Customer Details");
-					Map<String,CustomerDetails> allCustomerDetails = userController.getAllCustomerDetails(user.getBranchId());
-					if(allCustomerDetails ==null) {
+					log.info("5.View All Account Details of One Customer in One Branch");
+					log.info("Enter the userID");
+					userId = mainView.promptForUserID();
+					Map<String, CustomerDetails> allDetails = userController
+							.getAllDetailsOfOneCustomerInOneBranch(userId, user.getBranchId());
+					if (allDetails == null) {
+						log.warning("Error While Getting Customer Detail!! Try Again!!");
+						break;
+					}
+					if (allDetails.isEmpty()) {
+						log.info("The User Doesn't Have Any Account");
+						break;
+					}
+					userView.displayAllCustomerDetails(allDetails);
+					break;
+				case 6:
+					log.info("6.Get All Customer Details");
+					Map<String, CustomerDetails> allCustomerDetails = userController
+							.getAllCustomerDetails(user.getBranchId());
+					if (allCustomerDetails == null) {
 						userView.displayUserDetailsFailedMessage();
 						break;
 					}
@@ -507,52 +510,65 @@ public class MainController {
 					}
 					userView.displayAllCustomerDetails(allCustomerDetails);
 					break;
-				case 6:
-					log.info("6.Close Account");
+				case 7:
+					log.info("7.Close Account");
 					log.info("Enter the Account Number to Close the Account");
 					String accountNumberToClose = mainView.promptStringInput();
-					boolean isUserIDPresentInBranch = accountController.isAccountExistsInTheBranch(accountNumberToClose,
-							user.getBranchId());
-					if (!isUserIDPresentInBranch) {
-						log.warning("Invalid Account Number  or Account is Not present in this Branch!!");
-						break;
-					}
-					boolean isAccountClosed = accountController.closeAccount(accountNumberToClose);
+					boolean isAccountClosed = accountController.closeAccount(accountNumberToClose, user.getBranchId());
 					if (isAccountClosed) {
 						accountView.displayAccountClosureSuccessMessage();
 					} else {
 						accountView.displayAccountClosureFailureMessage();
 					}
 					break;
-				case 7:
-					log.info("7.View Transaction History of a Particular Account(Account)");
+				case 8:
+					log.info("8.View Transaction History of a Particular Account");
 					log.info("Enter the Account Number to Get Transaction History");
 					String accountNumberToGetTransaction = mainView.promptStringInput();
-					isUserIDPresentInBranch = accountController
-							.isAccountExistsInTheBranch(accountNumberToGetTransaction, user.getBranchId());
-					if (!isUserIDPresentInBranch) {
-						log.warning("Invalid Account Number  or Account is Not present in this Branch!!");
+					List<Transaction> transactionsHistory = transactionController
+							.getCustomerTransaction(accountNumberToGetTransaction, user.getBranchId());
+					if (transactionsHistory == null) {
+						log.warning("Transaction History Taken Failed!!!");
 						break;
 					}
-					List<Transaction> transactionsHistory = transactionController
-							.getCustomerTransaction(accountNumberToGetTransaction);
 					if (transactionsHistory.isEmpty()) {
 						transactionView.displayNoHistoryMessage();
 						break;
 					}
 					transactionView.displayTransActionHistory(transactionsHistory);
 					break;
-				case 8:
-					log.info("8.Get All the Customer Transaction History");
-					List<Transaction> allTransactionHistory = transactionController
-							.getAllCustomerTransaction(user.getBranchId());
-					if (allTransactionHistory.isEmpty()) {
+				case 9:
+					log.info("9.View All Transaction of One Customer by Customer ID Accross All Accounts");
+					log.info("Enter the Customer Id");
+					userId = mainView.promtForIntegerInput();
+					Map<String, List<Transaction>> allTransactionsOfCustomer = transactionController
+							.getAllTransactionsOfCustomer(userId, user.getBranchId());
+					if (allTransactionsOfCustomer == null) {
+						log.warning("Transaction History Taken Failed!!!");
+						break;
+					}
+					if (allTransactionsOfCustomer.isEmpty()) {
 						transactionView.displayNoHistoryMessage();
 						break;
 					}
-					transactionView.displayTransActionHistory(allTransactionHistory);
+					transactionView.displayAllTransActionHistory(allTransactionsOfCustomer);
 					break;
-				case 9:
+				case 10:
+					log.info("10"
+							+ ".Get All the Customer Transaction History");
+					Map<String, List<Transaction>> allTransactionsHistory = transactionController
+							.getAllCustomersTransaction(user.getBranchId());
+					if (allTransactionsHistory == null) {
+						log.warning("Transaction History Taken Failed!!!");
+						break;
+					}
+					if (allTransactionsHistory.isEmpty()) {
+						transactionView.displayNoHistoryMessage();
+						break;
+					}
+					transactionView.displayAllTransActionHistory(allTransactionsHistory);
+					break;
+				case 11:
 					isEmployeeAlive = false;
 					log.info("Exiting!");
 					break;
@@ -865,34 +881,33 @@ public class MainController {
 					log.info("Enter the Branch Id");
 					branchId = mainView.promtForIntegerInput();
 					isValidBranchId = branchController.isBranchExists(branchId);
-					if (!isValidBranchId) {
-						branchView.displayInvalidBranchMessage();
+					Map<String, CustomerDetails> allDetails = userController
+							.getAllDetailsOfOneCustomerInOneBranch(userId, branchId);
+					if (allDetails == null) {
+						log.warning("Error While Getting Customer Detail!! Try Again!!");
 						break;
 					}
-					List<CustomerDetails> customerDetails2 = userController
-							.getAllDetailsOfOneCustomerInOneBranch(userId, branchId);
-					if (customerDetails2.isEmpty()) {
+					if (allDetails.isEmpty()) {
 						log.info("The User Doesn't Have Any Account");
 						break;
 					}
-					//userView.displayAllCustomerDetails(customerDetails2);
+					userView.displayAllCustomerDetails(allDetails);
 					break;
 				case 11:
 					log.info("10.View All Account Details of One Customer in All Branch");
 					log.info("Enter the userID");
 					userId = mainView.promptForUserID();
-					isUserIdPresent1 = userController.isUserExists(userId);
-					if (!isUserIdPresent1) {
-						log.warning("Invalid UserID!!!");
+					Map<String, CustomerDetails> allDetail = userController
+							.getAllDetailsOfOneCustomerInAllBranch(userId);
+					if (allDetail == null) {
+						log.warning("Error While Getting Customer Detail!! Try Again!!");
 						break;
 					}
-					List<CustomerDetails> customerDetails3 = userController
-							.getAllDetailsOfOneCustomerInAllBranch(userId);
-					if (customerDetails3.isEmpty()) {
+					if (allDetail.isEmpty()) {
 						log.info("The User Doesn't Have Any Account");
 						break;
 					}
-					//userView.displayAllCustomerDetails(customerDetails3);
+					userView.displayAllCustomerDetails(allDetail);
 					break;
 				case 12:
 					log.info("10.View All Customer in One Branch");
@@ -903,12 +918,12 @@ public class MainController {
 						branchView.displayInvalidBranchMessage();
 						break;
 					}
-					Map<String,CustomerDetails> allCustomerDetails = userController.getAllCustomerDetails(branchId);
+					Map<String, CustomerDetails> allCustomerDetails = userController.getAllCustomerDetails(branchId);
 					if (allCustomerDetails.isEmpty()) {
 						userView.displayCustomerNotFoundMessage();
 						break;
 					}
-					//userView.displayAllCustomerDetails(allCustomerDetails);
+					// userView.displayAllCustomerDetails(allCustomerDetails);
 					break;
 				case 13:
 					log.info("13. View All Customer Accross All Branch");
@@ -917,7 +932,7 @@ public class MainController {
 						userView.displayCustomerNotFoundMessage();
 						break;
 					}
-					//userView.displayAllCustomerDetails(customersFromAllBranch);
+					// userView.displayAllCustomerDetails(customersFromAllBranch);
 					break;
 				case 14:
 					log.info("14. View Particular Customer One Branch Transaction");

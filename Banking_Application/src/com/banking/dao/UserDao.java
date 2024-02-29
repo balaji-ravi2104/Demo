@@ -34,7 +34,7 @@ public interface UserDao {
 
 	List<CustomerDetails> getAllCustomersFromAllBranch() throws CustomException;
 
-	List<CustomerDetails> getAllDetailsOfOneCustomerInOneBranch(int userId, int branchId) throws CustomException;
+	Map<String,CustomerDetails> getAllDetailsOfCustomerFromOneBranch(int userId, int branchId) throws CustomException;
 
-	List<CustomerDetails> getAllDetailsOfOneCustomerInAllBranch(int userId) throws CustomException;
+	Map<String,CustomerDetails> getAllDetailsOfOneCustomerInAllBranch(int userId) throws CustomException;
 }
