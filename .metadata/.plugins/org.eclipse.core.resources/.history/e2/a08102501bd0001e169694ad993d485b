@@ -1,0 +1,118 @@
+package com.banking.view;
+
+import java.util.Scanner;
+
+public class MainView {
+	Scanner scanner;
+	private static final String registerChoice = "Y";
+
+	public MainView() {
+		this.scanner = new Scanner(System.in);
+	}
+
+	public void displayWelcomeMessage() {
+		System.out.println("Welcome to Banking Application!!!");
+	}
+
+	public void displayRegistrationOption() {
+		System.out.println("Do you want to register? (Y/N)");
+	}
+
+	public boolean promptForRegistrationChoice() {
+		String choice = scanner.nextLine().trim().toUpperCase();
+		return choice.equals(registerChoice);
+	}
+
+	public String promptForUsername() {
+		System.out.print("Enter your username: ");
+		return scanner.nextLine();
+	}
+
+	public String promptForPassword() {
+		System.out.print("Enter your password: ");
+		return scanner.nextLine();
+	}
+
+	public String promptForFullName() {
+		System.out.print("Enter your Full Name: ");
+		return scanner.nextLine();
+	}
+
+	public String promptForEmail() {
+		System.out.print("Enter your Email Address: ");
+		return scanner.nextLine();
+	}
+
+	public String promptForContactNumber() {
+		System.out.print("Enter your Contact Number: ");
+		return scanner.nextLine();
+	}
+
+	public String promptForAddress() {
+		System.out.print("Enter your Address: ");
+		return scanner.nextLine();
+	}
+
+	public String promptForDateOfBirth() {
+		System.out.print("Enter the date (YYYY-MM-DD): ");
+		return scanner.nextLine();
+	}
+
+	public void displayExceptionMessage(Exception e) {
+		e.printStackTrace();
+		System.out.println("An Exception Occured : " + e.getMessage());
+	}
+
+	public void displayInvalidUsernameMessage() {
+		System.out.println("UserName is already Exists!! Please Try with Different UserName!!");
+	}
+
+	public void displayInvalidPasswordMessage() {
+		System.out.println("Please Enter the Valid Password!!");
+	}
+
+	public void displayInvalidEmailMessage() {
+		System.out.println("Please Enter the Valid Email!!");
+	}
+
+	public void displayInvalidContactMessage() {
+		System.out.println("Please Enter the Valid Phone Number!!");
+	}
+
+	public void displayInvalidBODMessage() {
+		System.out.println("Please Enter the valid DOB(YYYY-MM-DD)");
+	}
+
+	public void displayLoginMessage() {
+		System.out.println("Please login:");
+	}
+
+	public void displayLoginFailedMessage() {
+		System.out.println("Login Failed!! Please Enter the Valid UserName and Password!!!");
+	}
+
+	public void displayMainMenu() {
+		System.out.println("Enter your choice");
+	}
+
+	public void displayRegistrationSuccessMessage() {
+		System.out.println("User Registred Successfully!!!");
+	}
+
+	public void displayRegistrationFailedMessage() {
+		System.out.println("User Registeration Failed!! Please Try Again!!");
+	}
+
+	public int promptForMainMenuChoice() {
+		return scanner.nextInt();
+	}
+
+	public void displayLogoutMessage() {
+		System.out.println("Logged out Successfully!!");
+	}
+
+	public void displayLoggedInSuccessMessage() {
+		System.out.println("Logged In Successfully!!!");
+	}
+
+}

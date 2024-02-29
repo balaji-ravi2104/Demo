@@ -1,0 +1,79 @@
+package com.banking.view;
+
+import java.util.List;
+import java.util.logging.Logger;
+
+import com.banking.model.Transaction;
+import com.banking.utils.CustomException;
+import com.banking.utils.ErrorMessages;
+import com.banking.utils.InputValidator;
+
+public class TransactionView {
+
+	private static final Logger log = Logger.getLogger(TransactionView.class.getName());
+
+	public void displayInvalidAmmountMessage() {
+		log.info("Deposite or Withdrawal Amount Should be greater than ZERO!!");
+	}
+
+	public void displayDepositSuccessMessage() {
+		log.info("Amount Deposited Successfully!!");
+	}
+
+	public void displayDepositFailedMessage() {
+		log.info("Amount Deposit Failed!! Try Again!!");
+	}
+
+	public void displayInsufficientBalanceMessage() {
+		log.info("Insufficient Balance!! Can't able to Tranfer or Withdraw!!!");
+	}
+
+	public void displayWithdrawSuccessMessage() {
+		log.info("Amount Withdrawed Successfully!!");
+	}
+
+	public void displayWithdrawFailedMessage() {
+		log.info("Amount Withdraw Failed!! Try Again!!");
+	}
+
+	public void displayInvalidAccountMessage() {
+		log.info("Invalid Account Number or No,Account is There With this Account Number");
+	}
+
+	public void displayAccountInActiveMessage() {
+		log.info("The Account is INACTIVE!! Please Try With Different Account!!");
+	}
+
+	public void displayTransactionSuccessMessage() {
+		log.info("Transaction Successfull!!!");
+	}
+
+	public void displayTransactionFailedMessage() {
+		log.info("Transaction Failed!!! Try Again!!");
+	}
+
+	public void displayNoStatementAvaliableMessage() {
+		log.info("No Statement Avaliable For your Account!!!");
+	}
+
+	public void displayNoHistoryMessage() {
+		log.info("No Transaction History Avaliable For this User");
+	}
+
+	public void displayStatements(List<Transaction> statement) throws CustomException {
+		InputValidator.isNull(statement, ErrorMessages.INPUT_NULL_MESSAGE);
+		for (Transaction transaction : statement) {
+			log.info("-".repeat(60));
+			log.info("Date : " + transaction.getDateOfTransaction());
+			log.info("Transaction Type : " + transaction.getTransactionType());
+			log.info("Transaction Amount : " + transaction.getTransactedAmount());
+			log.info("Balance : " + transaction.getBalance());
+			log.info("-".repeat(60));
+		}
+	}
+
+	public void displayTransActionHistory(List<Transaction> transactionsHistory) {
+		InputValidator.isNull(transactionsHistory, ErrorMessages.INPUT_NULL_MESSAGE);
+	}
+
+}

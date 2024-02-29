@@ -1,0 +1,12 @@
+package com.banking.view;
+
+import java.util.logging.Logger;
+
+public class UserView {
+	private static final Logger log = Logger.getLogger(UserView.class.getName());
+
+	public void displaySuccessMessage() {
+		log.info("User Created Successfully");
+	}
+
+}

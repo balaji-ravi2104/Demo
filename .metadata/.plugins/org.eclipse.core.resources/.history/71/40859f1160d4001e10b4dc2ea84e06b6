@@ -1,0 +1,107 @@
+package com.banking.view;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+import java.util.logging.Logger;
+
+public class MainView {
+	private static final Logger log = Logger.getLogger(MainView.class.getName());
+	private Scanner scanner;
+
+	public MainView() {
+		this.scanner = new Scanner(System.in);
+	}
+
+	public void displayWelcomeMessage() {
+		log.info("Welcome to Banking Application!!!");
+	}
+
+	public int promptForUserID() throws InputMismatchException {
+		System.out.print("Enter your userID: ");
+		return scanner.nextInt();
+	}
+
+	public String promptForPassword() {
+		System.out.print("Enter your password: ");
+		return scanner.nextLine();
+	}
+
+	public String promptStringInput() {
+		return scanner.nextLine();
+	}
+	
+	public double promptDoubleInput() throws InputMismatchException {
+		return scanner.nextDouble();
+	}
+
+	public void displayExceptionMessage(Exception e) {
+		//e.printStackTrace();
+		log.warning("An Exception Occured : " + e.getMessage());
+	}
+
+	public void displayInvalidUsernameMessage() {
+		log.info("UserName is already Exists!! Please Try with Different UserName!!");
+	}
+
+	public void displayInvalidPasswordMessage() {
+		log.info("Please Enter the Valid Password!!");
+	}
+
+	public void displayInvalidEmailMessage() {
+		log.info("Please Enter the Valid Email!!");
+	}
+
+	public void displayInvalidContactMessage() {
+		log.info("Please Enter the Valid Phone Number!!");
+	}
+
+	public void displayInvalidBODMessage() {
+		log.info("Please Enter the valid DOB(YYYY-MM-DD)");
+	}
+
+	public void displayLoginMessage() {
+		log.info("Please login:");
+	}
+
+	public void displayLoginFailedMessage() {
+		log.info("Login Failed!! Please Enter the Valid UserID and Password!!!");
+	}
+
+	public void displayMainMenu() {
+		log.info("Enter your choice");
+	}
+
+	public void displayRegistrationSuccessMessage() {
+		log.info("User Registred Successfully!!!");
+	}
+
+	public void displayRegistrationFailedMessage() {
+		log.info("User Registeration Failed!! Please Try Again!!");
+	}
+
+	public int promptForMainMenuChoice() throws InputMismatchException {
+		return scanner.nextInt();
+	}
+
+	public void displayLogoutMessage() {
+		log.info("Logged out Successfully!!");
+		scanner.nextLine();
+	}
+
+	public void displayLoggedInSuccessMessage() {
+		log.info("Logged In Successfully!!!");
+	}
+
+	public void promptNewLine() {
+		scanner.nextLine();
+	}
+
+	public void displayInvalidBalanceMessage() {
+		log.info("Balance Should be Greater than ZERO!!!");
+	}
+
+	public void displayInputMissMatchMessage() {
+		log.info("Please Enter the Valid Input!!");
+	}
+
+}

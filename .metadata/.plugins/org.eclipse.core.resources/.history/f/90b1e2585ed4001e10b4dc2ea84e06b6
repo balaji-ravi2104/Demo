@@ -1,0 +1,12 @@
+package com.banking.view;
+
+public class AccountView {
+
+	public void displayAccountCreationSuccessMessage() {
+		System.out.println("Account Created Successfully!!");
+	}
+	
+	public void displayAccountCreationFailureMessage() {
+		
+	}
+}

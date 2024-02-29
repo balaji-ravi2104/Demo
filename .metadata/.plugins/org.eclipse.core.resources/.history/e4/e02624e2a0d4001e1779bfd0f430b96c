@@ -1,0 +1,14 @@
+package com.banking.view;
+
+import java.util.logging.Logger;
+
+import com.banking.controller.MainController;
+
+public class TransactionView {
+
+	public void displayInvalidAmmountMessage() {
+		private static final Logger log = Logger.getLogger(TransactionView.class.getName());
+
+	}
+
+}

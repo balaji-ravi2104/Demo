@@ -1,0 +1,60 @@
+package com.banking.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+
+import com.banking.model.Account;
+import com.banking.model.User;
+import com.banking.utils.CustomException;
+import com.banking.utils.DatabaseConnection;
+import com.banking.utils.ErrorMessages;
+import com.banking.utils.InputValidator;
+
+public class TransactionDaoImplementation implements TransactionDao {
+
+	private static final String DEPOSITE_MONEY = "UPDATE Accounts SET balance = ? WHERE account_number = ?;";
+	private static final String TRANSACTION_LOG = "INSERT INTO Transaction (user_id, viewer_account_number, transacted_account_number, "
+			+ "transaction_type, transaction_amount, balance, transaction_date, remark, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+	@Override
+	public boolean deposit(User user, Account selectedAccount, double amountToDeposite) throws CustomException {
+		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
+		InputValidator.isNull(user, ErrorMessages.INPUT_NULL_MESSAGE);
+		boolean isAmountDepositedAndLoggedInTransaction = false;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(DEPOSITE_MONEY)) {
+
+			double newBalance = selectedAccount.getBalance()+amountToDeposite;
+			
+			preparedStatement.setDouble(1, newBalance);
+			preparedStatement.setString(2, selectedAccount.getAccountNumber());
+
+			int rowsAffected = preparedStatement.executeUpdate();
+			if (rowsAffected > 0) {
+				isAmountDepositedAndLoggedInTransaction	= logTransaction(user,selectedAccount,amountToDeposite,"Deposite");
+			}
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error While Depositing Money", e);
+		}
+		return isAmountDepositedAndLoggedInTransaction;
+	}
+
+	private boolean logTransaction(User user, Account selectedAccount, double amountToDeposite, String transactionType) throws CustomException {
+		try(Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(TRANSACTION_LOG)){
+			preparedStatement.setInt(1, user.getUserId());
+			preparedStatement.setString(2, selectedAccount.getAccountNumber());
+			preparedStatement.setString(3, selectedAccount.getAccountNumber());
+			preparedStatement.setString(4, transactionType);
+			preparedStatement.setDouble(5, amountToDeposite);
+			preparedStatement.setDouble(6, selectedAccount.getBalance()+amountToDeposite);
+			preparedStatement.setTimestamp(7,  Timestamp.from(Instant.now()));
+		}catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error While Logging In Transaction", e);
+		}
+		return false;
+	}
+
+}

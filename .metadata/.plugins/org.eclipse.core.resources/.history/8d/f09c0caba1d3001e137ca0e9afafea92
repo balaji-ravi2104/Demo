@@ -1,0 +1,12 @@
+package com.banking.controller;
+
+import com.banking.dao.UserDao;
+
+public class AccountController {
+
+	private final UserDao userDao;
+	public AccountController(UserDao userDao) {
+		this.userDao = userDao;
+	}
+	
+}

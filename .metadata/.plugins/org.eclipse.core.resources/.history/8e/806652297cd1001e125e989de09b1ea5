@@ -1,0 +1,10 @@
+package com.banking.dao;
+
+import com.banking.model.User;
+import com.banking.utils.CustomException;
+
+public interface UserDao {
+	boolean userNameExists(String username) throws CustomException;
+	User getUser(String username) throws CustomException;
+	int addUser(User user) throws CustomException;
+}

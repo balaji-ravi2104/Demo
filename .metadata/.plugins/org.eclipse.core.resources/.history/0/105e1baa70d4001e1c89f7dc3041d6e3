@@ -1,0 +1,58 @@
+package com.banking.view;
+
+import java.util.List;
+import java.util.logging.Logger;
+
+import com.banking.model.CustomerDetails;
+import com.banking.utils.CustomException;
+import com.banking.utils.ErrorMessages;
+import com.banking.utils.InputValidator;
+
+public class UserView {
+	private static final Logger log = Logger.getLogger(UserView.class.getName());
+
+	public void displaySuccessMessage() {
+		log.info("User Created Successfully");
+	}
+
+	public void displayFailureMessage() {
+		log.warning("User Creation Failed!! Try Again");
+	}
+
+	public void displayCustomerDetails(CustomerDetails customerDetails) throws CustomException {
+		InputValidator.isNull(customerDetails, ErrorMessages.INPUT_NULL_MESSAGE);
+		log.info("-------------------------------------------------------");
+		log.info("Customer Id : "+customerDetails.getUserId());
+		log.info("First Name :"+customerDetails.getFirstName());
+		log.info("Last Name :"+customerDetails.getLastName());
+		log.info("Gender : "+customerDetails.getGender());
+		log.info("Email :"+customerDetails.getEmail());
+		log.info("PAN Number : "+customerDetails.getPan());
+		log.info("Aadhar Number : "+customerDetails.getAadhar());
+		log.info("Account Id : "+customerDetails.getAccountId());
+		log.info("Account Number : "+customerDetails.getAccountNumber());
+		log.info("Balance : "+customerDetails.getBalance());
+		log.info("Account Status : "+customerDetails.getStatus());
+		log.info("-------------------------------------------------------");
+	}
+
+	public void displayUserDetailsFailedMessage() {
+		log.warning("Error While Reterving User Detail!! Please Try Again!!");
+	}
+
+	public void displayCustomerNotFoundMessage() {
+		log.info("No Customer Found in Your Branch");
+	}
+
+	public void displayAllCustomerDetails(List<CustomerDetails> allCustomerDetails) throws CustomException {
+		for(CustomerDetails customerDetails:allCustomerDetails) {
+			displayCustomerDetails(customerDetails);
+		}
+	}
+
+	public void displayUpdateSuccessMessage() {
+		log.info("Customer Details Updated Successfully!!");
+	}
+	
+
+}

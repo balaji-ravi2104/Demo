@@ -1,0 +1,96 @@
+package com.banking.view;
+
+import java.util.Scanner;
+
+public class MainView {
+	private Scanner scanner;
+
+	public MainView() {
+		this.scanner = new Scanner(System.in);
+	}
+
+	public void displayWelcomeMessage() {
+		System.out.println("Welcome to Banking Application!!!");
+	}
+
+	public int promptForUserID() {
+		System.out.print("Enter your userID: ");
+		return scanner.nextInt();
+	}
+
+	public String promptForPassword() {
+		System.out.print("Enter your password: ");
+		return scanner.nextLine();
+	}
+
+	public String promptStringInput() {
+		return scanner.nextLine();
+	}
+	
+	publiv String promptDoubleInput() {
+		return scanner.nextDouble();
+	}
+
+	public void displayExceptionMessage(Exception e) {
+		e.printStackTrace();
+		System.out.println("An Exception Occured : " + e.getMessage());
+	}
+
+	public void displayInvalidUsernameMessage() {
+		System.out.println("UserName is already Exists!! Please Try with Different UserName!!");
+	}
+
+	public void displayInvalidPasswordMessage() {
+		System.out.println("Please Enter the Valid Password!!");
+	}
+
+	public void displayInvalidEmailMessage() {
+		System.out.println("Please Enter the Valid Email!!");
+	}
+
+	public void displayInvalidContactMessage() {
+		System.out.println("Please Enter the Valid Phone Number!!");
+	}
+
+	public void displayInvalidBODMessage() {
+		System.out.println("Please Enter the valid DOB(YYYY-MM-DD)");
+	}
+
+	public void displayLoginMessage() {
+		System.out.println("Please login:");
+	}
+
+	public void displayLoginFailedMessage() {
+		System.out.println("Login Failed!! Please Enter the Valid UserID and Password!!!");
+	}
+
+	public void displayMainMenu() {
+		System.out.println("Enter your choice");
+	}
+
+	public void displayRegistrationSuccessMessage() {
+		System.out.println("User Registred Successfully!!!");
+	}
+
+	public void displayRegistrationFailedMessage() {
+		System.out.println("User Registeration Failed!! Please Try Again!!");
+	}
+
+	public int promptForMainMenuChoice() {
+		return scanner.nextInt();
+	}
+
+	public void displayLogoutMessage() {
+		System.out.println("Logged out Successfully!!");
+		scanner.nextLine();
+	}
+
+	public void displayLoggedInSuccessMessage() {
+		System.out.println("Logged In Successfully!!!");
+	}
+
+	public void promptNewLine() {
+		scanner.nextLine();
+	}
+
+}

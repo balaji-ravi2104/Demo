@@ -1,0 +1,9 @@
+package com.banking.view;
+
+public class UserView {
+
+	public void displaySuccessMessage() {
+		log.info("User Created Successfully");
+	}
+	
+}
