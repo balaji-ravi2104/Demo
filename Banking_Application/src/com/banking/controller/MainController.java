@@ -61,9 +61,9 @@ public class MainController {
 		this.transactionDao = new TransactionDaoImplementation();
 		this.branchDao = new BranchDaoImplementation();
 		this.branchController = new BranchController(branchDao);
-		this.userController = new UserController(userDao,branchController);
 		this.transactionController = new TransactionController(transactionDao);
 		this.accountController = new AccountController(accountDao, userController, branchController);
+		this.userController = new UserController(userDao,branchController,accountController);
 		this.isLoggedIn = false;
 	}
 
@@ -486,13 +486,6 @@ public class MainController {
 					log.info("4.View Particual Customer Details");
 					log.info("Enter the Account Number");
 					String accountNumber = mainView.promptStringInput();
-
-					boolean isUserIDPresentInBranch = accountController.isAccountExistsInTheBranch(accountNumber,
-							user.getBranchId());
-					if (!isUserIDPresentInBranch) {
-						log.warning("Invalid Account Number  or Account is Not present in this Branch!!");
-						break;
-					}
 					CustomerDetails customerDetails = userController.getCustomerDetails(accountNumber,
 							user.getBranchId());
 					if (customerDetails == null) {
@@ -503,7 +496,11 @@ public class MainController {
 					break;
 				case 5:
 					log.info("5.Get All Customer Details");
-					List<CustomerDetails> allCustomerDetails = userController.getAllCustomerDetails(user.getBranchId());
+					Map<String,CustomerDetails> allCustomerDetails = userController.getAllCustomerDetails(user.getBranchId());
+					if(allCustomerDetails ==null) {
+						userView.displayUserDetailsFailedMessage();
+						break;
+					}
 					if (allCustomerDetails.isEmpty()) {
 						userView.displayCustomerNotFoundMessage();
 						break;
@@ -514,7 +511,7 @@ public class MainController {
 					log.info("6.Close Account");
 					log.info("Enter the Account Number to Close the Account");
 					String accountNumberToClose = mainView.promptStringInput();
-					isUserIDPresentInBranch = accountController.isAccountExistsInTheBranch(accountNumberToClose,
+					boolean isUserIDPresentInBranch = accountController.isAccountExistsInTheBranch(accountNumberToClose,
 							user.getBranchId());
 					if (!isUserIDPresentInBranch) {
 						log.warning("Invalid Account Number  or Account is Not present in this Branch!!");
@@ -878,7 +875,7 @@ public class MainController {
 						log.info("The User Doesn't Have Any Account");
 						break;
 					}
-					userView.displayAllCustomerDetails(customerDetails2);
+					//userView.displayAllCustomerDetails(customerDetails2);
 					break;
 				case 11:
 					log.info("10.View All Account Details of One Customer in All Branch");
@@ -895,7 +892,7 @@ public class MainController {
 						log.info("The User Doesn't Have Any Account");
 						break;
 					}
-					userView.displayAllCustomerDetails(customerDetails3);
+					//userView.displayAllCustomerDetails(customerDetails3);
 					break;
 				case 12:
 					log.info("10.View All Customer in One Branch");
@@ -906,12 +903,12 @@ public class MainController {
 						branchView.displayInvalidBranchMessage();
 						break;
 					}
-					List<CustomerDetails> allCustomerDetails = userController.getAllCustomerDetails(branchId);
+					Map<String,CustomerDetails> allCustomerDetails = userController.getAllCustomerDetails(branchId);
 					if (allCustomerDetails.isEmpty()) {
 						userView.displayCustomerNotFoundMessage();
 						break;
 					}
-					userView.displayAllCustomerDetails(allCustomerDetails);
+					//userView.displayAllCustomerDetails(allCustomerDetails);
 					break;
 				case 13:
 					log.info("13. View All Customer Accross All Branch");
@@ -920,7 +917,7 @@ public class MainController {
 						userView.displayCustomerNotFoundMessage();
 						break;
 					}
-					userView.displayAllCustomerDetails(customersFromAllBranch);
+					//userView.displayAllCustomerDetails(customersFromAllBranch);
 					break;
 				case 14:
 					log.info("14. View Particular Customer One Branch Transaction");

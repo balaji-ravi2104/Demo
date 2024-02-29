@@ -18,11 +18,13 @@ public class UserController {
 
 	private final UserDao userDao;
 	private final BranchController branchController;
+	private final AccountController accountController;
 	private static final Logger log = Logger.getLogger(MainController.class.getName());
 
-	public UserController(UserDao userDao, BranchController branchController) {
+	public UserController(UserDao userDao, BranchController branchController, AccountController accountController) {
 		this.userDao = userDao;
 		this.branchController = branchController;
+		this.accountController = accountController;
 	}
 
 	public User login(int userId, String password) throws CustomException {
@@ -37,15 +39,16 @@ public class UserController {
 	}
 
 	public boolean registerNewUser(User user) throws CustomException {
-		if (validateUserInput(user)) {
-			try {
-				return userDao.addUser(user);
-			} catch (Exception e) {
-				throw new CustomException("Error while creating new User!!", e);
-			}
-		} else {
-			return false;
+		boolean isRegistred = false;
+		if (!validateUserInput(user)) {
+			return isRegistred;
 		}
+		try {
+			isRegistred = userDao.addUser(user);
+		} catch (Exception e) {
+			throw new CustomException("Error while creating new User!!", e);
+		}
+		return isRegistred;
 	}
 
 	public boolean isUserExists(int userId) throws CustomException {
@@ -66,19 +69,29 @@ public class UserController {
 
 	public CustomerDetails getCustomerDetails(String accountNumber, int branchId) throws CustomException {
 		InputValidator.isNull(accountNumber, "Account Number Cannot be Empty or Null!!!");
+		CustomerDetails customerDetails = null;
+		if (!validateAccountAndBranch(accountNumber, branchId)) {
+			return customerDetails;
+		}
 		try {
-			return userDao.getCustomerDetails(accountNumber, branchId);
+			customerDetails = userDao.getCustomerDetails(accountNumber, branchId);
 		} catch (Exception e) {
 			throw new CustomException("Error while Getting User Exists!!", e);
 		}
+		return customerDetails;
 	}
 
-	public List<CustomerDetails> getAllCustomerDetails(int branchId) throws CustomException {
+	public Map<String,CustomerDetails> getAllCustomerDetails(int branchId) throws CustomException {
+		Map<String,CustomerDetails> customerDetails = null;
+		if(!validateBranchId(branchId)) {
+			return customerDetails;
+		}
 		try {
-			return userDao.getAllCustomerDetails(branchId);
+			customerDetails = userDao.getAllCustomerDetailsInOneBranch(branchId);
 		} catch (Exception e) {
 			throw new CustomException("Error while Getting All User Exists!!", e);
 		}
+		return customerDetails;
 	}
 
 	public <K, V> boolean updateCustomer(int userIdToUpdate, Map<K, V> fieldsToUpdate, int branchId)
@@ -89,7 +102,7 @@ public class UserController {
 				|| validateUserIdAndBranchId(userIdToUpdate, branchId)) {
 			return isCustomerUpdated;
 		}
-		if(validateFieldAndValuesToUpdate(fieldsToUpdate)) {
+		if (validateFieldAndValuesToUpdate(fieldsToUpdate)) {
 			return isCustomerUpdated;
 		}
 		try {
@@ -236,6 +249,15 @@ public class UserController {
 			log.warning("Invalid UserID or UserID is Not present in this Branch!!");
 		}
 		return isValidId;
+	}
+
+	private boolean validateAccountAndBranch(String accountNumber, int branchId) throws CustomException {
+		boolean isValid = true;
+		if (!accountController.isAccountExistsInTheBranch(accountNumber, branchId)) {
+			log.log(Level.WARNING,"Account Number Doesn't Exists in this Branch!!!");
+			isValid = false;
+		}
+		return isValid;
 	}
 
 	private <K, V> boolean validateFieldAndValuesToUpdate(Map<K, V> fieldsToUpdate)

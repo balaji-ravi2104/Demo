@@ -22,8 +22,9 @@ public class AccountController {
 	}
 
 	public boolean isAccountExistsInTheBranch(String accountNumber, int branchId) throws CustomException {
+		InputValidator.isNull(accountNumber, "Account Number Cannot be Null!!!");
 		boolean isAccountExists = false;
-		if (validateAccountNumber(accountNumber)) {
+		if (validateAccountNumber(accountNumber) || !validateBranchId(branchId)) {
 			return isAccountExists;
 		}
 		try {

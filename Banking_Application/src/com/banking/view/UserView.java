@@ -1,6 +1,7 @@
 package com.banking.view;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.banking.model.CustomerDetails;
@@ -28,8 +29,9 @@ public class UserView {
 		log.info("No Customer Found in Your Branch");
 	}
 
-	public void displayAllCustomerDetails(List<CustomerDetails> allCustomerDetails) throws CustomException {
-		for(CustomerDetails customerDetails:allCustomerDetails) {
+	public void displayAllCustomerDetails(Map<String, CustomerDetails> allCustomerDetails) throws CustomException {
+		for (Map.Entry<String, CustomerDetails> entry : allCustomerDetails.entrySet()) {
+			CustomerDetails customerDetails = entry.getValue();
 			displayCustomerDetails(customerDetails);
 		}
 	}
@@ -45,57 +47,56 @@ public class UserView {
 	public void displayUserProfile(User user) throws CustomException {
 		InputValidator.isNull(user, ErrorMessages.INPUT_NULL_MESSAGE);
 		log.info("-".repeat(60));
-		log.info("User Id : "+user.getUserId());
-		log.info("First Name : "+user.getFirstName());
-		log.info("Last Name : "+user.getLastName());
-		log.info("Gender : "+user.getGender());
-		log.info("Email : "+user.getEmail());
-		log.info("Contact Number : "+user.getContactNumber());
-		log.info("Address : "+user.getAddress());
-		log.info("DOB : "+user.getDateOfBirth());
-		if(user.getPanNumber()!=null) {
-			log.info("PAN Number : "+user.getPanNumber());
+		log.info("User Id : " + user.getUserId());
+		log.info("First Name : " + user.getFirstName());
+		log.info("Last Name : " + user.getLastName());
+		log.info("Gender : " + user.getGender());
+		log.info("Email : " + user.getEmail());
+		log.info("Contact Number : " + user.getContactNumber());
+		log.info("Address : " + user.getAddress());
+		log.info("DOB : " + user.getDateOfBirth());
+		if (user.getPanNumber() != null) {
+			log.info("PAN Number : " + user.getPanNumber());
 		}
-		if(user.getAadharNumber()!=null) {
-			log.info("Aadhar Number : "+user.getAadharNumber());
+		if (user.getAadharNumber() != null) {
+			log.info("Aadhar Number : " + user.getAadharNumber());
 		}
-		if(user.getBranchId()!=0) {
-			log.info("Branch Id : "+user.getBranchId());
+		if (user.getBranchId() != 0) {
+			log.info("Branch Id : " + user.getBranchId());
 		}
 		log.info("-".repeat(60));
 	}
-	
+
 	public void displayCustomerDetails(CustomerDetails customerDetails) throws CustomException {
 		InputValidator.isNull(customerDetails, ErrorMessages.INPUT_NULL_MESSAGE);
 		log.info("-------------------------------------------------------");
-		log.info("Customer Id : "+customerDetails.getUserId());
-		log.info("First Name :"+customerDetails.getFirstName());
-		log.info("Last Name :"+customerDetails.getLastName());
-		log.info("Gender : "+customerDetails.getGender());
-		log.info("Email :"+customerDetails.getEmail());
-		log.info("PAN Number : "+customerDetails.getPan());
-		log.info("Aadhar Number : "+customerDetails.getAadhar());
-		log.info("Account Id : "+customerDetails.getAccountId());
-		log.info("Account Number : "+customerDetails.getAccountNumber());
-		log.info("Balance : "+customerDetails.getBalance());
-		log.info("Account Status : "+customerDetails.getStatus());
+		log.info(String.format("| %-15s | %-15s |", "Customer Id", customerDetails.getUserId()));
+		log.info(String.format("| %-15s | %-15s |", "First Name", customerDetails.getFirstName()));
+		log.info(String.format("| %-15s | %-15s |", "Last Name", customerDetails.getLastName()));
+		log.info(String.format("| %-15s | %-15s |", "Gender", customerDetails.getGender()));
+		log.info(String.format("| %-15s | %-15s |", "Email", customerDetails.getEmail()));
+		log.info(String.format("| %-15s | %-15s |", "PAN Number", customerDetails.getPan()));
+		log.info(String.format("| %-15s | %-15s |", "Aadhar Number", customerDetails.getAadhar()));
+		log.info(String.format("| %-15s | %-15s |", "Account Id", customerDetails.getAccountId()));
+		log.info(String.format("| %-15s | %-15s |", "Account Number", customerDetails.getAccountNumber()));
+		log.info(String.format("| %-15s | %-15s |", "Balance", customerDetails.getBalance()));
+		log.info(String.format("| %-15s | %-15s |", "Account Status", customerDetails.getStatus()));
 		log.info("-------------------------------------------------------");
 	}
 
 	public void displayPasswordUpdatedSuccessMessage() {
 		log.info("Password Updated Successfully!!");
 	}
-	
+
 	public void displayPasswordUpdatedFailedMessage() {
 		log.info("Password Updated Failed!!");
 	}
 
 	public void displayListOfEmployees(List<User> employeeList) throws CustomException {
-		InputValidator.isNull(employeeList,ErrorMessages.INPUT_NULL_MESSAGE);
-		for(User user:employeeList) {
+		InputValidator.isNull(employeeList, ErrorMessages.INPUT_NULL_MESSAGE);
+		for (User user : employeeList) {
 			displayUserProfile(user);
 		}
 	}
-	
 
 }

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -201,14 +202,14 @@ public class UserDaoImplementation implements UserDao {
 	}
 
 	@Override
-	public List<CustomerDetails> getAllCustomerDetails(int branchID) throws CustomException {
-		List<CustomerDetails> customerDetails = null;
+	public Map<String, CustomerDetails> getAllCustomerDetailsInOneBranch(int branchID) throws CustomException {
+		Map<String, CustomerDetails> customerDetails = new HashMap<>();
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_CUSTOMER_DETAIL)) {
 			preparedStatement.setInt(1, branchID);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				customerDetails = generateAllCustomerDetails(resultSet);
+				generateAllCustomerDetails(resultSet, customerDetails);
 			}
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new CustomException("Error While Reterving User Details", e);
@@ -343,9 +344,9 @@ public class UserDaoImplementation implements UserDao {
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_CUSTOMER_FROM_ALL_BRANCH)) {
 
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				allCustomerDetails = generateAllCustomerDetails(resultSet);
-			}
+//			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+//				allCustomerDetails = generateAllCustomerDetails(resultSet);
+//			}
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new CustomException("Error While Reterving User Details", e);
 		}
@@ -363,9 +364,9 @@ public class UserDaoImplementation implements UserDao {
 			preparedStatement.setInt(1, userId);
 			preparedStatement.setInt(2, branchId);
 
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				allDetails = generateAllCustomerDetails(resultSet);
-			}
+//			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+//				allDetails = generateAllCustomerDetails(resultSet);
+//			}
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new CustomException("Error While Reterving User Details", e);
 		}
@@ -381,9 +382,9 @@ public class UserDaoImplementation implements UserDao {
 
 			preparedStatement.setInt(1, userId);
 
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				allDetails = generateAllCustomerDetails(resultSet);
-			}
+//			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+//				allDetails = generateAllCustomerDetails(resultSet);
+//			}
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new CustomException("Error While Reterving User Details", e);
 		}
@@ -446,12 +447,11 @@ public class UserDaoImplementation implements UserDao {
 		return queryBuilder.toString();
 	}
 
-	private List<CustomerDetails> generateAllCustomerDetails(ResultSet resultSet) throws SQLException, CustomException {
-		List<CustomerDetails> allCustomerDetails = new ArrayList<>();
+	private void generateAllCustomerDetails(ResultSet resultSet, Map<String, CustomerDetails> customerMap)
+			throws SQLException, CustomException {
 		while (resultSet.next()) {
-			allCustomerDetails.add(getCustomerDetails(resultSet));
+			customerMap.put(resultSet.getString(9), getCustomerDetails(resultSet));
 		}
-		return allCustomerDetails;
 	}
 
 	private void getAllEmployeeDetails(ResultSet resultSet, List<User> employeeList) throws SQLException {

@@ -16,7 +16,7 @@ public interface UserDao {
 
 	CustomerDetails getCustomerDetails(String accountNumber, int branchID) throws CustomException;
 
-	List<CustomerDetails> getAllCustomerDetails(int branchID) throws CustomException;
+	Map<String,CustomerDetails> getAllCustomerDetailsInOneBranch(int branchID) throws CustomException;
 
 	boolean checkCustomerIdPresentInBranch(int userId, int branchId) throws CustomException;
 
