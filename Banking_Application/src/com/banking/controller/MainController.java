@@ -9,7 +9,8 @@ import java.util.logging.Logger;
 
 import com.banking.model.Account;
 import com.banking.model.AccountStatus;
-import com.banking.model.CustomerDetails;
+import com.banking.model.Customer;
+import com.banking.model.Employee;
 import com.banking.model.Transaction;
 import com.banking.model.User;
 import com.banking.model.UserType;
@@ -17,6 +18,7 @@ import com.banking.utils.CommonUtils;
 import com.banking.utils.CommonUtils.Field;
 import com.banking.utils.CustomException;
 import com.banking.utils.PasswordGenerator;
+import com.banking.utils.ThreadLocalStroage;
 import com.banking.view.AccountView;
 import com.banking.view.MainView;
 import com.banking.view.TransactionView;
@@ -33,7 +35,6 @@ public class MainController {
 	public AccountController accountController;
 	public TransactionController transactionController;
 	public BranchController branchController;
-	public User user;
 	private boolean isAppliactionAlive;
 	private boolean isLoggedIn;
 
@@ -105,13 +106,14 @@ public class MainController {
 				mainView.promptNewLine();
 				String password = mainView.promptForPassword();
 
-				user = userController.login(userId, password);
+				User user = userController.login(userId, password);
 				if (user != null && user.getStatus().equalsIgnoreCase(AccountStatus.INACTIVE.name())) {
 					log.warning("Your Account Have Been Blocked!! Please Contact Bank!!");
 					break;
 				}
 				if (user != null) {
 					log.info("Logged in Successfully!!");
+					ThreadLocalStroage.setUser(user);
 					isLoggedIn = true;
 					String userType = user.getTypeOfUser();
 					if (userType.equalsIgnoreCase(UserType.CUSTOMER.name())) {
@@ -292,7 +294,7 @@ public class MainController {
 		Account selectedAccount = null;
 		boolean isAccountSelected = false;
 		try {
-			List<Account> accounts = accountController.getAccountsOfCustomerInBranch(user.getUserId());
+			List<Account> accounts = accountController.getAccountsOfCustomer(user.getUserId());
 			if (accounts.isEmpty()) {
 				log.info("You don't have any accounts.");
 				return selectedAccount;
@@ -330,6 +332,12 @@ public class MainController {
 	}
 
 	private void performEmployeeOperations(User user) {
+		int employeeBranchId = 0;
+		try {
+			employeeBranchId = userController.getEmployeeBranch(user.getUserId());
+		} catch (CustomException e) {
+			mainView.displayExceptionMessage(e);
+		}
 		boolean isEmployeeAlive = true;
 		while (isEmployeeAlive) {
 			try {
@@ -371,19 +379,19 @@ public class MainController {
 					log.info("Enter the Aadhar Number");
 					String aadharNumber = mainView.promptStringInput();
 					String typeOfUser = UserType.CUSTOMER.name();
-					User newUser = new User();
-					newUser.setPassword(password);
-					newUser.setFirstName(firstName);
-					newUser.setLastName(lastName);
-					newUser.setGender(gender);
-					newUser.setEmail(email);
-					newUser.setContactNumber(number);
-					newUser.setAddress(address);
-					newUser.setDateOfBirth(dob);
-					newUser.setTypeOfUser(typeOfUser);
-					newUser.setPanNumber(panNumber);
-					newUser.setAadharNumber(aadharNumber);
-					boolean isUserCreated = userController.registerNewUser(newUser);
+					Customer newCustomer = new Customer();
+					newCustomer.setPassword(password);
+					newCustomer.setFirstName(firstName);
+					newCustomer.setLastName(lastName);
+					newCustomer.setGender(gender);
+					newCustomer.setEmail(email);
+					newCustomer.setContactNumber(number);
+					newCustomer.setAddress(address);
+					newCustomer.setDateOfBirth(dob);
+					newCustomer.setTypeOfUser(typeOfUser);
+					newCustomer.setPanNumber(panNumber);
+					newCustomer.setAadharNumber(aadharNumber);
+					boolean isUserCreated = userController.registerNewCustomer(newCustomer);
 					if (isUserCreated) {
 						userView.displayUserCreationSuccessMessage();
 					} else {
@@ -401,7 +409,7 @@ public class MainController {
 					double balance = mainView.promptDoubleInput();
 					Account account = new Account();
 					account.setUserId(userId);
-					account.setBranchId(user.getBranchId());
+					account.setBranchId(employeeBranchId);
 					account.setAccountType(typeOfAccount);
 					account.setBalance(balance);
 					boolean isAccountCreated = accountController.createAccount(account);
@@ -461,25 +469,28 @@ public class MainController {
 					log.info("4.View Particual Customer Details");
 					log.info("Enter the Account Number");
 					String accountNumber = mainView.promptStringInput();
-					CustomerDetails customerDetails = userController.getCustomerDetails(accountNumber,
-							user.getBranchId());
-					if (customerDetails == null) {
+					Customer customerDetail = userController.getCustomerDetails(accountNumber, employeeBranchId);
+					Account customerAccount = accountController.getAccountDetails(accountNumber, employeeBranchId);
+					if (customerDetail == null || customerAccount == null) {
 						userView.displayDetailsRetervingFailedMessage();
 						break;
 					}
-					userView.displayCustomerDetails(customerDetails);
+					userView.displayCustomerDetails(customerDetail);
+					accountView.displayAccountDetails(customerAccount);
 					break;
 				case 5:
-					log.info("5.View All Account Details of One Customer in Branch");
+					log.info("5.View Details of One Customer in Branch");
 					log.info("Enter the userID");
 					userId = mainView.promptForUserID();
-					Map<String, CustomerDetails> allDetails = userController.getCustomerDetailsInBranch(userId,
-							user.getBranchId());
-					if (allDetails == null) {
+					Customer customerDetails = userController.getCustomerDetailsById(userId, employeeBranchId);
+					Map<String, Account> accountDetails = accountController.getCustomerAccountsInBranch(userId,
+							employeeBranchId);
+					if (accountDetails == null || customerDetails == null) {
 						log.warning("Error While Getting Customer Detail!! Try Again!!");
 						break;
 					}
-					userView.displayCustomerDetails(allDetails);
+					userView.displayCustomerDetails(customerDetails);
+					accountView.displayAllAccounts(accountDetails);
 					break;
 				case 6:
 					log.info("6.View Transaction History of a Particular Account");
@@ -488,7 +499,7 @@ public class MainController {
 					log.info("Enter the number of months to view the customer's transaction history:");
 					int month = mainView.promtForIntegerInput();
 					List<Transaction> transactionsHistory = transactionController
-							.getCustomerTransaction(accountNumberToGetTransaction, user.getBranchId(), month);
+							.getCustomerTransaction(accountNumberToGetTransaction, employeeBranchId, month);
 					if (transactionsHistory == null) {
 						log.warning("Transaction History Taken Failed!!!");
 						break;
@@ -502,7 +513,7 @@ public class MainController {
 					log.info("Enter the number of months to view the customer's transaction history:");
 					month = mainView.promtForIntegerInput();
 					Map<String, List<Transaction>> allTransactionsOfCustomer = transactionController
-							.getAllTransactionsOfCustomer(userId, user.getBranchId(), month);
+							.getAllTransactionsOfCustomer(userId, employeeBranchId, month);
 					if (allTransactionsOfCustomer == null) {
 						log.warning("Transaction History Taken Failed!!!");
 						break;
@@ -526,7 +537,7 @@ public class MainController {
 					accountNumber = mainView.promptStringInput();
 					log.info("Enter the Amount to Deposite");
 					double amountToDeposite = mainView.promptDoubleInput();
-					Account accountToDeposite = accountController.getAccountDetails(accountNumber, user.getBranchId());
+					Account accountToDeposite = accountController.getAccountDetails(accountNumber, employeeBranchId);
 					// System.out.println(accountToDeposite);
 					boolean isAmountDeposited = transactionController.depositAmount(accountToDeposite,
 							amountToDeposite);
@@ -547,7 +558,7 @@ public class MainController {
 					int subChoice = mainView.promtForIntegerInput();
 					String status = subChoice == 1 ? AccountStatus.ACTIVE.name() : AccountStatus.INACTIVE.name();
 					boolean isAccountStatusChanged = accountController.activateDeactivateCustomerAccount(accountNumber,
-							user.getBranchId(), status);
+							employeeBranchId, status);
 					if (isAccountStatusChanged) {
 						accountView.displayAccountStatusUpdatedSuccess();
 					} else {
@@ -587,8 +598,8 @@ public class MainController {
 				log.info("6. Create Account");
 				log.info("7. ACTIVATE or DE-ACTIVATE Customer Bank Account");
 				log.info("8. View Particular Customer(Account) Details");
-				log.info("9. View All Account Details of One Customer in One Branch");
-				log.info("10. View All Account Details of One Customer in All Branch");
+				log.info("9. View Details of Customer in Branch");
+				log.info("10. View Details of Customer in All Branch");
 				log.info("11. View Particular Customer Transaction by Account");
 				log.info("12. View Particular Customers One Branch Transaction");
 				log.info("13. Update Password");
@@ -618,18 +629,18 @@ public class MainController {
 					log.info("Enter the Branch Id:");
 					int branchId = mainView.promtForIntegerInput();
 					String typeOfUser = UserType.EMPLOYEE.name();
-					User newUser = new User();
-					newUser.setPassword(password);
-					newUser.setFirstName(firstName);
-					newUser.setLastName(lastName);
-					newUser.setGender(gender);
-					newUser.setEmail(email);
-					newUser.setContactNumber(number);
-					newUser.setAddress(address);
-					newUser.setDateOfBirth(dob);
-					newUser.setTypeOfUser(typeOfUser);
-					newUser.setBranchId(branchId);
-					boolean isEmployeeCreated = userController.registerNewUser(newUser);
+					Employee newEmployee = new Employee();
+					newEmployee.setPassword(password);
+					newEmployee.setFirstName(firstName);
+					newEmployee.setLastName(lastName);
+					newEmployee.setGender(gender);
+					newEmployee.setEmail(email);
+					newEmployee.setContactNumber(number);
+					newEmployee.setAddress(address);
+					newEmployee.setDateOfBirth(dob);
+					newEmployee.setTypeOfUser(typeOfUser);
+					newEmployee.setBranchId(branchId);
+					boolean isEmployeeCreated = userController.registerNewEmployee(newEmployee);
 					if (isEmployeeCreated) {
 						userView.displayUserCreationSuccessMessage();
 					} else {
@@ -640,18 +651,19 @@ public class MainController {
 					log.info("2. View Particular Employee details");
 					log.info("Enter the Employee Id");
 					int employeeId = mainView.promtForIntegerInput();
-					User employeeDetails = userController.getEmployeeDetails(employeeId);
+					Employee employeeDetails = userController.getEmployeeDetails(employeeId);
 					if (employeeDetails == null) {
 						userView.displayDetailsRetervingFailedMessage();
 						break;
 					}
-					userView.displayUserProfile(employeeDetails);
+					userView.displayEmployeeProfile(employeeDetails);
 					break;
 				case 3:
 					log.info("3. View All Employees in One Branch");
 					log.info("Enter the Branch Id");
 					int branchIdToGetEmployees = mainView.promtForIntegerInput();
-					Map<Integer, User> employeesList = userController.getEmployeeFromOneBranch(branchIdToGetEmployees);
+					Map<Integer, Employee> employeesList = userController
+							.getEmployeeFromOneBranch(branchIdToGetEmployees);
 					if (employeesList == null) {
 						userView.displayDetailsRetervingFailedMessage();
 						break;
@@ -660,7 +672,7 @@ public class MainController {
 					break;
 				case 4:
 					log.info("4. View All Employees From Accross All Branch");
-					Map<Integer, Map<Integer, User>> allEmployeesList = userController.getEmployeeFromAllBranch();
+					Map<Integer, Map<Integer, Employee>> allEmployeesList = userController.getEmployeeFromAllBranch();
 					if (allEmployeesList == null) {
 						userView.displayDetailsRetervingFailedMessage();
 						break;
@@ -689,19 +701,19 @@ public class MainController {
 					log.info("Enter the Aadhar Number");
 					String aadharNumber = mainView.promptStringInput();
 					typeOfUser = UserType.CUSTOMER.name();
-					newUser = new User();
-					newUser.setPassword(password);
-					newUser.setFirstName(firstName);
-					newUser.setLastName(lastName);
-					newUser.setGender(gender);
-					newUser.setEmail(email);
-					newUser.setContactNumber(number);
-					newUser.setAddress(address);
-					newUser.setDateOfBirth(dob);
-					newUser.setTypeOfUser(typeOfUser);
-					newUser.setPanNumber(panNumber);
-					newUser.setAadharNumber(aadharNumber);
-					boolean isUserCreated = userController.registerNewUser(newUser);
+					Customer newCustomer = new Customer();
+					newCustomer.setPassword(password);
+					newCustomer.setFirstName(firstName);
+					newCustomer.setLastName(lastName);
+					newCustomer.setGender(gender);
+					newCustomer.setEmail(email);
+					newCustomer.setContactNumber(number);
+					newCustomer.setAddress(address);
+					newCustomer.setDateOfBirth(dob);
+					newCustomer.setTypeOfUser(typeOfUser);
+					newCustomer.setPanNumber(panNumber);
+					newCustomer.setAadharNumber(aadharNumber);
+					boolean isUserCreated = userController.registerNewCustomer(newCustomer);
 					if (isUserCreated) {
 						userView.displayUserCreationSuccessMessage();
 					} else {
@@ -713,6 +725,7 @@ public class MainController {
 					log.info("Enter the userID");
 					int userId = mainView.promptForUserID();
 					mainView.promptNewLine();
+					log.info("Enter the Branch Id");
 					branchId = mainView.promtForIntegerInput();
 					log.info("Enter the Type of Account");
 					String typeOfAccount = mainView.promptStringInput();
@@ -731,6 +744,7 @@ public class MainController {
 					}
 					break;
 				case 7:
+					log.info("7. ACTIVATE or DE-ACTIVATE Customer Bank Account");
 					log.info("Enter the Account number");
 					String accountNumber = mainView.promptStringInput();
 					log.info("Enter the Branch Id");
@@ -755,43 +769,44 @@ public class MainController {
 					accountNumber = mainView.promptStringInput();
 					log.info("Enter the Branch Id");
 					branchId = mainView.promtForIntegerInput();
-					CustomerDetails customerDetails = userController.getCustomerDetails(accountNumber,
-							user.getBranchId());
-					if (customerDetails == null) {
+					Customer customerDetail = userController.getCustomerDetails(accountNumber, branchId);
+					Account customerAccount = accountController.getAccountDetails(accountNumber, branchId);
+					if (customerDetail == null || customerAccount == null) {
 						userView.displayDetailsRetervingFailedMessage();
 						break;
 					}
-					userView.displayCustomerDetails(customerDetails);
+					userView.displayCustomerDetails(customerDetail);
+					accountView.displayAccountDetails(customerAccount);
 					break;
 				case 9:
-					log.info("9.View All Account Details of One Customer in One Branch");
+					log.info("9.View Details of One Customer in Branch");
 					log.info("Enter the userID");
 					userId = mainView.promptForUserID();
-					log.info("Enter the Branch Id");
+					log.info("Enter the branch Id");
 					branchId = mainView.promtForIntegerInput();
-					Map<String, CustomerDetails> allDetails = userController.getCustomerDetailsInBranch(userId,
+					Customer customerDetails = userController.getCustomerDetailsById(userId, branchId);
+					Map<String, Account> accountDetails = accountController.getCustomerAccountsInBranch(userId,
 							branchId);
-					if (allDetails == null) {
+					if (accountDetails == null || customerDetails == null) {
 						log.warning("Error While Getting Customer Detail!! Try Again!!");
 						break;
 					}
-					if (allDetails.isEmpty()) {
-						log.info("The User Doesn't Have Any Account");
-						break;
-					}
-					userView.displayCustomerDetails(allDetails);
+					userView.displayCustomerDetails(customerDetails);
+					accountView.displayAllAccounts(accountDetails);
 					break;
 				case 10:
-					log.info("10.View All Account Details of One Customer in All Branch");
+					log.info("10.View Details of Customer in All Branch");
 					log.info("Enter the userID");
 					userId = mainView.promptForUserID();
-					Map<Integer, List<CustomerDetails>> allDetail = userController
-							.getCustomerDetailsInAllBranch(userId);
-					if (allDetail == null) {
+					Customer customer = userController.getCustomerDetailsById(userId);
+					Map<Integer, List<Account>> allAccountDetails = accountController
+							.getCustomerAccountsInAllBranch(userId);
+					if (allAccountDetails == null || customer == null) {
 						log.warning("Error While Getting Customer Detail!! Try Again!!");
 						break;
 					}
-					userView.displayCustomerDetailsByBranch(allDetail);
+					userView.displayCustomerDetails(customer);
+					accountView.displayCustomersAllBranchAccount(allAccountDetails);
 					break;
 				case 11:
 					log.info("11. View Particular Customer Transaction by Account");

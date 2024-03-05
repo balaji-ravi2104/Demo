@@ -6,7 +6,7 @@ public class Transaction {
 	private int transactionId;
 	private int userId;
 	private int branchId;
-	private String viwerAccount;
+	private String viewerAccount;
 	private String transactedAccount;
 	private String transactionType;
 	private double transactedAmount;
@@ -72,11 +72,11 @@ public class Transaction {
 	}
 
 	public String getViwerAccount() {
-		return viwerAccount;
+		return viewerAccount;
 	}
 
-	public void setViwerAccount(String viwerAccount) {
-		this.viwerAccount = viwerAccount;
+	public void setViwerAccount(String viewerAccount) {
+		this.viewerAccount = viewerAccount;
 	}
 
 	public String getTransactedAccount() {
@@ -105,10 +105,10 @@ public class Transaction {
 
 	@Override
 	public String toString() {
-		return "Transaction [transactionId=" + transactionId + ", viwerAccount=" + viwerAccount + ", transactedAccount="
-				+ transactedAccount + ", transactionType=" + transactionType + ", transactedAmount=" + transactedAmount
-				+ ", balance=" + balance + ", dateOfTransaction=" + dateOfTransaction + ", remark=" + remark
-				+ ", status=" + status + "]";
+		return "Transaction [transactionId=" + transactionId + ", viwerAccount=" + viewerAccount
+				+ ", transactedAccount=" + transactedAccount + ", transactionType=" + transactionType
+				+ ", transactedAmount=" + transactedAmount + ", balance=" + balance + ", dateOfTransaction="
+				+ dateOfTransaction + ", remark=" + remark + ", status=" + status + "]";
 	}
 
 }

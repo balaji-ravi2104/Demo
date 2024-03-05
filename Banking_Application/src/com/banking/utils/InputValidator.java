@@ -49,7 +49,7 @@ public class InputValidator {
 		return userName.isEmpty();
 	}
 
-	public static boolean validatepanNumber(String panNumber) throws CustomException {
+	public static boolean validatePanNumber(String panNumber) throws CustomException {
 		isNull(panNumber, ErrorMessages.INPUT_NULL_MESSAGE);
 		return PAN_NUMBER_PATTERN.matcher(panNumber).matches();
 	}

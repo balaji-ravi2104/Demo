@@ -6,15 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.banking.model.CustomerDetails;
+import com.banking.model.Customer;
+import com.banking.model.Employee;
 import com.banking.model.User;
-import com.banking.model.UserType;
 import com.banking.utils.CommonUtils.Field;
 import com.banking.utils.CustomException;
 import com.banking.utils.DatabaseConnection;
@@ -28,8 +26,6 @@ public class UserDaoImplementation implements UserDao {
 
 	private static final String GET_EMPLOYEE_BRANCH = "SELECT branch_id FROM Employee WHERE User_id = ?";
 
-	private static final String GET_CUSTOMER_QUERY = "SELECT Pan,Aadhar from Customer WHERE User_id = ?";
-
 	private static final String CREATE_EMPLOYEE = "INSERT INTO Employee (User_id,Employee_Role,branch_id) Values (?,?,?);";
 
 	private static final String CREATE_NEW_USER = "INSERT INTO Users (Password, FirstName, LastName, Gender, Email, "
@@ -37,16 +33,19 @@ public class UserDaoImplementation implements UserDao {
 
 	private static final String CREATE_CUSTOMER = "INSERT INTO Customer (User_id, Pan, Aadhar) VALUES (?, ?, ?);";
 
-	private static final String CHECK_CUSTOMER_ID_EXISTS_QUERY = "SELECT COUNT(*) FROM Users u WHERE u.UserId = ? "
+	private static final String CHECK_USER_ID_EXISTS = "SELECT COUNT(*) FROM Users u WHERE u.UserId = ? "
 			+ "AND u.Type = 'Customer';";
 
 	private static final String CHECK_CUSTOMER_ID_EXISTS_QUERY_IN_BRANCH = "SELECT COUNT(*) FROM Users u JOIN "
 			+ "Accounts a ON u.UserId = a.user_id WHERE u.UserId = ? AND a.branch_id = ? AND u.Type = 'Customer';";
 
-	private static final String GET_CUSTOMER_ACCOUNT_DETAIL = "SELECT u.UserId, u.FirstName, u.LastName, u.Gender, "
-			+ "u.Email,c.Pan, c.Aadhar,a.Account_id, a.account_number, a.balance,a.status,a.branch_id FROM Users u "
-			+ "JOIN Customer c ON u.UserId = c.User_id JOIN Accounts a ON u.UserId = a.user_id WHERE a.account_number = ? "
-			+ "and a.branch_id = ?;";
+	private static final String GET_CUSTOMER_DETAIL_BY_ACCOUNT_NUMBER = "SELECT u.UserId, u.FirstName, u.LastName, u.Gender, "
+			+ "u.Email,u.ContactNumber,u.Address,u.DateOfBirth,u.status,c.Pan, c.Aadhar FROM Users u "
+			+ "JOIN Customer c ON u.UserId = c.User_id JOIN Accounts a ON u.UserId = a.User_id WHERE a.account_number = ?";
+
+	private static final String GET_CUSTOMER_DETAIL_BY_ID = "SELECT u.UserId, u.FirstName, u.LastName, u.Gender, "
+			+ "u.Email,u.ContactNumber,u.Address,u.DateOfBirth,u.status,c.Pan, c.Aadhar FROM Users u "
+			+ "JOIN Customer c ON u.UserId = c.User_id WHERE u.UserId = ?";
 
 	private static final String UPDATE_PASSWORD = "UPDATE Users SET Password = ? WHERE UserId = ?;";
 
@@ -54,7 +53,7 @@ public class UserDaoImplementation implements UserDao {
 			+ "u.Type = 'Employee';";
 
 	private static final String GET_EMPLOYEE_DETAILS = "SELECT u.UserId,u.FirstName,u.LastName,u.Gender,u.Email,u.ContactNumber,"
-			+ " u.Address,u.DateOfBirth,u.Type,e.branch_id FROM Users u INNER JOIN Employee e ON u.UserId = e.user_id where "
+			+ " u.Address,u.DateOfBirth,u.Type,u.status,e.branch_id FROM Users u INNER JOIN Employee e ON u.UserId = e.user_id where "
 			+ "u.UserId = ?";
 
 	private static final String GET_ALL_EMPLOYEE_IN_ONE_BRANCH = "SELECT u.UserId,u.FirstName,u.LastName,u.Gender,u.Email,"
@@ -64,14 +63,6 @@ public class UserDaoImplementation implements UserDao {
 	private static final String GET_ALL_EMPLOYEE_FROM_ALL_BRANCH = "SELECT u.UserId,u.FirstName,u.LastName,u.Gender,u.Email,"
 			+ "u.ContactNumber,u.Address,u.DateOfBirth,u.Type,u.status,e.branch_id FROM Users u INNER JOIN Employee e ON "
 			+ "u.UserId = e.user_id WHERE u.Type = 'Employee' ORDER BY e.branch_id;";
-
-	private static final String GET_ALL_DETAIL_OF_CUSTOMER_IN_ONE_BRANCH = "SELECT u.UserId, u.FirstName, u.LastName, u.Gender, "
-			+ "u.Email, c.Pan, c.Aadhar, a.account_id, a.account_number, a.balance, a.status,a.branch_id FROM Users u INNER JOIN "
-			+ "Customer c ON u.UserId = c.User_id INNER JOIN Accounts a ON u.UserId = a.user_id WHERE u.UserId = ? AND a.branch_id = ?;";
-
-	private static final String GET_ALL_DETAIL_OF_CUSTOMER_IN_ALL_BRANCH = "SELECT u.UserId, u.FirstName, u.LastName, u.Gender, "
-			+ "u.Email,c.Pan, c.Aadhar, a.account_id, a.account_number, a.balance, a.status,a.branch_id FROM Users u INNER JOIN "
-			+ "Customer c ON u.UserId = c.User_id INNER JOIN Accounts a ON u.UserId = a.user_id WHERE u.UserId = ?;";
 
 	@Override
 	public User authendicateUser(int userID, String password) throws CustomException {
@@ -86,40 +77,31 @@ public class UserDaoImplementation implements UserDao {
 				if (resultSet.next()) {
 					user = new User();
 					getUserDetails(resultSet, user);
-
-					String userType = user.getTypeOfUser();
-
-					if (userType != null && userType.equalsIgnoreCase(UserType.EMPLOYEE.name())) {
-						getEmployeeBranch(userID, user);
-					}
-					if (userType != null && userType.equalsIgnoreCase(UserType.CUSTOMER.name())) {
-						getCustomerPanAndAadhar(userID, user);
-					}
 				}
 			}
 
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Reterving User Details", e);
 		}
 		return user;
 	}
 
 	@Override
-	public boolean addUser(User user) throws CustomException {
-		InputValidator.isNull(user, ErrorMessages.INPUT_NULL_MESSAGE);
-		boolean isUserCreated = false;
+	public boolean addCustomer(Customer customer) throws CustomException {
+		InputValidator.isNull(customer, ErrorMessages.INPUT_NULL_MESSAGE);
+		boolean isCustomerCreated = false;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement createUserStatement = connection.prepareStatement(CREATE_NEW_USER,
 						Statement.RETURN_GENERATED_KEYS)) {
-			createUserStatement.setString(1, user.getPassword());
-			createUserStatement.setString(2, user.getFirstName());
-			createUserStatement.setString(3, user.getLastName());
-			createUserStatement.setString(4, user.getGender());
-			createUserStatement.setString(5, user.getEmail());
-			createUserStatement.setString(6, user.getContactNumber());
-			createUserStatement.setString(7, user.getAddress());
-			createUserStatement.setDate(8, Date.valueOf(user.getDateOfBirth()));
-			createUserStatement.setString(9, user.getTypeOfUser());
+			createUserStatement.setString(1, customer.getPassword());
+			createUserStatement.setString(2, customer.getFirstName());
+			createUserStatement.setString(3, customer.getLastName());
+			createUserStatement.setString(4, customer.getGender());
+			createUserStatement.setString(5, customer.getEmail());
+			createUserStatement.setString(6, customer.getContactNumber());
+			createUserStatement.setString(7, customer.getAddress());
+			createUserStatement.setDate(8, Date.valueOf(customer.getDateOfBirth()));
+			createUserStatement.setString(9, customer.getTypeOfUser());
 
 			int rowsAffected = createUserStatement.executeUpdate();
 			if (rowsAffected > 0) {
@@ -131,26 +113,73 @@ public class UserDaoImplementation implements UserDao {
 						throw new SQLException("Creating user failed, no User ID obtained.");
 					}
 				}
-				String userType = user.getTypeOfUser();
-				if (userType.equalsIgnoreCase(UserType.CUSTOMER.name())) {
-					int customerRowsAffected = addCustomer(userId, user);
-					isUserCreated = customerRowsAffected > 0;
-				} else {
-					int customerRowsAffected = addEmployee(userId, user);
-					isUserCreated = customerRowsAffected > 0;
-				}
+				rowsAffected = addCustomerPanAadhar(userId, customer);
+				isCustomerCreated = (rowsAffected > 0);
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error Creating new User", e);
 		}
-		return isUserCreated;
+		return isCustomerCreated;
 	}
 
 	@Override
-	public boolean checkCustomerIdExists(int userId) throws CustomException {
+	public boolean addEmployee(Employee newEmployee) throws CustomException {
+		InputValidator.isNull(newEmployee, ErrorMessages.INPUT_NULL_MESSAGE);
+		boolean isCustomerCreated = false;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement createUserStatement = connection.prepareStatement(CREATE_NEW_USER,
+						Statement.RETURN_GENERATED_KEYS)) {
+			createUserStatement.setString(1, newEmployee.getPassword());
+			createUserStatement.setString(2, newEmployee.getFirstName());
+			createUserStatement.setString(3, newEmployee.getLastName());
+			createUserStatement.setString(4, newEmployee.getGender());
+			createUserStatement.setString(5, newEmployee.getEmail());
+			createUserStatement.setString(6, newEmployee.getContactNumber());
+			createUserStatement.setString(7, newEmployee.getAddress());
+			createUserStatement.setDate(8, Date.valueOf(newEmployee.getDateOfBirth()));
+			createUserStatement.setString(9, newEmployee.getTypeOfUser());
+
+			int rowsAffected = createUserStatement.executeUpdate();
+			if (rowsAffected > 0) {
+				int userId;
+				try (ResultSet generatedKeys = createUserStatement.getGeneratedKeys()) {
+					if (generatedKeys.next()) {
+						userId = generatedKeys.getInt(1);
+					} else {
+						throw new SQLException("Creating user failed, no User ID obtained.");
+					}
+				}
+				rowsAffected = addEmployeeToBranch(userId, newEmployee);
+				isCustomerCreated = (rowsAffected > 0);
+			}
+		} catch (SQLException e) {
+			throw new CustomException("Error Creating new User", e);
+		}
+		return isCustomerCreated;
+	}
+
+	@Override
+	public int getEmployeeBranch(int userId) throws CustomException {
+		int branchId = 0;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(GET_EMPLOYEE_BRANCH)) {
+			preparedStatement.setInt(1, userId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					branchId = resultSet.getInt(1);
+				}
+			}
+		} catch (SQLException e) {
+			throw new CustomException("Error Creating new User", e);
+		}
+		return branchId;
+	}
+
+	@Override
+	public boolean checkUserIdExists(int userId) throws CustomException {
 		boolean userIdExists = false;
 		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(CHECK_CUSTOMER_ID_EXISTS_QUERY)) {
+				PreparedStatement preparedStatement = connection.prepareStatement(CHECK_USER_ID_EXISTS)) {
 			preparedStatement.setInt(1, userId);
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				if (resultSet.next()) {
@@ -158,7 +187,7 @@ public class UserDaoImplementation implements UserDao {
 					userIdExists = (count > 0);
 				}
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Checking User Details", e);
 		}
 		return userIdExists;
@@ -178,26 +207,44 @@ public class UserDaoImplementation implements UserDao {
 					userIdExists = (count > 0);
 				}
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Checking User Details", e);
 		}
 		return userIdExists;
 	}
 
 	@Override
-	public CustomerDetails getCustomerDetails(String accountNumber, int branchID) throws CustomException {
-		CustomerDetails customerDetails = null;
+	public Customer getCustomerDetails(String accountNumber) throws CustomException {
+		Customer customerDetails = null;
 		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(GET_CUSTOMER_ACCOUNT_DETAIL)) {
+				PreparedStatement preparedStatement = connection
+						.prepareStatement(GET_CUSTOMER_DETAIL_BY_ACCOUNT_NUMBER)) {
 			preparedStatement.setString(1, accountNumber);
-			preparedStatement.setInt(2, branchID);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				if (resultSet.next()) {
-					customerDetails = getCustomerDetails(resultSet);
+					customerDetails = getCustomerDetail(resultSet);
 				}
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
+			throw new CustomException("Error While Reterving User Details", e);
+		}
+		return customerDetails;
+	}
+
+	@Override
+	public Customer getCustomerDetailsById(int userId) throws CustomException {
+		Customer customerDetails = null;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(GET_CUSTOMER_DETAIL_BY_ID)) {
+			preparedStatement.setInt(1, userId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					customerDetails = getCustomerDetail(resultSet);
+				}
+			}
+		} catch (SQLException e) {
 			throw new CustomException("Error While Reterving User Details", e);
 		}
 		return customerDetails;
@@ -226,7 +273,7 @@ public class UserDaoImplementation implements UserDao {
 			preparedStatement.setInt(index++, userIdToUpdate);
 			int rowsAffected = preparedStatement.executeUpdate();
 			isUpdated = (rowsAffected > 0);
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Updating User Details", e);
 		}
 		return isUpdated;
@@ -243,7 +290,7 @@ public class UserDaoImplementation implements UserDao {
 
 			return preparedStatement.executeUpdate() > 0;
 
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Updating User Details", e);
 		}
 	}
@@ -260,140 +307,87 @@ public class UserDaoImplementation implements UserDao {
 					employeeIdExists = (count > 0);
 				}
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Checking User Details", e);
 		}
 		return employeeIdExists;
 	}
 
 	@Override
-	public User getEmployeeDetails(int employeeId) throws CustomException {
-		User employeeDetails = null;
+	public Employee getEmployeeDetails(int employeeId) throws CustomException {
+		Employee employeeDetails = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_EMPLOYEE_DETAILS)) {
 			preparedStatement.setInt(1, employeeId);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				if (resultSet.next()) {
-					employeeDetails = new User();
+					employeeDetails = new Employee();
 					getEmployeeDetail(resultSet, employeeDetails);
 				}
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Reterving User Details", e);
 		}
 		return employeeDetails;
 	}
 
 	@Override
-	public Map<Integer, User> getEmployeesInBranch(int branchId) throws CustomException {
-		Map<Integer, User> employeeList = null;
+	public Map<Integer, Employee> getEmployeesInBranch(int branchId) throws CustomException {
+		Map<Integer, Employee> employeeList = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_EMPLOYEE_IN_ONE_BRANCH)) {
 			preparedStatement.setInt(1, branchId);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				employeeList = new TreeMap<Integer, User>();
+				employeeList = new TreeMap<Integer, Employee>();
 				getAllEmployeesDetail(resultSet, employeeList);
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Reterving User Details", e);
 		}
 		return employeeList;
 	}
 
 	@Override
-	public Map<Integer, Map<Integer, User>> getEmployeesFromAllBranch() throws CustomException {
-		Map<Integer, Map<Integer, User>> employeeList = null;
+	public Map<Integer, Map<Integer, Employee>> getEmployeesFromAllBranch() throws CustomException {
+		Map<Integer, Map<Integer, Employee>> employeeList = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_EMPLOYEE_FROM_ALL_BRANCH)) {
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				employeeList = new TreeMap<Integer, Map<Integer, User>>();
+				employeeList = new TreeMap<Integer, Map<Integer, Employee>>();
 				getAllEmployeeDetailsByBranch(resultSet, employeeList);
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Reterving User Details", e);
 		}
 		return employeeList;
 	}
 
-	@Override
-	public Map<String, CustomerDetails> getDetailsOfCustomerInBranch(int userId, int branchId) throws CustomException {
-		Map<String, CustomerDetails> allDetails = null;
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection
-						.prepareStatement(GET_ALL_DETAIL_OF_CUSTOMER_IN_ONE_BRANCH)) {
-			preparedStatement.setInt(1, userId);
-			preparedStatement.setInt(2, branchId);
-
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				allDetails = new TreeMap<String, CustomerDetails>();
-				generateCustomerDetails(resultSet, allDetails);
-			}
-		} catch (SQLException | ClassNotFoundException e) {
-			throw new CustomException("Error While Reterving User Details", e);
-		}
-		return allDetails;
-	}
-
-	@Override
-	public Map<Integer, List<CustomerDetails>> getDetailsOfCustomerInAllBranch(int userId) throws CustomException {
-		Map<Integer, List<CustomerDetails>> allDetails = null;
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection
-						.prepareStatement(GET_ALL_DETAIL_OF_CUSTOMER_IN_ALL_BRANCH)) {
-
-			preparedStatement.setInt(1, userId);
-
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				allDetails = new TreeMap<Integer, List<CustomerDetails>>();
-				generateCustomerDetailsByBranch(resultSet, allDetails);
-			}
-		} catch (SQLException | ClassNotFoundException e) {
-			throw new CustomException("Error While Reterving User Details", e);
-		}
-		return allDetails;
-	}
-
-	private int addCustomer(int userId, User user) throws CustomException {
+	private int addCustomerPanAadhar(int userId, Customer customer) throws CustomException {
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement createCustomerStatement = connection.prepareStatement(CREATE_CUSTOMER)) {
 			createCustomerStatement.setInt(1, userId);
-			createCustomerStatement.setString(2, user.getPanNumber());
-			createCustomerStatement.setString(3, user.getAadharNumber());
+			createCustomerStatement.setString(2, customer.getPanNumber());
+			createCustomerStatement.setString(3, customer.getAadharNumber());
 
 			return createCustomerStatement.executeUpdate();
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Creating Customer ", e);
 		}
 	}
 
-	private int addEmployee(int userId, User user) throws CustomException {
+	private int addEmployeeToBranch(int userId, Employee employee) throws CustomException {
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement createCustomerStatement = connection.prepareStatement(CREATE_EMPLOYEE)) {
 			createCustomerStatement.setInt(1, userId);
-			createCustomerStatement.setString(2, user.getTypeOfUser());
-			createCustomerStatement.setInt(3, user.getBranchId());
+			createCustomerStatement.setString(2, employee.getTypeOfUser());
+			createCustomerStatement.setInt(3, employee.getBranchId());
 
 			return createCustomerStatement.executeUpdate();
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Creating Employee ", e);
-		}
-	}
-
-	private void getCustomerPanAndAadhar(int userID, User user) throws CustomException {
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(GET_CUSTOMER_QUERY)) {
-			preparedStatement.setInt(1, userID);
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				if (resultSet.next()) {
-					user.setPanNumber(resultSet.getString(1));
-					user.setAadharNumber(resultSet.getString(2));
-				}
-			}
-		} catch (SQLException | ClassNotFoundException e) {
-			throw new CustomException("Error While Reterving Customer Details", e);
 		}
 	}
 
@@ -427,82 +421,47 @@ public class UserDaoImplementation implements UserDao {
 		return queryBuilder.toString();
 	}
 
-	private void getAllEmployeesDetail(ResultSet resultSet, Map<Integer, User> employeesList) throws SQLException {
-		User user;
+	private void getAllEmployeesDetail(ResultSet resultSet, Map<Integer, Employee> employeesList) throws SQLException {
+		Employee user;
 		while (resultSet.next()) {
-			user = new User();
+			user = new Employee();
 			getEmployeeDetail(resultSet, user);
 			employeesList.put(user.getUserId(), user);
 		}
 	}
 
-	private void getEmployeeDetail(ResultSet resultSet, User employeeDetails) throws SQLException {
+	private void getEmployeeDetail(ResultSet resultSet, Employee employeeDetails) throws SQLException {
 		getUserDetails(resultSet, employeeDetails);
 		employeeDetails.setBranchId(resultSet.getInt(11));
 	}
 
-	private void getAllEmployeeDetailsByBranch(ResultSet resultSet, Map<Integer, Map<Integer, User>> employeeList)
+	private void getAllEmployeeDetailsByBranch(ResultSet resultSet, Map<Integer, Map<Integer, Employee>> employeeList)
 			throws SQLException {
-		User user;
+		Employee user;
 		while (resultSet.next()) {
-			user = new User();
+			user = new Employee();
 			getEmployeeDetail(resultSet, user);
 			int userId = user.getUserId();
 			int branchId = user.getBranchId();
-			Map<Integer, User> userMap = employeeList.computeIfAbsent(branchId, k -> new TreeMap<>());
+			Map<Integer, Employee> userMap = employeeList.computeIfAbsent(branchId, k -> new TreeMap<>());
 			userMap.put(userId, user);
 		}
 	}
 
-	private CustomerDetails getCustomerDetails(ResultSet resultSet) throws SQLException, CustomException {
-		CustomerDetails customerDetails = new CustomerDetails();
+	private Customer getCustomerDetail(ResultSet resultSet) throws SQLException, CustomException {
+		Customer customerDetails = new Customer();
 		customerDetails.setUserId(resultSet.getInt(1));
 		customerDetails.setFirstName(resultSet.getString(2));
 		customerDetails.setLastName(resultSet.getString(3));
 		customerDetails.setGender(resultSet.getString(4));
 		customerDetails.setEmail(resultSet.getString(5));
-		customerDetails.setPan(resultSet.getString(6));
-		customerDetails.setAadhar(resultSet.getString(7));
-		customerDetails.setAccountId(resultSet.getInt(8));
-		customerDetails.setAccountNumber(resultSet.getString(9));
-		customerDetails.setBalance(resultSet.getDouble(10));
-		customerDetails.setStatus(resultSet.getString(11));
-		customerDetails.setBranchId(resultSet.getInt(12));
+		customerDetails.setContactNumber(resultSet.getString(6));
+		customerDetails.setAddress(resultSet.getString(7));
+		customerDetails.setDateOfBirth(resultSet.getDate(8).toString());
+		customerDetails.setStatus(resultSet.getString(9));
+		customerDetails.setAadharNumber(resultSet.getString(10));
+		customerDetails.setPanNumber(resultSet.getString(11));
 		return customerDetails;
-	}
-
-	private void getEmployeeBranch(int userID, User user) throws CustomException {
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(GET_EMPLOYEE_BRANCH)) {
-			preparedStatement.setInt(1, userID);
-
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				if (resultSet.next()) {
-					user.setBranchId(resultSet.getInt(1));
-				}
-			}
-		} catch (SQLException | ClassNotFoundException e) {
-			throw new CustomException("Error While Reterving Employee Details", e);
-		}
-	}
-
-	private void generateCustomerDetails(ResultSet resultSet, Map<String, CustomerDetails> customerMap)
-			throws SQLException, CustomException {
-		while (resultSet.next()) {
-			CustomerDetails customerDetails = getCustomerDetails(resultSet);
-			customerMap.put(customerDetails.getAccountNumber(), customerDetails);
-		}
-	}
-
-	private void generateCustomerDetailsByBranch(ResultSet resultSet,
-			Map<Integer, List<CustomerDetails>> customerDetailsList) throws SQLException, CustomException {
-		while (resultSet.next()) {
-			CustomerDetails customerDetails = getCustomerDetails(resultSet);
-			if (!customerDetailsList.containsKey(customerDetails.getBranchId())) {
-				customerDetailsList.put(customerDetails.getBranchId(), new ArrayList<CustomerDetails>());
-			}
-			customerDetailsList.get(customerDetails.getBranchId()).add(customerDetails);
-		}
 	}
 
 	private void getUserDetails(ResultSet resultSet, User user) throws SQLException {
@@ -517,4 +476,19 @@ public class UserDaoImplementation implements UserDao {
 		user.setTypeOfUser(resultSet.getString(9));
 		user.setStatus(resultSet.getString(10));
 	}
+
+//	private void getCustomerPanAndAadhar(int userID, User user) throws CustomException {
+//	try (Connection connection = DatabaseConnection.getConnection();
+//			PreparedStatement preparedStatement = connection.prepareStatement(GET_CUSTOMER_QUERY)) {
+//		preparedStatement.setInt(1, userID);
+//		try (ResultSet resultSet = preparedStatement.executeQuery()) {
+//			if (resultSet.next()) {
+//				user.setPanNumber(resultSet.getString(1));
+//				user.setAadharNumber(resultSet.getString(2));
+//			}
+//		}
+//	} catch (SQLException e) {
+//		throw new CustomException("Error While Reterving Customer Details", e);
+//	}
+//}
 }

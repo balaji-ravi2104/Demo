@@ -1,6 +1,7 @@
 package com.banking.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.banking.dao.AccountDao;
@@ -9,7 +10,6 @@ import com.banking.model.Account;
 import com.banking.utils.CustomException;
 import com.banking.utils.ErrorMessages;
 import com.banking.utils.InputValidator;
-import com.banking.view.TransactionView;
 
 public class AccountController {
 
@@ -17,7 +17,6 @@ public class AccountController {
 	private AccountDao accountDao = new AccountDaoImplementation();
 	private UserController userController;
 	private BranchController branchController = new BranchController();
-	private TransactionView transactionView = new TransactionView();
 
 	public AccountController(UserController userController) {
 		this.userController = userController;
@@ -64,16 +63,13 @@ public class AccountController {
 		}
 		try {
 			account = accountDao.getAccountDetail(accountNumber);
-			if (!validateAccount(account)) {
-				return null;
-			}
 		} catch (Exception e) {
 			throw new CustomException("Error while Reterving Account Details !!", e);
 		}
 		return account;
 	}
 
-	public List<Account> getAccountsOfCustomerInBranch(int userId) throws CustomException {
+	public List<Account> getAccountsOfCustomer(int userId) throws CustomException {
 		List<Account> accounts = null;
 		try {
 			accounts = accountDao.getAllAccountsOfCustomer(userId);
@@ -81,6 +77,32 @@ public class AccountController {
 			throw new CustomException("Error while Reterving Accounts!!", e);
 		}
 		return accounts;
+	}
+
+	public Map<String, Account> getCustomerAccountsInBranch(int userId, int employeeBranchId) throws CustomException {
+		Map<String, Account> customerAccounts = null;
+		if (!userController.validateUserIdAndBranchId(userId, employeeBranchId)) {
+			return customerAccounts;
+		}
+		try {
+			customerAccounts = accountDao.getCustomerAccounts(userId, employeeBranchId);
+		} catch (Exception e) {
+			throw new CustomException("Error while Reterving Customer Accounts!!", e);
+		}
+		return customerAccounts;
+	}
+
+	public Map<Integer, List<Account>> getCustomerAccountsInAllBranch(int userId) throws CustomException {
+		Map<Integer, List<Account>> customerAccounts = null;
+		if (!userController.validateUser(userId)) {
+			return customerAccounts;
+		}
+		try {
+			customerAccounts = accountDao.getCustomersAllAccount(userId);
+		} catch (Exception e) {
+			throw new CustomException("Error while Reterving Customer Accounts!!", e);
+		}
+		return customerAccounts;
 	}
 
 	public boolean activateDeactivateCustomerAccount(String accountNumber, int branchId, String status)
@@ -135,16 +157,16 @@ public class AccountController {
 		return isValid;
 	}
 
-	private boolean validateAccount(Account account) {
-		boolean isValidAccount = true;
-		if (account == null) {
-			transactionView.displayInvalidAccountMessage();
-			isValidAccount = false;
-		}
-		if (account.getStatus().equalsIgnoreCase("INACTIVE")) {
-			transactionView.displayAccountInActiveMessage();
-			isValidAccount = false;
-		}
-		return isValidAccount;
-	}
+//	private boolean validateAccount(Account account) {
+//		boolean isValidAccount = true;
+//		if (account == null) {
+//			transactionView.displayInvalidAccountMessage();
+//			isValidAccount = false;
+//		}
+//		if (account.getStatus().equalsIgnoreCase("INACTIVE")) {
+//			transactionView.displayAccountInActiveMessage();
+//			isValidAccount = false;
+//		}
+//		return isValidAccount;
+//	}
 }

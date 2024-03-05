@@ -2,7 +2,6 @@ package com.banking.model;
 
 public class User {
 	private int userId;
-	private int branchId;
 	private String password;
 	private String firstName;
 	private String lastName;
@@ -12,8 +11,6 @@ public class User {
 	private String address;
 	private String dateOfBirth;
 	private String typeOfUser;
-	private String panNumber;
-	private String aadharNumber;
 	private String Status;
 
 	public String getStatus() {
@@ -30,14 +27,6 @@ public class User {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
-	}
-
-	public int getBranchId() {
-		return branchId;
-	}
-
-	public void setBranchId(int branchId) {
-		this.branchId = branchId;
 	}
 
 	public String getPassword() {
@@ -112,28 +101,12 @@ public class User {
 		this.typeOfUser = typeOfUser;
 	}
 
-	public String getPanNumber() {
-		return panNumber;
-	}
-
-	public void setPanNumber(String panNumber) {
-		this.panNumber = panNumber;
-	}
-
-	public String getAadharNumber() {
-		return aadharNumber;
-	}
-
-	public void setAadharNumber(String aadharNumber) {
-		this.aadharNumber = aadharNumber;
-	}
-
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", branchId=" + branchId + ", firstName=" + firstName + ", lastName="
+		return "User [userId=" + userId + ", password=" + password + ", firstName=" + firstName + ", lastName="
 				+ lastName + ", gender=" + gender + ", email=" + email + ", contactNumber=" + contactNumber
-				+ ", address=" + address + ", dateOfBirth=" + dateOfBirth + ", typeOfUser=" + typeOfUser
-				+ ", panNumber=" + panNumber + ", aadharNumber=" + aadharNumber + "]";
+				+ ", address=" + address + ", dateOfBirth=" + dateOfBirth + ", typeOfUser=" + typeOfUser + ", Status="
+				+ Status + "]";
 	}
 
 }

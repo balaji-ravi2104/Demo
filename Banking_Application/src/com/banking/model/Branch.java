@@ -5,7 +5,7 @@ public class Branch {
 	private String branchName;
 	private String branchIFSC;
 	private String location;
-	private String ContactNumber;
+	private String contactNumber;
 	private String email;
 	private String openingTime;
 
@@ -42,11 +42,11 @@ public class Branch {
 	}
 
 	public String getContactNumber() {
-		return ContactNumber;
+		return contactNumber;
 	}
 
 	public void setContactNumber(String contactNumber) {
-		ContactNumber = contactNumber;
+		this.contactNumber = contactNumber;
 	}
 
 	public String getEmail() {
@@ -68,7 +68,7 @@ public class Branch {
 	@Override
 	public String toString() {
 		return "Branch [branchId=" + branchId + ", branchName=" + branchName + ", branchIFSC=" + branchIFSC
-				+ ", location=" + location + ", ContactNumber=" + ContactNumber + ", email=" + email + ", openingTime="
+				+ ", location=" + location + ", ContactNumber=" + contactNumber + ", email=" + email + ", openingTime="
 				+ openingTime + "]";
 	}
 

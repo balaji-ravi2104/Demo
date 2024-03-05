@@ -1,6 +1,5 @@
 package com.banking.controller;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -9,9 +8,9 @@ import java.util.regex.PatternSyntaxException;
 
 import com.banking.dao.UserDao;
 import com.banking.dao.UserDaoImplementation;
-import com.banking.model.CustomerDetails;
+import com.banking.model.Customer;
+import com.banking.model.Employee;
 import com.banking.model.User;
-import com.banking.model.UserType;
 import com.banking.utils.CommonUtils.Field;
 import com.banking.utils.CustomException;
 import com.banking.utils.ErrorMessages;
@@ -44,14 +43,25 @@ public class UserController {
 		return user;
 	}
 
-	public boolean registerNewUser(User user) throws CustomException {
-		InputValidator.isNull(user, ErrorMessages.INPUT_NULL_MESSAGE);
+	public boolean registerNewCustomer(Customer customer) throws CustomException {
+		InputValidator.isNull(customer, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isRegistred = false;
-		if (!validateUserInput(user)) {
+		if (!validateUserInput(customer)) {
 			return isRegistred;
 		}
 		try {
-			isRegistred = userDao.addUser(user);
+			isRegistred = userDao.addCustomer(customer);
+		} catch (Exception e) {
+			throw new CustomException("Error while creating new User!!", e);
+		}
+		return isRegistred;
+	}
+
+	public boolean registerNewEmployee(Employee newEmployee) throws CustomException {
+		InputValidator.isNull(newEmployee, ErrorMessages.INPUT_NULL_MESSAGE);
+		boolean isRegistred = false;
+		try {
+			isRegistred = userDao.addEmployee(newEmployee);
 		} catch (Exception e) {
 			throw new CustomException("Error while creating new User!!", e);
 		}
@@ -60,7 +70,7 @@ public class UserController {
 
 	public boolean isUserExists(int userId) throws CustomException {
 		try {
-			return userDao.checkCustomerIdExists(userId);
+			return userDao.checkUserIdExists(userId);
 		} catch (Exception e) {
 			throw new CustomException("Error while Checking User Exists!!", e);
 		}
@@ -79,16 +89,52 @@ public class UserController {
 		return isExists;
 	}
 
-	public CustomerDetails getCustomerDetails(String accountNumber, int branchId) throws CustomException {
+	public int getEmployeeBranch(int userId) throws CustomException {
+		try {
+			return userDao.getEmployeeBranch(userId);
+		} catch (Exception e) {
+			throw new CustomException("Error while Getting Employee Branch!!", e);
+		}
+	}
+
+	public Customer getCustomerDetails(String accountNumber, int branchId) throws CustomException {
 		InputValidator.isNull(accountNumber, "Account Number Cannot be Empty or Null!!!");
-		CustomerDetails customerDetails = null;
+		Customer customerDetails = null;
 		if (!accountController.validateAccountAndBranch(accountNumber, branchId)) {
 			return customerDetails;
 		}
 		try {
-			customerDetails = userDao.getCustomerDetails(accountNumber, branchId);
+			customerDetails = userDao.getCustomerDetails(accountNumber);
 		} catch (Exception e) {
 			throw new CustomException("Error while Getting User Exists!!", e);
+		}
+		return customerDetails;
+	}
+
+	// For Employee Purpose
+	public Customer getCustomerDetailsById(int userId, int employeeBranchId) throws CustomException {
+		Customer customerDetails = null;
+		if (!validateUserIdAndBranchId(userId, employeeBranchId)) {
+			return customerDetails;
+		}
+		try {
+			customerDetails = userDao.getCustomerDetailsById(userId);
+		} catch (Exception e) {
+			throw new CustomException("Error while Getting Customer Details!!", e);
+		}
+		return customerDetails;
+	}
+
+	// For Admin Purpose
+	public Customer getCustomerDetailsById(int userId) throws CustomException {
+		Customer customerDetails = null;
+		if (!validateUser(userId)) {
+			return customerDetails;
+		}
+		try {
+			customerDetails = userDao.getCustomerDetailsById(userId);
+		} catch (Exception e) {
+			throw new CustomException("Error while Getting Customer Details!!", e);
 		}
 		return customerDetails;
 	}
@@ -122,8 +168,8 @@ public class UserController {
 		return isPasswordUpdated;
 	}
 
-	public User getEmployeeDetails(int employeeId) throws CustomException {
-		User employee = null;
+	public Employee getEmployeeDetails(int employeeId) throws CustomException {
+		Employee employee = null;
 		if (!isEmployeeExists(employeeId)) {
 			userView.displayInvalidEmployeeId();
 			return employee;
@@ -136,8 +182,8 @@ public class UserController {
 		return employee;
 	}
 
-	public Map<Integer, User> getEmployeeFromOneBranch(int branchId) throws CustomException {
-		Map<Integer, User> allEmployee = null;
+	public Map<Integer, Employee> getEmployeeFromOneBranch(int branchId) throws CustomException {
+		Map<Integer, Employee> allEmployee = null;
 		if (!branchController.validateBranchId(branchId)) {
 			return allEmployee;
 		}
@@ -149,7 +195,7 @@ public class UserController {
 		return allEmployee;
 	}
 
-	public Map<Integer, Map<Integer, User>> getEmployeeFromAllBranch() throws CustomException {
+	public Map<Integer, Map<Integer, Employee>> getEmployeeFromAllBranch() throws CustomException {
 		try {
 			return userDao.getEmployeesFromAllBranch();
 		} catch (Exception e) {
@@ -157,33 +203,7 @@ public class UserController {
 		}
 	}
 
-	public Map<String, CustomerDetails> getCustomerDetailsInBranch(int userId, int branchId) throws CustomException {
-		Map<String, CustomerDetails> allDetails = null;
-		if (!validateUserIdAndBranchId(userId, branchId)) {
-			return allDetails;
-		}
-		try {
-			allDetails = userDao.getDetailsOfCustomerInBranch(userId, branchId);
-		} catch (Exception e) {
-			throw new CustomException("Error while Reterving Employee Details!!", e);
-		}
-		return allDetails;
-	}
-
-	public Map<Integer, List<CustomerDetails>> getCustomerDetailsInAllBranch(int userId) throws CustomException {
-		Map<Integer, List<CustomerDetails>> allDetails = null;
-		if (!validateUser(userId)) {
-			return allDetails;
-		}
-		try {
-			allDetails = userDao.getDetailsOfCustomerInAllBranch(userId);
-		} catch (Exception e) {
-			throw new CustomException("Error while Reterving Employee Details!!", e);
-		}
-		return allDetails;
-	}
-
-	private boolean validateUserInput(User user) throws CustomException {
+	private boolean validateUserInput(Customer user) throws CustomException {
 		boolean isValid = true;
 		if (InputValidator.validateString(user.getFirstName().trim())) {
 			log.log(Level.WARNING, "First Name Cannot be Empty");
@@ -217,20 +237,13 @@ public class UserController {
 			log.log(Level.WARNING, "Invalid Date Of Birth!! Please Provide(YYYY-MM-DD)");
 			isValid = false;
 		}
-		if (user.getTypeOfUser().equalsIgnoreCase(UserType.CUSTOMER.name())
-				&& !InputValidator.validatepanNumber(user.getPanNumber())) {
-			log.log(Level.WARNING, "Invalid PAN Number!! Please Provide Valid PAN Number");
+		if (!InputValidator.validateAadharNumber(user.getAadharNumber())) {
+			log.log(Level.WARNING, "Invalid Aadhar Number!!");
 			isValid = false;
 		}
-		if (user.getTypeOfUser().equalsIgnoreCase(UserType.CUSTOMER.name())
-				&& !InputValidator.validateAadharNumber(user.getAadharNumber())) {
-			log.log(Level.WARNING, "Invalid Aadhar Number!! Please Provide Valid Aadhar Number");
+		if (!InputValidator.validatePanNumber(user.getPanNumber())) {
+			log.log(Level.WARNING, "Invalid Pan Number!!");
 			isValid = false;
-		}
-		if (user.getTypeOfUser().equals(UserType.EMPLOYEE.name())) {
-			if (!branchController.validateBranchId(user.getBranchId())) {
-				isValid = false;
-			}
 		}
 		return isValid;
 	}
@@ -321,7 +334,7 @@ public class UserController {
 				}
 				break;
 			case Pan:
-				if (!InputValidator.validatepanNumber(fieldValue)) {
+				if (!InputValidator.validatePanNumber(fieldValue)) {
 					log.log(Level.WARNING, "Invalid PAN Number!! Please Provide Valid PAN Number");
 					isValid = false;
 				}
@@ -346,5 +359,4 @@ public class UserController {
 		}
 		return isValid;
 	}
-
 }

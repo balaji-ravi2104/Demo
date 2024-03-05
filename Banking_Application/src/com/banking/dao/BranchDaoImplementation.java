@@ -24,7 +24,7 @@ public class BranchDaoImplementation implements BranchDao {
 					isValidId = count > 0;
 				}
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Checking Branch Details!!", e);
 		}
 		return isValidId;

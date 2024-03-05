@@ -120,7 +120,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 			} else {
 				connection.rollback();
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Transferring Money", e);
 		}
 		return isTransferSuccess;
@@ -145,7 +145,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 				isTransferSuccess = logTransaction(accountFromTransfer, accountNumberToTransfer,
 						amountToTransferWithOtherBank, "Withdraw");
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 		}
 		return isTransferSuccess;
 	}
@@ -163,7 +163,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 				statements = new ArrayList<Transaction>();
 				getStatementDetails(resultSet, statements);
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Reterving Transaction!!!", e);
 		}
 		return statements;
@@ -181,7 +181,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 				historyList = new ArrayList<Transaction>();
 				getCustomerTransactionDetail(resultSet, historyList);
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Reterving Transaction!!!", e);
 		}
 		return historyList;
@@ -201,7 +201,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 				transactionMap = new HashMap<String, List<Transaction>>();
 				getCustomersTransactionDetail(resultSet, transactionMap);
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Reterving Transaction!!!", e);
 		}
 		return transactionMap;
@@ -270,7 +270,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 
 			isLoggedSuccessfully = (rowsAffected > 0);
 
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Logging In Transaction", e);
 		}
 		return isLoggedSuccessfully;
@@ -290,7 +290,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 				selectedAccount.setBalance(amountToUpdate);
 				isBalanceUpdated = true;
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Updating Balance!!!", e);
 		}
 		return isBalanceUpdated;

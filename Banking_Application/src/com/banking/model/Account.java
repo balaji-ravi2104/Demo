@@ -8,8 +8,6 @@ public class Account {
 	private String accountType;
 	private double balance;
 	private String status;
-	private String panNumber;
-	private String aadharNumber;
 
 	public int getAccountId() {
 		return accountId;
@@ -67,31 +65,11 @@ public class Account {
 		this.status = status;
 	}
 
-	public String getPanNumber() {
-		return panNumber;
-	}
-
-	public void setPanNumber(String panNumber) {
-		this.panNumber = panNumber;
-	}
-
-	public String getAadharNumber() {
-		return aadharNumber;
-	}
-
-	public void setAadharNumber(String aadharNumber) {
-		this.aadharNumber = aadharNumber;
-	}
-
 	@Override
 	public String toString() {
 		return "Account [accountId=" + accountId + ", userId=" + userId + ", accountNumber=" + accountNumber
 				+ ", branchId=" + branchId + ", accountType=" + accountType + ", balance=" + balance + ", status="
-				+ status;
+				+ status + "]";
 	}
-
-	
-	
-	
 
 }
