@@ -141,3 +141,114 @@ java.util.NoSuchElementException
 	at java.base/java.util.Scanner.nextInt(Scanner.java:2212)
 	at Task_8/runner.Runner.main(Runner.java:52)
 
+Mar 01, 2024 11:04:17 AM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Mar 01, 2024 11:04:17 AM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Mar 01, 2024 11:04:17 AM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+Mar 01, 2024 11:04:17 AM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+Mar 01, 2024 11:04:17 AM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+Mar 01, 2024 11:04:17 AM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+Mar 01, 2024 11:04:17 AM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+Mar 01, 2024 11:04:17 AM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+Mar 01, 2024 11:04:17 AM runner.Runner printDetails
+INFO: 8.Working with Enums
+Mar 01, 2024 11:04:17 AM runner.Runner printDetails
+INFO: 9.Singletom Demo
+Mar 01, 2024 11:04:17 AM runner.Runner printDetails
+INFO: 10.Time Based Operations
+Mar 01, 2024 11:04:17 AM runner.Runner main
+INFO: Enter your choice
+Mar 01, 2024 11:04:19 AM runner.Runner main
+INFO: 1. Create a File and Write Data on the File
+Mar 01, 2024 11:04:19 AM runner.Runner main
+INFO: Enter the File Name to Add Data
+Mar 01, 2024 11:04:31 AM runner.Runner main
+INFO: Enter the Number of string to be Added
+Mar 01, 2024 11:04:39 AM runner.Runner main
+WARNING: Please enter the Valid Input
+java.util.InputMismatchException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:939)
+	at java.base/java.util.Scanner.next(Scanner.java:1594)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2258)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2212)
+	at Task_8/runner.Runner.main(Runner.java:74)
+
+Mar 01, 2024 11:04:39 AM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Mar 01, 2024 11:04:39 AM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Mar 01, 2024 11:04:39 AM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+Mar 01, 2024 11:04:39 AM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+Mar 01, 2024 11:04:39 AM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+Mar 01, 2024 11:04:39 AM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+Mar 01, 2024 11:04:39 AM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+Mar 01, 2024 11:04:39 AM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+Mar 01, 2024 11:04:39 AM runner.Runner printDetails
+INFO: 8.Working with Enums
+Mar 01, 2024 11:04:39 AM runner.Runner printDetails
+INFO: 9.Singletom Demo
+Mar 01, 2024 11:04:39 AM runner.Runner printDetails
+INFO: 10.Time Based Operations
+Mar 01, 2024 11:04:39 AM runner.Runner main
+INFO: Enter your choice
+Mar 01, 2024 11:04:59 AM runner.Runner main
+INFO: 1. Create a File and Write Data on the File
+Mar 01, 2024 11:04:59 AM runner.Runner main
+INFO: Enter the File Name to Add Data
+Mar 01, 2024 11:05:03 AM runner.Runner main
+INFO: Enter the Number of string to be Added
+Mar 01, 2024 11:05:05 AM runner.Runner main
+INFO: Enter a String to Write in the File
+Mar 01, 2024 11:05:12 AM runner.Runner printExceptionDetails
+WARNING: Exception : 
+exception.CustomException: Input Cannot be a Null!!
+	at Task_8/utils.UtilMethods.isNull(UtilMethods.java:8)
+	at Task_8/file.operations.FileHelper.createFileAndAddValues(FileHelper.java:23)
+	at Task_8/runner.Runner.main(Runner.java:84)
+
+Mar 01, 2024 11:05:12 AM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Mar 01, 2024 11:05:12 AM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Mar 01, 2024 11:05:12 AM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+Mar 01, 2024 11:05:12 AM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+Mar 01, 2024 11:05:12 AM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+Mar 01, 2024 11:05:12 AM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+Mar 01, 2024 11:05:12 AM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+Mar 01, 2024 11:05:12 AM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+Mar 01, 2024 11:05:12 AM runner.Runner printDetails
+INFO: 8.Working with Enums
+Mar 01, 2024 11:05:12 AM runner.Runner printDetails
+INFO: 9.Singletom Demo
+Mar 01, 2024 11:05:12 AM runner.Runner printDetails
+INFO: 10.Time Based Operations
+Mar 01, 2024 11:05:12 AM runner.Runner main
+INFO: Enter your choice
+Mar 04, 2024 5:33:03 PM runner.Runner main
+WARNING: An Exception Occured
+java.util.NoSuchElementException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:937)
+	at java.base/java.util.Scanner.next(Scanner.java:1594)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2258)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2212)
+	at Task_8/runner.Runner.main(Runner.java:52)
+

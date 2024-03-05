@@ -15,21 +15,27 @@ import com.banking.utils.InputValidator;
 
 public class AccountDaoImplementation implements AccountDao {
 
-//	private static final String ACCOUNT_EXIXTS_QUERY = "SELECT COUNT(*) AS account_count FROM Accounts\n"
-//			+ "WHERE user_id = ? AND branch_id = ?;";
-	private static final String CREATE_NEW_ACCOUNT = "INSERT INTO Accounts (user_id, account_number, branch_id, account_type, balance)\n"
-			+ "VALUES (?,?,?,?,?);";
+	private static final String CREATE_NEW_ACCOUNT = "INSERT INTO Accounts (user_id, account_number, "
+			+ "branch_id, account_type, balance) VALUES (?,?,?,?,?);";
+
 	private static final String GET_COUNT_FOR_BRANCH_QUERY = "SELECT COUNT(*) FROM Accounts WHERE branch_id = ?";
-	private static final String CLOSE_ACCOUNT_QUERY = "UPDATE Accounts SET status = 'INACTIVE' where account_number = ?;";
-	private static final String GET_ACCOUNT_DETAILS = "SELECT Account_id,user_id,branch_id,account_type,balance,status FROM Accounts WHERE account_number = ?;";
+
+	private static final String GET_ACCOUNT_DETAILS = "SELECT Account_id,user_id,branch_id,account_type, "
+			+ "balance,status FROM Accounts WHERE account_number = ?;";
+
 	private static final String GET_ALL_ACCOUNTS_OF_CUSTOMER = "SELECT * FROM Accounts WHERE user_id = ?;";
-	private static final String CHECK_CUSTOMER_ACCOUNT_EXISTS_QUERY_IN_BRANCH = "SELECT COUNT(*) FROM Accounts WHERE account_number = ? and branch_id = ?;";
+
+	private static final String CHECK_CUSTOMER_ACCOUNT_EXISTS_QUERY_IN_BRANCH = "SELECT COUNT(*) FROM Accounts "
+			+ "WHERE account_number = ? and branch_id = ?;";
+
+	private static final String UPDATE_BANK_ACCOUNT_STATUS = "UPDATE Accounts SET status = ? WHERE account_number = ?;";
 
 	@Override
-	public boolean checkAccountExists(String accountNumber , int branchId) throws CustomException {
+	public boolean checkAccountExists(String accountNumber, int branchId) throws CustomException {
 		boolean isAccountExists = false;
 		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(CHECK_CUSTOMER_ACCOUNT_EXISTS_QUERY_IN_BRANCH)) {
+				PreparedStatement preparedStatement = connection
+						.prepareStatement(CHECK_CUSTOMER_ACCOUNT_EXISTS_QUERY_IN_BRANCH)) {
 			preparedStatement.setString(1, accountNumber);
 			preparedStatement.setInt(2, branchId);
 
@@ -70,21 +76,6 @@ public class AccountDaoImplementation implements AccountDao {
 	}
 
 	@Override
-	public boolean closeBankAccount(String accountNumber) throws CustomException {
-		boolean isAccountClosed = false;
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(CLOSE_ACCOUNT_QUERY)) {
-			preparedStatement.setString(1, accountNumber);
-
-			int rowsAffected = preparedStatement.executeUpdate();
-			isAccountClosed = (rowsAffected > 0);
-		} catch (SQLException | ClassNotFoundException e) {
-			throw new CustomException("Error While Closing Account!!!", e);
-		}
-		return isAccountClosed;
-	}
-
-	@Override
 	public Account getAccountDetail(String accountNumber) throws CustomException {
 		Account accountDetails = null;
 		try (Connection connection = DatabaseConnection.getConnection();
@@ -112,25 +103,13 @@ public class AccountDaoImplementation implements AccountDao {
 	@Override
 	public List<Account> getAllAccountsOfCustomer(int userId) throws CustomException {
 		List<Account> accounts = null;
-		Account account = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_ACCOUNTS_OF_CUSTOMER)) {
 
 			preparedStatement.setInt(1, userId);
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				accounts = new ArrayList<Account>();
-				while (resultSet.next()) {
-					account = new Account();
-					account.setAccountId(resultSet.getInt(1));
-					account.setUserId(resultSet.getInt(2));
-					account.setAccountNumber(resultSet.getString(3));
-					account.setBranchId(resultSet.getInt(4));
-					account.setAccountType(resultSet.getString(5));
-					account.setBalance(resultSet.getDouble(6));
-					account.setStatus(resultSet.getString(7));
-
-					accounts.add(account);
-				}
+				getAllAccounts(resultSet, accounts);
 			}
 
 		} catch (SQLException | ClassNotFoundException e) {
@@ -154,9 +133,41 @@ public class AccountDaoImplementation implements AccountDao {
 				}
 			}
 		} catch (SQLException | ClassNotFoundException e) {
-			throw new CustomException("Error While Checking User Details", e);
+			throw new CustomException("Error While Checking Customer Account Details", e);
 		}
 		return userIdExists;
+	}
+
+	@Override
+	public boolean activateDeactivateCustomerAccount(String accountNumber, int branchId, String status)
+			throws CustomException {
+		boolean isAccountStatusChanged = false;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BANK_ACCOUNT_STATUS)) {
+			preparedStatement.setString(1, status);
+			preparedStatement.setString(2, accountNumber);
+			int rowsAffected = preparedStatement.executeUpdate();
+			isAccountStatusChanged = (rowsAffected > 0);
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error While Updating Bank Account Status", e);
+		}
+		return isAccountStatusChanged;
+	}
+
+	private void getAllAccounts(ResultSet resultSet, List<Account> accounts) throws SQLException {
+		Account account;
+		while (resultSet.next()) {
+			account = new Account();
+			account.setAccountId(resultSet.getInt(1));
+			account.setUserId(resultSet.getInt(2));
+			account.setAccountNumber(resultSet.getString(3));
+			account.setBranchId(resultSet.getInt(4));
+			account.setAccountType(resultSet.getString(5));
+			account.setBalance(resultSet.getDouble(6));
+			account.setStatus(resultSet.getString(7));
+
+			accounts.add(account);
+		}
 	}
 
 	private int getCountForBranchId(int branchId) throws CustomException {
@@ -174,4 +185,5 @@ public class AccountDaoImplementation implements AccountDao {
 		}
 		return accountCount;
 	}
+
 }

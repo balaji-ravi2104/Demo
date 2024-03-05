@@ -31,7 +31,7 @@ public class TransactionController {
 	public boolean depositAmount(Account selectedAccount, double amountToDeposite) throws CustomException {
 		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isDepositeSuccess = false;
-		if(!validateAmount(amountToDeposite)) {
+		if (!validateAmount(amountToDeposite)) {
 			return isDepositeSuccess;
 		}
 		try {
@@ -45,6 +45,9 @@ public class TransactionController {
 	public boolean withdrawAmount(Account selectedAccount, double amountToWithdraw) throws CustomException {
 		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isWithdrawSuccess = false;
+		if (!validateAmount(amountToWithdraw) || !validateWithdrawAmount(selectedAccount, amountToWithdraw)) {
+			return isWithdrawSuccess;
+		}
 		try {
 			isWithdrawSuccess = transactionDao.withdraw(selectedAccount, amountToWithdraw);
 		} catch (Exception e) {
@@ -58,6 +61,9 @@ public class TransactionController {
 		InputValidator.isNull(accountFromTransfer, ErrorMessages.INPUT_NULL_MESSAGE);
 		InputValidator.isNull(accountToTransfer, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isTransactionSuccess = false;
+		if (!validateAmount(amountToTransfer) || !validateWithdrawAmount(accountFromTransfer, amountToTransfer)) {
+			return isTransactionSuccess;
+		}
 		try {
 			isTransactionSuccess = transactionDao.transferMoneyWithinBank(accountFromTransfer, accountToTransfer,
 					amountToTransfer);
@@ -72,6 +78,10 @@ public class TransactionController {
 		InputValidator.isNull(accountFromTransfer, ErrorMessages.INPUT_NULL_MESSAGE);
 		InputValidator.isNull(accountNumberToTransfer, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isTransactionSuccess = false;
+		if (!validateAmount(amountToTransferWithOtherBank)
+				|| !validateWithdrawAmount(accountFromTransfer, amountToTransferWithOtherBank)) {
+			return isTransactionSuccess;
+		}
 		try {
 			isTransactionSuccess = transactionDao.transferMoneyWithOtherBank(accountFromTransfer,
 					accountNumberToTransfer, amountToTransferWithOtherBank);
@@ -84,6 +94,9 @@ public class TransactionController {
 	public List<Transaction> getStatement(Account account, int numberOfMonths) throws CustomException {
 		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
 		List<Transaction> statement = null;
+		if (!validateMonths(numberOfMonths)) {
+			return statement;
+		}
 		try {
 			statement = transactionDao.getUsersStatement(account, numberOfMonths);
 		} catch (Exception e) {
@@ -92,49 +105,58 @@ public class TransactionController {
 		return statement;
 	}
 
-	public List<Transaction> getCustomerTransaction(String accountNumber, int branchId) throws CustomException {
+	public List<Transaction> getCustomerTransaction(String accountNumber, int branchId, int months)
+			throws CustomException {
+		InputValidator.isNull(accountNumber, ErrorMessages.INPUT_NULL_MESSAGE);
 		List<Transaction> transactionHistory = null;
-		if (!accountController.validateAccountAndBranch(accountNumber, branchId)) {
+		if (!validateMonths(months) || !branchController.validateBranchId(branchId)
+				|| !accountController.validateAccountAndBranch(accountNumber, branchId)) {
 			return transactionHistory;
 		}
 		try {
-			transactionHistory = transactionDao.getCustomerTransactionHistory(accountNumber);
+			transactionHistory = transactionDao.getCustomerTransactionHistory(accountNumber, months);
 		} catch (Exception e) {
 			throw new CustomException("Error while Getting Transaction History!!!", e);
 		}
 		return transactionHistory;
 	}
 
-	public Map<String, List<Transaction>> getAllTransactionsOfCustomer(int userId, int branchId) throws CustomException {
+	public Map<String, List<Transaction>> getAllTransactionsOfCustomer(int userId, int branchId, int month)
+			throws CustomException {
 		Map<String, List<Transaction>> transactions = null;
-		if(!userController.validateUserIdAndBranchId(userId, branchId)) {
+		if (!validateMonths(month) || !userController.validateUserIdAndBranchId(userId, branchId)) {
 			return transactions;
 		}
 		try {
-			transactions = transactionDao.getAllTransactionHistorys(userId,branchId);
-		}catch (Exception e) {
+			transactions = transactionDao.getAllTransactionHistory(userId, branchId, month);
+		} catch (Exception e) {
 			throw new CustomException("Error while Getting Transaction History!!!", e);
 		}
 		return transactions;
 	}
 
-	public Map<String, List<Transaction>> getAllCustomersTransaction(int branchId) throws CustomException {
-		Map<String, List<Transaction>> transactionHistory = null;
-		if (!branchController.validateBranchId(branchId)) {
-			return transactionHistory;
-		}
-		try {
-			transactionHistory = transactionDao.getAllCustomersTransactionHistory(branchId);
-		} catch (Exception e) {
-			throw new CustomException("Error while Getting Transaction History!!!", e);
-		}
-		return transactionHistory;
-	}
-	
 	private boolean validateAmount(double amountToDeposite) {
 		boolean isValid = true;
 		if (amountToDeposite <= 0) {
 			transactionView.displayInvalidAmmountMessage();
+			isValid = false;
+		}
+		return isValid;
+	}
+
+	private boolean validateWithdrawAmount(Account selectedAccount, double amountToWithdraw) {
+		boolean isValid = true;
+		if (amountToWithdraw > selectedAccount.getBalance()) {
+			transactionView.displayInsufficientBalanceMessage();
+			isValid = false;
+		}
+		return isValid;
+	}
+
+	private boolean validateMonths(int numberOfMonths) {
+		boolean isValid = true;
+		if (numberOfMonths <= 0 || numberOfMonths > 6) {
+			transactionView.displayINvalidMonthSelectionMessage();
 			isValid = false;
 		}
 		return isValid;

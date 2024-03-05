@@ -5,6 +5,7 @@ import java.sql.Date;
 public class Transaction {
 	private int transactionId;
 	private int userId;
+	private int branchId;
 	private String viwerAccount;
 	private String transactedAccount;
 	private String transactionType;
@@ -20,6 +21,14 @@ public class Transaction {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	public int getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(int branchId) {
+		this.branchId = branchId;
 	}
 
 	public String getTransactionType() {

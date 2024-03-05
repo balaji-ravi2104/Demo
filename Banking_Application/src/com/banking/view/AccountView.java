@@ -28,7 +28,6 @@ public class AccountView {
 	public void displayAccountDetails(Account account) throws CustomException {
 		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
 		log.info("-".repeat(60));
-		log.info("User Id : "+account.getUserId());
 		log.info("Account Number : "+account.getAccountNumber());
 		log.info("Branch Id : "+account.getBranchId());
 		log.info("Account Type : "+account.getAccountType());
@@ -44,5 +43,13 @@ public class AccountView {
 
 	public void displayAllAccountsInActiveMessage() {
 		log.info("Your All Accounts are InActive!! Please Contact the Bank!!!");
+	}
+
+	public void displayAccountStatusUpdatedSuccess() {
+		log.info("Bank Account Status Updated SuccessFully!!!");
+	}
+
+	public void displayAccountStatusUpdatedFailed() {
+		log.info("Bank Account Status Updation Failed!!! Tyr Again!!");
 	}
 }

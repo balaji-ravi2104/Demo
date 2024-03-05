@@ -9,6 +9,7 @@ import com.banking.model.Account;
 import com.banking.utils.CustomException;
 import com.banking.utils.ErrorMessages;
 import com.banking.utils.InputValidator;
+import com.banking.view.TransactionView;
 
 public class AccountController {
 
@@ -16,6 +17,7 @@ public class AccountController {
 	private AccountDao accountDao = new AccountDaoImplementation();
 	private UserController userController;
 	private BranchController branchController = new BranchController();
+	private TransactionView transactionView = new TransactionView();
 
 	public AccountController(UserController userController) {
 		this.userController = userController;
@@ -41,13 +43,11 @@ public class AccountController {
 	public boolean createAccount(Account account) throws CustomException {
 		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isAccountCreated = false;
-
-		if (!userController.validateUserId(account.getUserId())
+		if (!userController.validateUser(account.getUserId())
 				|| !branchController.validateBranchId(account.getBranchId())
 				|| validateAccountType(account.getAccountType()) || validateBalance(account.getBalance())) {
 			return isAccountCreated;
 		}
-
 		try {
 			isAccountCreated = accountDao.createNewAccount(account);
 		} catch (Exception e) {
@@ -56,33 +56,24 @@ public class AccountController {
 		return isAccountCreated;
 	}
 
-	public boolean closeAccount(String accountNumber, int branchId) throws CustomException {
-		boolean isAccountClosed = false;
-		if (!validateAccountAndBranch(accountNumber, branchId)) {
-			return isAccountClosed;
-		}
-		try {
-			isAccountClosed = accountDao.closeBankAccount(accountNumber);
-		} catch (Exception e) {
-			throw new CustomException("Error while Closing the Account!!", e);
-		}
-		return isAccountClosed;
-	}
-
-	public Account getAccountDetails(String accountNumber) throws CustomException {
+	public Account getAccountDetails(String accountNumber, int branchId) throws CustomException {
+		InputValidator.isNull(accountNumber, ErrorMessages.INPUT_NULL_MESSAGE);
 		Account account = null;
-		if (validateAccountNumber(accountNumber)) {
+		if (!validateAccountAndBranch(accountNumber, branchId)) {
 			return account;
 		}
 		try {
 			account = accountDao.getAccountDetail(accountNumber);
+			if (!validateAccount(account)) {
+				return null;
+			}
 		} catch (Exception e) {
 			throw new CustomException("Error while Reterving Account Details !!", e);
 		}
 		return account;
 	}
 
-	public List<Account> getAllAccountsOfCustomer(int userId) throws CustomException {
+	public List<Account> getAccountsOfCustomerInBranch(int userId) throws CustomException {
 		List<Account> accounts = null;
 		try {
 			accounts = accountDao.getAllAccountsOfCustomer(userId);
@@ -90,6 +81,22 @@ public class AccountController {
 			throw new CustomException("Error while Reterving Accounts!!", e);
 		}
 		return accounts;
+	}
+
+	public boolean activateDeactivateCustomerAccount(String accountNumber, int branchId, String status)
+			throws CustomException {
+		InputValidator.isNull(accountNumber, ErrorMessages.INPUT_NULL_MESSAGE);
+		InputValidator.isNull(status, ErrorMessages.INPUT_NULL_MESSAGE);
+		boolean isAccountStatusChanged = false;
+		if (!validateAccountAndBranch(accountNumber, branchId)) {
+			return isAccountStatusChanged;
+		}
+		try {
+			isAccountStatusChanged = accountDao.activateDeactivateCustomerAccount(accountNumber, branchId, status);
+		} catch (Exception e) {
+			throw new CustomException("Error while Updating Bank Account Status!!", e);
+		}
+		return isAccountStatusChanged;
 	}
 
 	private boolean validateAccountType(String accountType) throws CustomException {
@@ -128,4 +135,16 @@ public class AccountController {
 		return isValid;
 	}
 
+	private boolean validateAccount(Account account) {
+		boolean isValidAccount = true;
+		if (account == null) {
+			transactionView.displayInvalidAccountMessage();
+			isValidAccount = false;
+		}
+		if (account.getStatus().equalsIgnoreCase("INACTIVE")) {
+			transactionView.displayAccountInActiveMessage();
+			isValidAccount = false;
+		}
+		return isValidAccount;
+	}
 }

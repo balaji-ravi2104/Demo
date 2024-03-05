@@ -8,7 +8,6 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Set;
-import java.util.logging.Logger;
 //day light savings
 // time zone   
 public class TimeHelper {
@@ -38,7 +37,7 @@ public class TimeHelper {
 	}
  
 	
-	public Set<String> getZoneDetails(Logger logger) {
+	public Set<String> getZoneDetails() {
 		return ZoneId.getAvailableZoneIds();
 	}
 	

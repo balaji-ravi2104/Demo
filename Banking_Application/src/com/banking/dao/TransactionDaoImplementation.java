@@ -22,41 +22,40 @@ public class TransactionDaoImplementation implements TransactionDao {
 
 	private static final String UPDATE_QUERY = "UPDATE Accounts SET balance = ? WHERE account_number = ?;";
 
-	private static final String TRANSACTION_LOG = "INSERT INTO Transaction (user_id, viewer_account_number, transacted_account_number, "
-			+ "transaction_type, transaction_amount, balance, transaction_date, remark, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+	private static final String TRANSACTION_LOG = "INSERT INTO Transaction (user_id, viewer_account_number, "
+			+ "transacted_account_number, transaction_type, transaction_amount, balance, transaction_date, "
+			+ "remark, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-	private static final String GET_STATEMENT = "SELECT transaction_date, transaction_type,transaction_amount, balance FROM Transaction "
-			+ "WHERE viewer_account_number = ? AND status = 'Success' AND transaction_date >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) "
-			+ "order by transaction_id DESC";
+	private static final String GET_STATEMENT = "SELECT transaction_date, transaction_type,transaction_amount, "
+			+ "balance FROM Transaction WHERE viewer_account_number = ? AND transaction_date >= DATE_SUB(CURRENT_DATE(), "
+			+ "INTERVAL ? MONTH) order by transaction_id DESC";
 
-	private static final String GET_TRANSACTION_HISTORY = "SELECT t.transaction_id,t.user_id,t.viewer_account_number,t.transacted_account_number,t.transaction_type,t.transaction_amount,t.balance,t. transaction_date,t.remark,t.status \n"
-			+ "FROM Transaction t WHERE t.viewer_account_number = ? ORDER BY t.transaction_id DESC;";
+	private static final String GET_TRANSACTION_HISTORY = "select * From Transaction WHERE viewer_account_number = ? AND "
+			+ "transaction_date >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) ORDER BY transaction_id DESC;";
 
-	private static final String GET_ALL_TRANSACTION_OF_CUSTOMER = "SELECT t.transaction_id, t.user_id, t.viewer_account_number, t.transacted_account_number, t.transaction_type, t.transaction_amount, t.balance, t.transaction_date, t.remark, t.status \n"
-			+ "FROM Transaction t JOIN Accounts a ON t.viewer_account_number = a.account_number WHERE a.user_id = ? AND a.branch_id = ? ORDER BY t.transaction_id DESC;";
-
-	private static final String GET_ALL_TRANSACTION_HISTORY = "SELECT t.transaction_id, t.user_id, t.viewer_account_number, t.transacted_account_number, t.transaction_type, t.transaction_amount, t.balance, t.transaction_date, t.remark, t.status \n"
-			+ "FROM Transaction t JOIN Accounts a ON t.viewer_account_number = a.account_number WHERE a.branch_id = ? ORDER BY t.transaction_id DESC;";
+	private static final String GET_ALL_TRANSACTION_OF_CUSTOMER_IN_BRANCH = "SELECT t.transaction_id, t.user_id, "
+			+ "t.viewer_account_number, t.transacted_account_number, t.transaction_type, t.transaction_amount, "
+			+ "t.balance, t.transaction_date, t.remark, t.status FROM Transaction t JOIN Accounts a ON "
+			+ "t.viewer_account_number = a.account_number WHERE a.user_id = ? AND a.branch_id = ? AND "
+			+ "t.transaction_date >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) ORDER BY t.transaction_id DESC;";
 
 	@Override
-	public boolean deposit(Account selectedAccount, double amountToDeposite) throws CustomException {
+	public boolean deposit(Account selectedAccount, double amountToDeposit) throws CustomException {
 		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isAmountDepositedAndLoggedInTransaction = false;
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)) {
-
-			double newBalance = selectedAccount.getBalance() + amountToDeposite;
-
-			preparedStatement.setDouble(1, newBalance);
-			preparedStatement.setString(2, selectedAccount.getAccountNumber());
-
-			int rowsAffected = preparedStatement.executeUpdate();
-			if (rowsAffected > 0) {
-				selectedAccount.setBalance(newBalance);
-				isAmountDepositedAndLoggedInTransaction = logTransaction(selectedAccount, selectedAccount,
-						amountToDeposite, "Deposite");
+		try {
+			if (amountToDeposit <= 0) {
+				throw new CustomException("Amount to be Deposited Should be Greater than ZERO!!!");
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+			boolean isBalanceUpdated = updateAccountBalance(selectedAccount,
+					selectedAccount.getBalance() + amountToDeposit);
+			if (isBalanceUpdated) {
+				isAmountDepositedAndLoggedInTransaction = logTransaction(selectedAccount,
+						selectedAccount.getAccountNumber(), amountToDeposit, "Deposit");
+			}
+		} catch (CustomException e) {
+			throw e;
+		} catch (Exception e) {
 			throw new CustomException("Error While Depositing Money", e);
 		}
 		return isAmountDepositedAndLoggedInTransaction;
@@ -65,25 +64,23 @@ public class TransactionDaoImplementation implements TransactionDao {
 	@Override
 	public boolean withdraw(Account selectedAccount, double amountToWithdraw) throws CustomException {
 		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
-		boolean isAmountWithdrawedAndLoggedInTransaction = false;
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)) {
-
-			double newBalance = selectedAccount.getBalance() - amountToWithdraw;
-
-			preparedStatement.setDouble(1, newBalance);
-			preparedStatement.setString(2, selectedAccount.getAccountNumber());
-
-			int rowsAffected = preparedStatement.executeUpdate();
-			if (rowsAffected > 0) {
-				selectedAccount.setBalance(newBalance);
-				isAmountWithdrawedAndLoggedInTransaction = logTransaction(selectedAccount, selectedAccount,
-						amountToWithdraw, "Withdraw");
+		boolean isAmountWithdrawnAndLoggedInTransaction = false;
+		try {
+			if (selectedAccount.getBalance() < amountToWithdraw) {
+				throw new CustomException("Insufficient Balance");
 			}
-		} catch (SQLException | ClassNotFoundException e) {
-			throw new CustomException("Error While Depositing Money", e);
+			boolean isBalanceUpdated = updateAccountBalance(selectedAccount,
+					selectedAccount.getBalance() - amountToWithdraw);
+			if (isBalanceUpdated) {
+				isAmountWithdrawnAndLoggedInTransaction = logTransaction(selectedAccount,
+						selectedAccount.getAccountNumber(), amountToWithdraw, "Withdraw");
+			}
+		} catch (CustomException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new CustomException("Error While Withdrawing Money", e);
 		}
-		return isAmountWithdrawedAndLoggedInTransaction;
+		return isAmountWithdrawnAndLoggedInTransaction;
 	}
 
 	@Override
@@ -98,32 +95,33 @@ public class TransactionDaoImplementation implements TransactionDao {
 		try (Connection connection = DatabaseConnection.getConnection()) {
 			connection.setAutoCommit(false);
 
-			double newBalanceOfToAccount = accountToTransfer.getBalance() + amountToTransfer;
+			double newBalanceOfFromAccount = accountFromTransfer.getBalance() - amountToTransfer;
+			boolean isFromAccountBalanceUpdated = updateAccountBalance(accountFromTransfer, newBalanceOfFromAccount);
 
-			if (withdraw(accountFromTransfer, amountToTransfer)) {
-				try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)) {
-					preparedStatement.setDouble(1, newBalanceOfToAccount);
-					preparedStatement.setString(2, accountToTransfer.getAccountNumber());
+			if (isFromAccountBalanceUpdated) {
+				double newBalanceOfToAccount = accountToTransfer.getBalance() + amountToTransfer;
+				boolean isToAccountBalanceUpdated = updateAccountBalance(accountToTransfer, newBalanceOfToAccount);
 
-					int rowAffected = preparedStatement.executeUpdate();
+				if (isToAccountBalanceUpdated) {
+					boolean isTransactionLoggedWithdraw = logTransaction(accountFromTransfer,
+							accountToTransfer.getAccountNumber(), amountToTransfer, "Withdraw");
+					boolean isTransactionLoggedDeposit = logTransaction(accountToTransfer,
+							accountFromTransfer.getAccountNumber(), amountToTransfer, "Deposit");
 
-					if (rowAffected > 0) {
-						accountToTransfer.setBalance(newBalanceOfToAccount);
-						boolean isDepositLogged = logTransaction(accountToTransfer, accountFromTransfer,
-								amountToTransfer, "Deposit");
-
-						if (isDepositLogged) {
-							isTransferSuccess = true;
-							connection.commit();
-						} else {
-							connection.rollback();
-						}
+					if (isTransactionLoggedWithdraw && isTransactionLoggedDeposit) {
+						connection.commit();
+						isTransferSuccess = true;
+					} else {
+						connection.rollback();
 					}
+				} else {
+					connection.rollback();
 				}
-
+			} else {
+				connection.rollback();
 			}
 		} catch (SQLException | ClassNotFoundException e) {
-			throw new CustomException("Error While Depositing Money", e);
+			throw new CustomException("Error While Transferring Money", e);
 		}
 		return isTransferSuccess;
 	}
@@ -137,7 +135,18 @@ public class TransactionDaoImplementation implements TransactionDao {
 			throw new CustomException("Insufficient Balance");
 		}
 		boolean isTransferSuccess = false;
-		isTransferSuccess = withdraw(accountFromTransfer, amountToTransferWithOtherBank);
+		try (Connection connection = DatabaseConnection.getConnection()) {
+			connection.setAutoCommit(false);
+			double newBalanceOfFromAccount = accountFromTransfer.getBalance() - amountToTransferWithOtherBank;
+
+			boolean isFromAccountBalanceUpdated = updateAccountBalance(accountFromTransfer, newBalanceOfFromAccount);
+
+			if (isFromAccountBalanceUpdated) {
+				isTransferSuccess = logTransaction(accountFromTransfer, accountNumberToTransfer,
+						amountToTransferWithOtherBank, "Withdraw");
+			}
+		} catch (SQLException | ClassNotFoundException e) {
+		}
 		return isTransferSuccess;
 	}
 
@@ -161,15 +170,16 @@ public class TransactionDaoImplementation implements TransactionDao {
 	}
 
 	@Override
-	public List<Transaction> getCustomerTransactionHistory(String accountNumber) throws CustomException {
+	public List<Transaction> getCustomerTransactionHistory(String accountNumber, int month) throws CustomException {
 		List<Transaction> historyList = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_TRANSACTION_HISTORY)) {
 
 			preparedStatement.setString(1, accountNumber);
+			preparedStatement.setInt(2, month);
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				historyList = new ArrayList<Transaction>();
-				getOneCustomerTransactionHistoryDetail(resultSet, historyList);
+				getCustomerTransactionDetail(resultSet, historyList);
 			}
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new CustomException("Error While Reterving Transaction!!!", e);
@@ -178,15 +188,18 @@ public class TransactionDaoImplementation implements TransactionDao {
 	}
 
 	@Override
-	public Map<String, List<Transaction>> getAllTransactionHistorys(int userId, int branchId) throws CustomException {
+	public Map<String, List<Transaction>> getAllTransactionHistory(int userId, int branchId, int month)
+			throws CustomException {
 		Map<String, List<Transaction>> transactionMap = null;
 		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_TRANSACTION_OF_CUSTOMER)) {
+				PreparedStatement preparedStatement = connection
+						.prepareStatement(GET_ALL_TRANSACTION_OF_CUSTOMER_IN_BRANCH)) {
 			preparedStatement.setInt(1, userId);
 			preparedStatement.setInt(2, branchId);
+			preparedStatement.setInt(3, month);
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				transactionMap = new HashMap<String, List<Transaction>>();
-				getAllCustomerTransactionHistoryDetail(resultSet, transactionMap);
+				getCustomersTransactionDetail(resultSet, transactionMap);
 			}
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new CustomException("Error While Reterving Transaction!!!", e);
@@ -194,42 +207,19 @@ public class TransactionDaoImplementation implements TransactionDao {
 		return transactionMap;
 	}
 
-	@Override
-	public Map<String, List<Transaction>> getAllCustomersTransactionHistory(int branchId) throws CustomException {
-		Map<String, List<Transaction>> transactionMap = null;
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_TRANSACTION_HISTORY)) {
-
-			preparedStatement.setInt(1, branchId);
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				transactionMap = new HashMap<String, List<Transaction>>();
-				getAllCustomerTransactionHistoryDetail(resultSet, transactionMap);
-			}
-		} catch (SQLException | ClassNotFoundException e) {
-			throw new CustomException("Error While Reterving Transaction!!!", e);
-		}
-		return transactionMap;
-	}
-
-	private void getOneCustomerTransactionHistoryDetail(ResultSet resultSet, List<Transaction> historyList)
-			throws SQLException {
+	private void getCustomerTransactionDetail(ResultSet resultSet, List<Transaction> historyList) throws SQLException {
 		while (resultSet.next()) {
 			historyList.add(getTransactionDetail(resultSet));
 		}
 	}
 
-	private void getAllCustomerTransactionHistoryDetail(ResultSet resultSet,
-			Map<String, List<Transaction>> transactionMap) throws SQLException {
+	private void getCustomersTransactionDetail(ResultSet resultSet, Map<String, List<Transaction>> transactionList)
+			throws SQLException {
 
 		while (resultSet.next()) {
 			Transaction transaction = getTransactionDetail(resultSet);
 			String accountNumber = transaction.getViwerAccount();
-
-			if (!transactionMap.containsKey(accountNumber)) {
-				transactionMap.put(accountNumber, new ArrayList<>());
-			}
-
-			transactionMap.get(accountNumber).add(transaction);
+			transactionList.computeIfAbsent(accountNumber, k -> new ArrayList<Transaction>()).add(transaction);
 		}
 	}
 
@@ -261,14 +251,14 @@ public class TransactionDaoImplementation implements TransactionDao {
 		}
 	}
 
-	private boolean logTransaction(Account viewerAccount, Account transactedAccount, double amount,
+	private boolean logTransaction(Account viewerAccount, String transactedAccountNumber, double amount,
 			String transactionType) throws CustomException {
 		boolean isLoggedSuccessfully = false;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(TRANSACTION_LOG)) {
 			preparedStatement.setInt(1, viewerAccount.getUserId());
 			preparedStatement.setString(2, viewerAccount.getAccountNumber());
-			preparedStatement.setString(3, transactedAccount.getAccountNumber());
+			preparedStatement.setString(3, transactedAccountNumber);
 			preparedStatement.setString(4, transactionType);
 			preparedStatement.setDouble(5, amount);
 			preparedStatement.setDouble(6, viewerAccount.getBalance());
@@ -285,4 +275,25 @@ public class TransactionDaoImplementation implements TransactionDao {
 		}
 		return isLoggedSuccessfully;
 	}
+
+	private boolean updateAccountBalance(Account selectedAccount, double amountToUpdate) throws CustomException {
+		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
+		boolean isBalanceUpdated = false;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)) {
+
+			preparedStatement.setDouble(1, amountToUpdate);
+			preparedStatement.setString(2, selectedAccount.getAccountNumber());
+
+			int rowsAffected = preparedStatement.executeUpdate();
+			if (rowsAffected > 0) {
+				selectedAccount.setBalance(amountToUpdate);
+				isBalanceUpdated = true;
+			}
+		} catch (SQLException | ClassNotFoundException e) {
+			throw new CustomException("Error While Updating Balance!!!", e);
+		}
+		return isBalanceUpdated;
+	}
+
 }

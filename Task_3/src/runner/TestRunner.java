@@ -117,7 +117,7 @@ public class TestRunner {
                             logger.log(Level.WARNING,"Please enter the correct position!! Avoid entering Character and String for an Integer",e);
                             sc.nextLine();
                         } catch (CustomException e) {
-                        	logger.log(Level.WARNING,"An Exception Occured",e);
+                        	logger.log(Level.WARNING,"An Exception Occured",e.getCause());
                         }
                         break;
 

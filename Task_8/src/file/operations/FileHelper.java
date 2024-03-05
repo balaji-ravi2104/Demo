@@ -1,6 +1,6 @@
 package file.operations;
 
-import java.io.BufferedReader; 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,17 +20,16 @@ public class FileHelper {
 	public void createFileAndAddValues(String fileName, String[] array, String delimiter)
 			throws CustomException, IOException {
 		UtilMethods.isNull(array, ConstantMessage.ARRAY_INPUT_NULL_MESSAGE);
-		UtilMethods.isNull(fileName, ConstantMessage.INPUT_NULL_MESSAGE); 
+		UtilMethods.isNull(fileName, ConstantMessage.INPUT_NULL_MESSAGE);
 		File file = createFile(fileName);
-		try(Writer fileWriter = createFileWriter(file);
-			Writer bufferedWriter = getNewBufferWriter(fileWriter)){
+		try (Writer fileWriter = createFileWriter(file); Writer bufferedWriter = getNewBufferWriter(fileWriter)) {
 			for (String string : array) {
-				writeOnFile(bufferedWriter, string, delimiter);  
-			} 
-		}catch(CustomException | IOException e) {
-			throw new CustomException("Error in File Creating",e);
+				writeOnFile(bufferedWriter, string, delimiter);
+			}
+		} catch (CustomException | IOException e) {
+			throw new CustomException("Error in File Creating", e);
 		}
-	}     
+	}
 
 	public void createFileWithProperites(String fileName, String comment, Properties prop)
 			throws CustomException, IOException {
@@ -38,22 +37,20 @@ public class FileHelper {
 		UtilMethods.isNull(fileName, ConstantMessage.INPUT_NULL_MESSAGE);
 		UtilMethods.isNull(comment, "Comments Cannot Be Null in the Properties");
 		File file = createFile(fileName);
-		try (Writer fileWriter = createFileWriter(file);
-			Writer bufferedWriter = getNewBufferWriter(fileWriter)){
-			storeProperties(prop,bufferedWriter,comment); 
-		}catch(CustomException | IOException e) {
-			throw new CustomException("Error in File Creating With Properties",e);
+		try (Writer fileWriter = createFileWriter(file); Writer bufferedWriter = getNewBufferWriter(fileWriter)) {
+			storeProperties(prop, bufferedWriter, comment);
+		} catch (CustomException | IOException e) {
+			throw new CustomException("Error in File Creating With Properties", e);
 		}
 	}
 
 	public Properties readProperties(String fileName) throws CustomException, IOException, FileNotFoundException {
 		UtilMethods.isNull(fileName, ConstantMessage.File_NULL_MESSAGE);
-		try(Reader fileReader = getFileReader(fileName);
-			Reader bufferedReader = getBufferedReader(fileReader)){
-			Properties prop = getPropsData(bufferedReader);   
+		try (Reader fileReader = getFileReader(fileName); Reader bufferedReader = getBufferedReader(fileReader)) {
+			Properties prop = getPropsData(bufferedReader);
 			return prop;
-		}catch(CustomException | IOException e) {
-			throw new CustomException("Error in File Creating With Properties",e);
+		} catch (CustomException | IOException e) {
+			throw new CustomException("Error in File Creating With Properties", e);
 		}
 	}
 
@@ -74,6 +71,7 @@ public class FileHelper {
 
 	private Writer createFileWriter(File file) throws CustomException, IOException {
 		UtilMethods.isNull(file, ConstantMessage.File_NULL_MESSAGE);
+		System.out.println(file.getAbsolutePath());
 		return new FileWriter(file.getAbsolutePath());
 	}
 
@@ -96,6 +94,8 @@ public class FileHelper {
 
 	public void setPropertiesData(Properties prop, String key, String value) throws CustomException {
 		UtilMethods.isNull(prop, ConstantMessage.INPUT_NULL_MESSAGE);
+		UtilMethods.isNull(key, ConstantMessage.INPUT_NULL_MESSAGE);
+		UtilMethods.isNull(value, ConstantMessage.INPUT_NULL_MESSAGE);
 		prop.setProperty(key, value);
 	}
 
@@ -106,12 +106,12 @@ public class FileHelper {
 		UtilMethods.isNull(comment, ConstantMessage.INPUT_NULL_MESSAGE);
 		prop.store(bufferedWriter, comment);
 	}
-	     
+
 	private Properties getPropsData(Reader bf) throws CustomException, IOException {
 		UtilMethods.isNull(bf, ConstantMessage.INPUT_NULL_MESSAGE);
 		Properties prop = getNewProperties();
 		prop.load(bf);
 		return prop;
 	}
-  
+
 }

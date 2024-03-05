@@ -12,6 +12,15 @@ public class CustomerDetails {
 	private String accountNumber;
 	private double balance;
 	private String status;
+	private int branchId;
+
+	public int getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(int branchId) {
+		this.branchId = branchId;
+	}
 
 	public int getUserId() {
 		return userId;
@@ -89,7 +98,6 @@ public class CustomerDetails {
 		return balance;
 	}
 
-	
 	public String getStatus() {
 		return status;
 	}

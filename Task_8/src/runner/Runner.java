@@ -81,7 +81,7 @@ public class Runner {
 						for (int i = 0; i < count; i++) {
 							array[i] = sc.nextLine();
 						}
-						fh.createFileAndAddValues(null, array, "\n");
+						fh.createFileAndAddValues(fileName, array, "\n");
 						logger.log(Level.INFO,"File Created Successfullt and Data Added");
 					} catch (IllegalArgumentException e) {
 						logger.log(Level.WARNING,"Illegal Arrgument Exception Occured", e);
@@ -237,7 +237,7 @@ public class Runner {
 
 						logger.log(Level.INFO,"10.3 Enter the Zone to Get time and data etc..");
 					
-					    printZoneDetails(th.getZoneDetails(logger));
+					    printZoneDetails(th.getZoneDetails());
 						
 						String zone = sc.nextLine();
 						ZoneId id = ZoneId.of(zone);   

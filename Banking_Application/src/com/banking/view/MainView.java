@@ -2,8 +2,11 @@ package com.banking.view;
 
 import java.util.InputMismatchException;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.logging.Logger;
+
+import com.banking.utils.CommonUtils.Field;
 
 public class MainView {
 	private static final Logger log = Logger.getLogger(MainView.class.getName());
@@ -105,8 +108,8 @@ public class MainView {
 		log.info("Please Enter the Valid Input!!");
 	}
 
-	public void displayFieldName(Map<Integer, String> fieldMap) {
-		for (Map.Entry<Integer, String> entry : fieldMap.entrySet()) {
+	public void displayFieldName(Map<Integer, Field> fieldMap) {
+		for (Entry<Integer, Field> entry : fieldMap.entrySet()) {
 			System.out.println(entry.getKey() + ": " + entry.getValue());
 		}
 	}

@@ -16,25 +16,22 @@ public interface UserDao {
 
 	CustomerDetails getCustomerDetails(String accountNumber, int branchID) throws CustomException;
 
-	Map<String,CustomerDetails> getAllCustomerDetailsInOneBranch(int branchID) throws CustomException;
-
 	boolean checkCustomerIdPresentInBranch(int userId, int branchId) throws CustomException;
 
-	<K, V> boolean updateCustomerDetails(int userIdToUpdate, Map<K, V> fieldsToUpdate) throws CustomException;
+	<K extends Enum<K>, V> boolean updateCustomerDetails(int userIdToUpdate, Map<K, V> fieldsToUpdate)
+			throws CustomException;
 
-	boolean updateCustomerPassword(User user, String password) throws CustomException;
+	boolean updatePassword(int userId, String password) throws CustomException;
 
 	boolean checkEmployeeExists(int employeeId) throws CustomException;
 
 	User getEmployeeDetails(int employeeId) throws CustomException;
 
-	List<User> getAllEmployeeFromOneBranch(int branchId) throws CustomException;
+	Map<Integer, User> getEmployeesInBranch(int branchId) throws CustomException;
 
-	List<User> getAllEmployeeFromAllBranch() throws CustomException;
+	Map<Integer, Map<Integer, User>> getEmployeesFromAllBranch() throws CustomException;
 
-	List<CustomerDetails> getAllCustomersFromAllBranch() throws CustomException;
+	Map<String, CustomerDetails> getDetailsOfCustomerInBranch(int userId, int branchId) throws CustomException;
 
-	Map<String,CustomerDetails> getAllDetailsOfCustomerFromOneBranch(int userId, int branchId) throws CustomException;
-
-	Map<String,CustomerDetails> getAllDetailsOfOneCustomerInAllBranch(int userId) throws CustomException;
+	Map<Integer, List<CustomerDetails>> getDetailsOfCustomerInAllBranch(int userId) throws CustomException;
 }

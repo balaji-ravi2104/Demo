@@ -21,10 +21,9 @@ public interface TransactionDao {
 
 	List<Transaction> getUsersStatement(Account account, int numberOfMonths) throws CustomException;
 
-	List<Transaction> getCustomerTransactionHistory(String accountNumber) throws CustomException;
+	List<Transaction> getCustomerTransactionHistory(String accountNumber,int month) throws CustomException;
 
-	Map<String,List<Transaction>> getAllCustomersTransactionHistory(int branchId) throws CustomException;
+	Map<String, List<Transaction>> getAllTransactionHistory(int userId, int branchId,int month) throws CustomException;
 
-	Map<String, List<Transaction>> getAllTransactionHistorys(int userId, int branchId) throws CustomException;
 
 }

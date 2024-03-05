@@ -11,11 +11,11 @@ public interface AccountDao {
 
 	boolean createNewAccount(Account account) throws CustomException;
 
-	boolean closeBankAccount(String accountNumber) throws CustomException;
-
 	Account getAccountDetail(String accountNumber) throws CustomException;
 
 	List<Account> getAllAccountsOfCustomer(int userId) throws CustomException;
 
 	boolean checkCustomerAccountPresentInBranch(String accountNumber, int branchId) throws CustomException;
+
+	boolean activateDeactivateCustomerAccount(String accountNumber, int branchId, String status) throws CustomException;
 }
