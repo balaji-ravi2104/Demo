@@ -14,28 +14,16 @@ import com.banking.utils.InputValidator;
 public class UserView {
 	private static final Logger log = Logger.getLogger(UserView.class.getName());
 
-	public void displayUserCreationSuccessMessage() {
-		log.info("User Created Successfully");
+	public void userViewMessages(String message) {
+		log.info(message);
 	}
 
-	public void displayUserCreationFailureMessage() {
-		log.warning("User Creation Failed!! Try Again");
+	public void displayInvalidEmployeeId() {
+		log.warning("Invalid Employee Id!!!");
 	}
 
-	public void displayDetailsRetervingFailedMessage() {
-		log.warning("Error While Reterving Detail!! Please Try Again!!");
-	}
-
-	public void displayCustomerNotFoundMessage() {
-		log.info("No Customer Found in Your Branch");
-	}
-
-	public void displayUpdateSuccessMessage() {
-		log.info("Customer Details Updated Successfully!!");
-	}
-
-	public void displayUpdateFailedMessage() {
-		log.info("Customer Updation Failed!! Try Again!!");
+	public void displayInvalidDateOfBirth() {
+		log.warning("Invalid Date Of Birth!!!");
 	}
 
 	public void displayUserProfile(User user) throws CustomException {
@@ -72,14 +60,6 @@ public class UserView {
 		log.info("-------------------------------------------------------");
 	}
 
-	public void displayPasswordUpdatedSuccessMessage() {
-		log.info("Password Updated Successfully!!");
-	}
-
-	public void displayPasswordUpdatedFailedMessage() {
-		log.info("Password Updated Failed!!");
-	}
-
 	public void displayListOfEmployees(Map<Integer, Employee> employeesList) throws CustomException {
 		InputValidator.isNull(employeesList, ErrorMessages.INPUT_NULL_MESSAGE);
 		if (employeesList.isEmpty()) {
@@ -89,10 +69,6 @@ public class UserView {
 		for (Map.Entry<Integer, Employee> entry : employeesList.entrySet()) {
 			displayEmployeeProfile(entry.getValue());
 		}
-	}
-
-	public void displayInvalidEmployeeId() {
-		log.warning("Invalid Employee Id!!!");
 	}
 
 	public void displayEmployeesByBranch(Map<Integer, Map<Integer, Employee>> allEmployeesList) throws CustomException {
@@ -108,10 +84,6 @@ public class UserView {
 		displayUserProfile(employeeDetails);
 		log.info("Branch Id : " + employeeDetails.getBranchId());
 		log.info("-".repeat(60));
-	}
-
-	public void displayInvalidDateOfBirth() {
-		log.warning("Invalid Date Of Birth!!!");
 	}
 
 }

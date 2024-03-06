@@ -12,7 +12,7 @@ public interface AccountDao {
 
 	boolean checkAccountExists(String accountNumber, int branchId) throws CustomException;
 
-	boolean createNewAccount(Account account) throws CustomException;
+	boolean createAccount(Account account) throws CustomException;
 
 	Account getAccountDetail(String accountNumber) throws CustomException;
 

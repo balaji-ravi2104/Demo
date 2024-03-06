@@ -1,4 +1,5 @@
 package com.banking.view;
+
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -10,20 +11,12 @@ import com.banking.utils.InputValidator;
 public class AccountView {
 	private static final Logger log = Logger.getLogger(AccountView.class.getName());
 
-	public void displayAccountCreationSuccessMessage() {
-		log.info("Account Created Successfully!!");
+	public void accountViewMessages(String message) {
+		log.info(message);
 	}
 
-	public void displayAccountCreationFailureMessage() {
-		log.info("Account Creation Failed!! Try Again!!");
-	}
-
-	public void displayAccountClosureSuccessMessage() {
-		log.info("Account Closed Successfully!!!");
-	}
-
-	public void displayAccountClosureFailureMessage() {
-		log.info("Account Closing Failed!! Try Again");
+	public void displayAccountsInActiveMessage() {
+		log.info("This Account is InActive!! No Transactions Allowed!!!");
 	}
 
 	public void displayAllAccounts(Map<String, Account> accountDetails) throws CustomException {
@@ -51,14 +44,6 @@ public class AccountView {
 				+ selectedAccount.getBalance());
 	}
 
-	public void displayAccountStatusUpdatedSuccess() {
-		log.info("Bank Account Status Updated SuccessFully!!!");
-	}
-
-	public void displayAccountStatusUpdatedFailed() {
-		log.info("Bank Account Status Updation Failed!!! Tyr Again!!");
-	}
-
 	public void displayCustomersAllBranchAccount(Map<Integer, Map<String, Account>> allAccountDetails)
 			throws CustomException {
 		for (Map.Entry<Integer, Map<String, Account>> entry : allAccountDetails.entrySet()) {
@@ -68,9 +53,5 @@ public class AccountView {
 				displayAccountDetails(entry2.getValue());
 			}
 		}
-	}
-
-	public void displayAccountsInActiveMessage() {
-		log.info("This Account is InActive!! No Transactions Allowed!!!");
 	}
 }

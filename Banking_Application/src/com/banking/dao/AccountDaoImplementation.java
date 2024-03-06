@@ -76,7 +76,7 @@ public class AccountDaoImplementation implements AccountDao {
 	}
 
 	@Override
-	public boolean createNewAccount(Account account) throws CustomException {
+	public boolean createAccount(Account account) throws CustomException {
 		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isAccountCreated = false;
 		String accountNumber = String.format("%04d%08d", account.getBranchId(),
@@ -118,12 +118,12 @@ public class AccountDaoImplementation implements AccountDao {
 	}
 
 	@Override
-	public Map<String, Account> getCustomerAccounts(int userId, int employeeBranchId) throws CustomException {
+	public Map<String, Account> getCustomerAccounts(int userId, int branchId) throws CustomException {
 		Map<String, Account> customerAccounts = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_ACCOUNTS_IN_BRANCH)) {
 			preparedStatement.setInt(1, userId);
-			preparedStatement.setInt(2, employeeBranchId);
+			preparedStatement.setInt(2, branchId);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				customerAccounts = new TreeMap<String, Account>();

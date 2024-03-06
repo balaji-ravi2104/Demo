@@ -61,7 +61,7 @@ public class AccountController {
 			return isAccountCreated;
 		}
 		try {
-			isAccountCreated = accountDao.createNewAccount(account);
+			isAccountCreated = accountDao.createAccount(account);
 		} catch (Exception e) {
 			throw new CustomException("Erroe While Creating Account!!", e);
 		}

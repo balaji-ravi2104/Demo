@@ -201,9 +201,9 @@ public class MainController {
 					double amountToDeposite = mainView.promptDoubleInput();
 					boolean isAmountDeposited = transactionController.depositAmount(selectedAccount, amountToDeposite);
 					if (isAmountDeposited) {
-						transactionView.displayDepositSuccessMessage();
+						transactionView.transactionMessages("Amount Deposited Successfully!!");
 					} else {
-						transactionView.displayDepositFailedMessage();
+						transactionView.transactionMessages("Amount Deposit Failed!! Try Again!!");
 					}
 					break;
 				case 5:
@@ -217,9 +217,9 @@ public class MainController {
 					boolean isAmountWithdrawed = transactionController.withdrawAmount(selectedAccount,
 							amountToWithdraw);
 					if (isAmountWithdrawed) {
-						transactionView.displayWithdrawSuccessMessage();
+						transactionView.transactionMessages("Amount Withdrawed Successfully!!");
 					} else {
-						transactionView.displayWithdrawFailedMessage();
+						transactionView.transactionMessages("Amount Withdraw Failed!! Try Again!!");
 					}
 					break;
 				case 6:
@@ -237,15 +237,15 @@ public class MainController {
 					Account accountToTransfer = accountController.getAccountDetails(accountNumber, branchId);
 					System.out.println(accountToTransfer);
 					if (accountToTransfer == null) {
-						transactionView.displayTransactionFailedMessage();
+						transactionView.transactionMessages("Transaction Failed!!! Try Again!!");
 						break;
 					}
 					boolean isTransactionSuccess = transactionController.transferWithinBank(selectedAccount,
 							accountToTransfer, amountToTransfer);
 					if (isTransactionSuccess) {
-						transactionView.displayTransactionSuccessMessage();
+						transactionView.transactionMessages("Transaction Successfull!!!");
 					} else {
-						transactionView.displayTransactionFailedMessage();
+						transactionView.transactionMessages("Transaction Failed!!! Try Again!!");
 					}
 					break;
 				case 7:
@@ -261,9 +261,9 @@ public class MainController {
 					boolean isTransferSuccess = transactionController.transferWithOtherBank(selectedAccount,
 							accountNumberToTransfer, amountToTransferWithOtherBank);
 					if (isTransferSuccess) {
-						transactionView.displayTransactionSuccessMessage();
+						transactionView.transactionMessages("Transaction Successfull!!!");
 					} else {
-						transactionView.displayTransactionFailedMessage();
+						transactionView.transactionMessages("Transaction Failed!!! Try Again!!");
 					}
 					break;
 				case 8:
@@ -272,7 +272,7 @@ public class MainController {
 					int numberOfMonths = mainView.promtForIntegerInput();
 					List<Transaction> statement = transactionController.getStatement(selectedAccount, numberOfMonths);
 					if (statement == null) {
-						transactionView.displayStatementTakenFailed();
+						transactionView.transactionMessages("Statement Taken Failed !! Try Again!");
 						break;
 					}
 					if (statement.isEmpty()) {
@@ -287,9 +287,9 @@ public class MainController {
 					String password = mainView.promptStringInput();
 					boolean isPasswordUpdated = userController.updatePassword(user.getUserId(), password);
 					if (isPasswordUpdated) {
-						userView.displayPasswordUpdatedSuccessMessage();
+						userView.userViewMessages("Password Updated Successfully!!");
 					} else {
-						userView.displayPasswordUpdatedFailedMessage();
+						userView.userViewMessages("Password Updated Failed!!");
 					}
 					break;
 				case 10:
@@ -418,9 +418,9 @@ public class MainController {
 					newCustomer.setAadharNumber(aadharNumber);
 					boolean isUserCreated = userController.registerNewCustomer(newCustomer);
 					if (isUserCreated) {
-						userView.displayUserCreationSuccessMessage();
+						userView.userViewMessages("User Created Successfully!!");
 					} else {
-						userView.displayUserCreationFailureMessage();
+						userView.userViewMessages("User Creation Failed!! Try Again!!");
 					}
 					break;
 				case 2:
@@ -439,9 +439,9 @@ public class MainController {
 					account.setBalance(balance);
 					boolean isAccountCreated = accountController.createAccount(account);
 					if (isAccountCreated) {
-						accountView.displayAccountCreationSuccessMessage();
+						accountView.accountViewMessages("Account Created Successfully!!!");
 					} else {
-						accountView.displayAccountCreationFailureMessage();
+						accountView.accountViewMessages("Account Creation Failed!! Try Again!!");
 					}
 					break;
 				case 3:
@@ -489,9 +489,9 @@ public class MainController {
 					if (fieldsToUpdate.size() == count) {
 						boolean isUserUpdated = userController.updateCustomer(userIdToUpdate, fieldsToUpdate);
 						if (isUserUpdated) {
-							userView.displayUpdateSuccessMessage();
+							userView.userViewMessages("Customer Details Updated Successfully!!");
 						} else {
-							userView.displayUpdateFailedMessage();
+							userView.userViewMessages("Customer Updation Failed!! Try Again!!");
 						}
 					}
 					break;
@@ -502,7 +502,7 @@ public class MainController {
 					Customer customerDetail = userController.getCustomerDetails(accountNumber, employeeBranchId);
 					Account customerAccount = accountController.getAccountDetails(accountNumber, employeeBranchId);
 					if (customerDetail == null || customerAccount == null) {
-						userView.displayDetailsRetervingFailedMessage();
+						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
 						break;
 					}
 					userView.displayCustomerDetails(customerDetail);
@@ -516,7 +516,7 @@ public class MainController {
 					Map<String, Account> accountDetails = accountController.getCustomerAccountsInBranch(userId,
 							employeeBranchId);
 					if (accountDetails == null || customerDetails == null) {
-						log.warning("Error While Getting Customer Detail!! Try Again!!");
+						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
 						break;
 					}
 					userView.displayCustomerDetails(customerDetails);
@@ -531,7 +531,7 @@ public class MainController {
 					List<Transaction> transactionsHistory = transactionController
 							.getCustomerTransaction(accountNumberToGetTransaction, employeeBranchId, month);
 					if (transactionsHistory == null) {
-						log.warning("Transaction History Taken Failed!!!");
+						transactionView.transactionMessages("Transaction History Taken Failed!!!");
 						break;
 					}
 					transactionView.displayTransActionHistory(transactionsHistory);
@@ -545,7 +545,7 @@ public class MainController {
 					Map<String, List<Transaction>> allTransactionsOfCustomer = transactionController
 							.getAllTransactionsOfCustomer(userId, employeeBranchId, month);
 					if (allTransactionsOfCustomer == null) {
-						log.warning("Transaction History Taken Failed!!!");
+						transactionView.transactionMessages("Transaction History Taken Failed!!!");
 						break;
 					}
 					transactionView.displayAllTransActionHistory(allTransactionsOfCustomer);
@@ -556,9 +556,9 @@ public class MainController {
 					password = mainView.promptStringInput();
 					boolean isPasswordUpdated = userController.updatePassword(user.getUserId(), password);
 					if (isPasswordUpdated) {
-						userView.displayPasswordUpdatedSuccessMessage();
+						userView.userViewMessages("Password Updated Successfully!!");
 					} else {
-						userView.displayPasswordUpdatedFailedMessage();
+						userView.userViewMessages("Password Updated Failed!!");
 					}
 					break;
 				case 9:
@@ -572,9 +572,9 @@ public class MainController {
 					boolean isAmountDeposited = transactionController.depositAmount(accountToDeposite,
 							amountToDeposite);
 					if (isAmountDeposited) {
-						transactionView.displayDepositSuccessMessage();
+						transactionView.transactionMessages("Amount Deposited Successfully!!");
 					} else {
-						transactionView.displayDepositFailedMessage();
+						transactionView.transactionMessages("Amount Deposit Failed!! Try Again!!");
 					}
 					break;
 				case 10:
@@ -590,9 +590,9 @@ public class MainController {
 					boolean isAccountStatusChanged = accountController.activateDeactivateCustomerAccount(accountNumber,
 							employeeBranchId, status);
 					if (isAccountStatusChanged) {
-						accountView.displayAccountStatusUpdatedSuccess();
+						accountView.accountViewMessages("Bank Account Status Updated SuccessFully!!!");
 					} else {
-						accountView.displayAccountStatusUpdatedFailed();
+						accountView.accountViewMessages("Bank Account Status Updation Failed!!! Tyr Again!!");
 					}
 					break;
 				case 11:
@@ -673,9 +673,9 @@ public class MainController {
 					newEmployee.setBranchId(branchId);
 					boolean isEmployeeCreated = userController.registerNewEmployee(newEmployee);
 					if (isEmployeeCreated) {
-						userView.displayUserCreationSuccessMessage();
+						userView.userViewMessages("User Created Successfully!!");
 					} else {
-						userView.displayUserCreationFailureMessage();
+						userView.userViewMessages("User Creation Failed!! Try Again!!");
 					}
 					break;
 				case 2:
@@ -684,7 +684,7 @@ public class MainController {
 					int employeeId = mainView.promtForIntegerInput();
 					Employee employeeDetails = userController.getEmployeeDetails(employeeId);
 					if (employeeDetails == null) {
-						userView.displayDetailsRetervingFailedMessage();
+						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
 						break;
 					}
 					userView.displayEmployeeProfile(employeeDetails);
@@ -696,7 +696,7 @@ public class MainController {
 					Map<Integer, Employee> employeesList = userController
 							.getEmployeeFromOneBranch(branchIdToGetEmployees);
 					if (employeesList == null) {
-						userView.displayDetailsRetervingFailedMessage();
+						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
 						break;
 					}
 					userView.displayListOfEmployees(employeesList);
@@ -705,7 +705,7 @@ public class MainController {
 					log.info("4. View All Employees From Accross All Branch");
 					Map<Integer, Map<Integer, Employee>> allEmployeesList = userController.getEmployeeFromAllBranch();
 					if (allEmployeesList == null) {
-						userView.displayDetailsRetervingFailedMessage();
+						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
 						break;
 					}
 					userView.displayEmployeesByBranch(allEmployeesList);
@@ -747,9 +747,9 @@ public class MainController {
 					newCustomer.setAadharNumber(aadharNumber);
 					boolean isUserCreated = userController.registerNewCustomer(newCustomer);
 					if (isUserCreated) {
-						userView.displayUserCreationSuccessMessage();
+						userView.userViewMessages("User Created Successfully!!");
 					} else {
-						userView.displayUserCreationFailureMessage();
+						userView.userViewMessages("User Creation Failed!! Try Again!!");
 					}
 					break;
 				case 6:
@@ -770,9 +770,9 @@ public class MainController {
 					account.setBalance(balance);
 					boolean isAccountCreated = accountController.createAccount(account);
 					if (isAccountCreated) {
-						accountView.displayAccountCreationSuccessMessage();
+						accountView.accountViewMessages("Account Created Successfully!!!");
 					} else {
-						accountView.displayAccountCreationFailureMessage();
+						accountView.accountViewMessages("Account Creation Failed!! Try Again!!");
 					}
 					break;
 				case 7:
@@ -790,9 +790,9 @@ public class MainController {
 					boolean isAccountStatusChanged = accountController.activateDeactivateCustomerAccount(accountNumber,
 							branchId, status);
 					if (isAccountStatusChanged) {
-						accountView.displayAccountStatusUpdatedSuccess();
+						accountView.accountViewMessages("Bank Account Status Updated SuccessFully!!!");
 					} else {
-						accountView.displayAccountStatusUpdatedFailed();
+						accountView.accountViewMessages("Bank Account Status Updation Failed!!! Tyr Again!!");
 					}
 					break;
 				case 8:
@@ -804,7 +804,7 @@ public class MainController {
 					Customer customerDetail = userController.getCustomerDetails(accountNumber, branchId);
 					Account customerAccount = accountController.getAccountDetails(accountNumber, branchId);
 					if (customerDetail == null || customerAccount == null) {
-						userView.displayDetailsRetervingFailedMessage();
+						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
 						break;
 					}
 					userView.displayCustomerDetails(customerDetail);
@@ -831,7 +831,7 @@ public class MainController {
 					log.info("Enter the userID");
 					userId = mainView.promptForUserID();
 					Customer customer = userController.getCustomerDetailsById(userId);
-					Map<Integer, Map<String,Account>> allAccountDetails = accountController
+					Map<Integer, Map<String, Account>> allAccountDetails = accountController
 							.getCustomerAccountsInAllBranch(userId);
 					if (allAccountDetails == null || customer == null) {
 						log.warning("Error While Getting Customer Detail!! Try Again!!");
@@ -878,9 +878,9 @@ public class MainController {
 					password = mainView.promptStringInput();
 					boolean isPasswordUpdated = userController.updatePassword(user.getUserId(), password);
 					if (isPasswordUpdated) {
-						userView.displayPasswordUpdatedSuccessMessage();
+						userView.userViewMessages("Password Updated Successfully!!");
 					} else {
-						userView.displayPasswordUpdatedFailedMessage();
+						userView.userViewMessages("Password Updated Failed!!");
 					}
 					break;
 				case 14:
@@ -928,9 +928,9 @@ public class MainController {
 					if (fieldsToUpdate.size() == count) {
 						boolean isUserUpdated = userController.updateCustomer(userIdToUpdate, fieldsToUpdate);
 						if (isUserUpdated) {
-							userView.displayUpdateSuccessMessage();
+							userView.userViewMessages("Customer Details Updated Successfully!!");
 						} else {
-							userView.displayUpdateFailedMessage();
+							userView.userViewMessages("Customer Updation Failed!! Try Again!!");
 						}
 					}
 					break;

@@ -13,29 +13,17 @@ import com.banking.utils.InputValidator;
 public class TransactionView {
 
 	private static final Logger log = Logger.getLogger(TransactionView.class.getName());
+	
+	public void transactionMessages(String message) {
+		log.info(message);
+	}
 
 	public void displayInvalidAmmountMessage() {
 		log.info("Deposite or Withdrawal or Transfer Amount Should be greater than ZERO!!");
 	}
 
-	public void displayDepositSuccessMessage() {
-		log.info("Amount Deposited Successfully!!");
-	}
-
-	public void displayDepositFailedMessage() {
-		log.info("Amount Deposit Failed!! Try Again!!");
-	}
-
 	public void displayInsufficientBalanceMessage() {
 		log.info("Insufficient Balance!! Can't able to Tranfer or Withdraw!!!");
-	}
-
-	public void displayWithdrawSuccessMessage() {
-		log.info("Amount Withdrawed Successfully!!");
-	}
-
-	public void displayWithdrawFailedMessage() {
-		log.info("Amount Withdraw Failed!! Try Again!!");
 	}
 
 	public void displayInvalidAccountMessage() {
@@ -44,14 +32,6 @@ public class TransactionView {
 
 	public void displayAccountInActiveMessage() {
 		log.info("The Account is INACTIVE!! Please Try With Different Account!!");
-	}
-
-	public void displayTransactionSuccessMessage() {
-		log.info("Transaction Successfull!!!");
-	}
-
-	public void displayTransactionFailedMessage() {
-		log.info("Transaction Failed!!! Try Again!!");
 	}
 
 	public void displayNoStatementAvaliableMessage() {
