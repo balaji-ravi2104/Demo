@@ -55,13 +55,17 @@ public class AccountController {
 	public boolean createAccount(Account account) throws CustomException {
 		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isAccountCreated = false;
+		boolean isPrimary = false;
 		if (!userController.validateUser(account.getUserId())
 				|| !branchController.validateBranchId(account.getBranchId())
 				|| validateAccountType(account.getAccountType()) || validateBalance(account.getBalance())) {
 			return isAccountCreated;
 		}
+		if (!accountDao.customerHasAccount(account.getUserId())) {
+			isPrimary = true;
+		}
 		try {
-			isAccountCreated = accountDao.createAccount(account);
+			isAccountCreated = accountDao.createAccount(account,isPrimary);
 		} catch (Exception e) {
 			throw new CustomException("Erroe While Creating Account!!", e);
 		}

@@ -138,7 +138,8 @@ public class TransactionController {
 	private boolean validateAmount(double amountToDeposite) {
 		boolean isValid = true;
 		if (amountToDeposite <= 0) {
-			transactionView.displayInvalidAmmountMessage();
+			transactionView
+					.transactionMessages("Deposite or Withdrawal or Transfer Amount Should be greater than ZERO!!");
 			isValid = false;
 		}
 		return isValid;
@@ -147,7 +148,7 @@ public class TransactionController {
 	private boolean validateWithdrawAmount(Account selectedAccount, double amountToWithdraw) {
 		boolean isValid = true;
 		if (amountToWithdraw > selectedAccount.getBalance()) {
-			transactionView.displayInsufficientBalanceMessage();
+			transactionView.transactionMessages("Insufficient Balance!! Can't able to Tranfer or Withdraw!!!");
 			isValid = false;
 		}
 		return isValid;
@@ -156,7 +157,7 @@ public class TransactionController {
 	private boolean validateMonths(int numberOfMonths) {
 		boolean isValid = true;
 		if (numberOfMonths <= 0 || numberOfMonths > 6) {
-			transactionView.displayINvalidMonthSelectionMessage();
+			transactionView.transactionMessages("Please Enter the Valid Month.. From 1 to 6..");
 			isValid = false;
 		}
 		return isValid;

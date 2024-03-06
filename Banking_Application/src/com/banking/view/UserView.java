@@ -36,28 +36,16 @@ public class UserView {
 		log.info("Email : " + user.getEmail());
 		log.info("Contact Number : " + user.getContactNumber());
 		log.info("Address : " + user.getAddress());
-		log.info("DOB : " + user.getDateOfBirth());
-		log.info("Type of User : " + user.getTypeOfUser());
+		log.info("DOB : " + DateUtils.longToDate(user.getDateOfBirth()));
 		log.info("Login Account Status : " + user.getStatus());
-		log.info("-".repeat(60));
 	}
 
 	public void displayCustomerDetails(Customer customerDetails) throws CustomException {
 		InputValidator.isNull(customerDetails, ErrorMessages.INPUT_NULL_MESSAGE);
-		log.info("-------------------------------------------------------");
-		log.info(String.format("| %-15s | %-15s |", "Customer Id", customerDetails.getUserId()));
-		log.info(String.format("| %-15s | %-15s |", "First Name", customerDetails.getFirstName()));
-		log.info(String.format("| %-15s | %-15s |", "Last Name", customerDetails.getLastName()));
-		log.info(String.format("| %-15s | %-15s |", "Gender", customerDetails.getGender()));
-		log.info(String.format("| %-15s | %-15s |", "Email", customerDetails.getEmail()));
-		log.info(String.format("| %-15s | %-15s |", "Contact Number", customerDetails.getContactNumber()));
-		log.info(String.format("| %-15s | %-15s |", "Address", customerDetails.getAddress()));
-		log.info(String.format("| %-15s | %-15s |", "Date of Birth",
-				DateUtils.longToDate(customerDetails.getDateOfBirth())));
+		displayUserProfile(customerDetails);
 		log.info(String.format("| %-15s | %-15s |", "PAN Number", customerDetails.getPanNumber()));
 		log.info(String.format("| %-15s | %-15s |", "Aadhar Number", customerDetails.getAadharNumber()));
-		log.info(String.format("| %-15s | %-15s |", "Login Account Status", customerDetails.getStatus()));
-		log.info("-------------------------------------------------------");
+		log.info("-".repeat(60));
 	}
 
 	public void displayListOfEmployees(Map<Integer, Employee> employeesList) throws CustomException {

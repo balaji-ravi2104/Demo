@@ -13,39 +13,15 @@ import com.banking.utils.InputValidator;
 public class TransactionView {
 
 	private static final Logger log = Logger.getLogger(TransactionView.class.getName());
-	
+
 	public void transactionMessages(String message) {
 		log.info(message);
-	}
-
-	public void displayInvalidAmmountMessage() {
-		log.info("Deposite or Withdrawal or Transfer Amount Should be greater than ZERO!!");
-	}
-
-	public void displayInsufficientBalanceMessage() {
-		log.info("Insufficient Balance!! Can't able to Tranfer or Withdraw!!!");
-	}
-
-	public void displayInvalidAccountMessage() {
-		log.info("Invalid Account Number or No,Account is There With this Account Number");
-	}
-
-	public void displayAccountInActiveMessage() {
-		log.info("The Account is INACTIVE!! Please Try With Different Account!!");
-	}
-
-	public void displayNoStatementAvaliableMessage() {
-		log.info("No Statement Avaliable For your Account!!!");
-	}
-
-	public void displayNoHistoryMessage() {
-		log.info("No transaction history available!!");
 	}
 
 	public void displayStatements(List<Transaction> statement) throws CustomException {
 		InputValidator.isNull(statement, ErrorMessages.INPUT_NULL_MESSAGE);
 		if (statement.isEmpty()) {
-			displayNoStatementAvaliableMessage();
+			transactionMessages("No Statement Avaliable For your Account!!!");
 			return;
 		}
 		for (Transaction transaction : statement) {
@@ -61,7 +37,7 @@ public class TransactionView {
 	public void displayTransActionHistory(List<Transaction> transactionsHistory) throws CustomException {
 		InputValidator.isNull(transactionsHistory, ErrorMessages.INPUT_NULL_MESSAGE);
 		if (transactionsHistory.isEmpty()) {
-			displayNoHistoryMessage();
+			transactionMessages("No transaction history available!!");
 			return;
 		}
 		log.info("-".repeat(150));
@@ -84,7 +60,7 @@ public class TransactionView {
 	public void displayAllTransActionHistory(Map<String, List<Transaction>> allTransactionHistoryMap)
 			throws CustomException {
 		if (allTransactionHistoryMap.isEmpty()) {
-			displayNoHistoryMessage();
+			transactionMessages("No transaction history available!!");
 			return;
 		}
 		for (String accountNumber : allTransactionHistoryMap.keySet()) {
@@ -97,7 +73,7 @@ public class TransactionView {
 	public void displayTransactionsHistory(Map<Integer, Map<String, List<Transaction>>> allTransactionsHistory)
 			throws CustomException {
 		if (allTransactionsHistory.isEmpty()) {
-			displayNoHistoryMessage();
+			transactionMessages("No transaction history available!!");
 			return;
 		}
 		for (Map.Entry<Integer, Map<String, List<Transaction>>> entry : allTransactionsHistory.entrySet()) {
@@ -110,7 +86,7 @@ public class TransactionView {
 	public void displayTransactionByBranch(Map<Integer, Map<String, List<Transaction>>> transactionsOfCustomer)
 			throws CustomException {
 		if (transactionsOfCustomer.isEmpty()) {
-			displayNoHistoryMessage();
+			transactionMessages("No transaction history available!!");
 			return;
 		}
 		for (Map.Entry<Integer, Map<String, List<Transaction>>> entry : transactionsOfCustomer.entrySet()) {
@@ -118,19 +94,6 @@ public class TransactionView {
 			log.info("Transaction History Of Branch Id : " + branchId);
 			displayAllTransActionHistory(entry.getValue());
 		}
-	}
-
-	public void displayINvalidMonthSelectionMessage() {
-		log.info("Please Enter the Valid Month.. From 1 to 6..");
-	}
-
-	public void displayStatementTakenFailed() {
-		log.info("Statement Taken Failed !! Try Again!!");
-	}
-
-	public void displayNoHistoryInBranchMessage() {
-		log.info("No transaction history available for any customer in this branch.");
-
 	}
 
 }

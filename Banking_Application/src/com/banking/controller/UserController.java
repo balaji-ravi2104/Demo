@@ -292,54 +292,55 @@ public class UserController {
 			switch (fieldName) {
 			case FirstName:
 				if (InputValidator.validateString(fieldValue)) {
-					log.log(Level.WARNING, "First Name Cannot be Empty");
+					userView.userViewMessages("First Name Cannot be Empty");
 					isValid = false;
 				}
 				break;
 			case LastName:
 				if (InputValidator.validateString(fieldValue)) {
-					log.log(Level.WARNING, "Last Name Cannot be Empty");
+					userView.userViewMessages("Last Name Cannot be Empty");
 					isValid = false;
 				}
 				break;
 			case Gender:
 				if (InputValidator.validateString(fieldValue)) {
-					log.log(Level.WARNING, "Gender Cannot be Empty");
+					userView.userViewMessages("Gender Cannot be Empty");
 					isValid = false;
 				}
 				break;
 			case Email:
 				if (!InputValidator.validateEmail(fieldValue)) {
-					log.log(Level.WARNING, "Invalid Email Address");
+					userView.userViewMessages("Invalid Email Address");
 					isValid = false;
 				}
 				break;
 			case ContactNumber:
 				if (!InputValidator.validateMobileNumber(fieldValue)) {
-					log.log(Level.WARNING, "Invalid Mobile Number");
+					userView.userViewMessages("Invalid Mobile Number");
 					isValid = false;
 				}
 				break;
 			case Address:
 				if (InputValidator.validateString(fieldValue)) {
-					log.log(Level.WARNING, "Address Cannot be Empty");
+					userView.userViewMessages("Address Cannot be Empty");
 					isValid = false;
 				}
 				break;
 			case Pan:
 				if (!InputValidator.validatePanNumber(fieldValue)) {
-					log.log(Level.WARNING, "Invalid PAN Number!! Please Provide Valid PAN Number");
+					userView.userViewMessages("Invalid PAN Number!! Please Provide Valid PAN Number");
 					isValid = false;
 				}
 				break;
 			case Aadhar:
 				if (!InputValidator.validateAadharNumber(fieldValue)) {
-					log.log(Level.WARNING, "Invalid Aadhar Number!! Please Provide Valid Aadhar Number");
+					userView.userViewMessages("Invalid Aadhar Number!! Please Provide Valid Aadhar Number");
 					isValid = false;
 				}
 				break;
 			case Status:
 				if (InputValidator.validateAccountStatus(fieldValue)) {
+					userView.userViewMessages("First Name Cannot be Empty");
 					log.log(Level.WARNING, "Account Status Cannot be Empty!!!");
 					isValid = false;
 				}

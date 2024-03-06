@@ -18,7 +18,9 @@ import com.banking.utils.InputValidator;
 public class AccountDaoImplementation implements AccountDao {
 
 	private static final String CREATE_NEW_ACCOUNT = "INSERT INTO Accounts (user_id, account_number, "
-			+ "branch_id, account_type, balance) VALUES (?,?,?,?,?);";
+			+ "branch_id, account_type, balance,Primary_Account) VALUES (?,?,?,?,?,?);";
+
+	private static final String GET_ACCOUNT_COUNT = "SELECT COUNT(*) FROM Accounts WHERE user_id = ?;";
 
 	private static final String GET_PRIMARY_ACCOUNT = "SELECT * FROM Accounts Where user_id = ? AND Primary_Account = true;";
 
@@ -34,6 +36,30 @@ public class AccountDaoImplementation implements AccountDao {
 			+ "WHERE account_number = ? and branch_id = ?;";
 
 	private static final String UPDATE_BANK_ACCOUNT_STATUS = "UPDATE Accounts SET status = ? WHERE account_number = ?;";
+
+	@Override
+	public boolean createAccount(Account account, boolean isPrimary) throws CustomException {
+		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
+		boolean isAccountCreated = false;
+		String accountNumber = String.format("%04d%08d", account.getBranchId(),
+				getAccountCountInBranch(account.getBranchId()) + 1);
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(CREATE_NEW_ACCOUNT)) {
+			preparedStatement.setInt(1, account.getUserId());
+			preparedStatement.setString(2, accountNumber);
+			preparedStatement.setInt(3, account.getBranchId());
+			preparedStatement.setString(4, account.getAccountType());
+			preparedStatement.setDouble(5, account.getBalance());
+			preparedStatement.setBoolean(6, isPrimary);
+
+			int rowsAffected = preparedStatement.executeUpdate();
+			isAccountCreated = rowsAffected > 0;
+
+		} catch (SQLException e) {
+			throw new CustomException("Error While Creating new Account!!!", e);
+		}
+		return isAccountCreated;
+	}
 
 	@Override
 	public Account getCustomerPrimaryAccount(int userId) throws CustomException {
@@ -76,26 +102,20 @@ public class AccountDaoImplementation implements AccountDao {
 	}
 
 	@Override
-	public boolean createAccount(Account account) throws CustomException {
-		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
-		boolean isAccountCreated = false;
-		String accountNumber = String.format("%04d%08d", account.getBranchId(),
-				getAccountCountInBranch(account.getBranchId()) + 1);
+	public boolean customerHasAccount(int userId) throws CustomException {
+		boolean isAccountExists = false;
 		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(CREATE_NEW_ACCOUNT)) {
-			preparedStatement.setInt(1, account.getUserId());
-			preparedStatement.setString(2, accountNumber);
-			preparedStatement.setInt(3, account.getBranchId());
-			preparedStatement.setString(4, account.getAccountType());
-			preparedStatement.setDouble(5, account.getBalance());
-
-			int rowsAffected = preparedStatement.executeUpdate();
-			isAccountCreated = rowsAffected > 0;
-
+				PreparedStatement preparedStatement = connection.prepareStatement(GET_ACCOUNT_COUNT)) {
+			preparedStatement.setInt(1, userId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					isAccountExists = (resultSet.getInt(1) > 0);
+				}
+			}
 		} catch (SQLException e) {
-			throw new CustomException("Error While Creating new Account!!!", e);
+			throw new CustomException("Error While Checking Account Existing!!!", e);
 		}
-		return isAccountCreated;
+		return isAccountExists;
 	}
 
 	@Override

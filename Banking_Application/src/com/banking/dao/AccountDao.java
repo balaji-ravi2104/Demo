@@ -12,7 +12,7 @@ public interface AccountDao {
 
 	boolean checkAccountExists(String accountNumber, int branchId) throws CustomException;
 
-	boolean createAccount(Account account) throws CustomException;
+	boolean createAccount(Account account,boolean isPrimary) throws CustomException;
 
 	Account getAccountDetail(String accountNumber) throws CustomException;
 
@@ -23,4 +23,6 @@ public interface AccountDao {
 	Map<String, Account> getCustomerAccounts(int userId, int employeeBranchId) throws CustomException;
 
 	Map<Integer, Map<String, Account>> getCustomersAllAccount(int userId) throws CustomException;
+
+	boolean customerHasAccount(int userId) throws CustomException;
 }

@@ -6,8 +6,9 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value="getDateOfTransaction"/>
+		<item key="selection" value="getDateOfBirth"/>
 		<list key="findhistory">
+			<item value="getDateOfBirth"/>
 			<item value="getDateOfTransaction"/>
 			<item value="getEmployeeDetail"/>
 			<item value="newUser"/>
@@ -22,7 +23,6 @@
 			<item value=" getCountForBranchId"/>
 			<item value="System.out.println"/>
 			<item value="user"/>
-			<item value="object2"/>
 		</list>
 		<list key="replacehistory">
 			<item value="newEmployee"/>

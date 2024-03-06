@@ -276,7 +276,7 @@ public class MainController {
 						break;
 					}
 					if (statement.isEmpty()) {
-						transactionView.displayNoStatementAvaliableMessage();
+						transactionView.transactionMessages("No Statement Avaliable For your Account!!!");
 						break;
 					}
 					transactionView.displayStatements(statement);
@@ -569,6 +569,11 @@ public class MainController {
 					double amountToDeposite = mainView.promptDoubleInput();
 					Account accountToDeposite = accountController.getAccountDetails(accountNumber, employeeBranchId);
 					// System.out.println(accountToDeposite);
+					if (accountToDeposite.getStatus().equalsIgnoreCase(AccountStatus.INACTIVE.name())) {
+						transactionView
+								.transactionMessages("The Account is INACTIVE!! Please Try With Different Account!!");
+						break;
+					}
 					boolean isAmountDeposited = transactionController.depositAmount(accountToDeposite,
 							amountToDeposite);
 					if (isAmountDeposited) {

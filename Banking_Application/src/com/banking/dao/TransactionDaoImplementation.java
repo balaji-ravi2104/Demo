@@ -25,17 +25,17 @@ public class TransactionDaoImplementation implements TransactionDao {
 			+ "remark, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	private static final String GET_STATEMENT = "SELECT transaction_date, transaction_type,transaction_amount, "
-			+ "balance FROM Transaction WHERE viewer_account_number = ? AND transaction_date >= DATE_SUB(CURRENT_DATE(), "
-			+ "INTERVAL ? MONTH) order by transaction_id DESC";
+			+ "balance FROM Transaction WHERE viewer_account_number = ? AND FROM_UNIXTIME(transaction_date / 1000) >= "
+			+ "DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) order by transaction_id DESC";
 
 	private static final String GET_TRANSACTION_HISTORY = "select * From Transaction WHERE viewer_account_number = ? AND "
-			+ "transaction_date >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) ORDER BY transaction_id DESC;";
+			+ "FROM_UNIXTIME(transaction_date / 1000) >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) ORDER BY transaction_id DESC;";
 
 	private static final String GET_ALL_TRANSACTION_OF_CUSTOMER_IN_BRANCH = "SELECT t.transaction_id, t.user_id, "
 			+ "t.viewer_account_number, t.transacted_account_number, t.transaction_type, t.transaction_amount, "
 			+ "t.balance, t.transaction_date, t.remark, t.status FROM Transaction t JOIN Accounts a ON "
 			+ "t.viewer_account_number = a.account_number WHERE a.user_id = ? AND a.branch_id = ? AND "
-			+ "t.transaction_date >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) ORDER BY t.transaction_id DESC;";
+			+ "FROM_UNIXTIME(t.transaction_date / 1000) >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) ORDER BY t.transaction_id DESC;";
 
 	@Override
 	public boolean deposit(Account selectedAccount, double amountToDeposit) throws CustomException {
