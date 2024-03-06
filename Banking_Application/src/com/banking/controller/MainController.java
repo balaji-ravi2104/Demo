@@ -534,7 +534,7 @@ public class MainController {
 						transactionView.transactionMessages("Transaction History Taken Failed!!!");
 						break;
 					}
-					transactionView.displayTransActionHistory(transactionsHistory);
+					transactionView.displayTransactionHistory(transactionsHistory);
 					break;
 				case 7:
 					log.info("7.View All Transaction of A Customer In Branch");
@@ -859,7 +859,7 @@ public class MainController {
 						log.warning("Transaction History Taken Failed!!!");
 						break;
 					}
-					transactionView.displayTransActionHistory(transactionsHistory);
+					transactionView.displayTransactionHistory(transactionsHistory);
 					break;
 				case 12:
 					log.info("12. View Particular Customers One Branch Transaction");

@@ -24,7 +24,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 
 	private static final String TRANSACTION_LOG = "INSERT INTO Transaction (user_id, viewer_account_number, "
 			+ "transacted_account_number, transaction_type, transaction_amount, balance, transaction_date, "
-			+ "remark, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+			+ "remark, status,reference_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?);";
 
 	private static final String GET_STATEMENT = "SELECT transaction_date, transaction_type,transaction_amount, "
 			+ "balance FROM Transaction WHERE viewer_account_number = ? AND FROM_UNIXTIME(transaction_date / 1000) >= "
@@ -35,7 +35,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 
 	private static final String GET_ALL_TRANSACTION_OF_CUSTOMER_IN_BRANCH = "SELECT t.transaction_id, t.user_id, "
 			+ "t.viewer_account_number, t.transacted_account_number, t.transaction_type, t.transaction_amount, "
-			+ "t.balance, t.transaction_date, t.remark, t.status FROM Transaction t JOIN Accounts a ON "
+			+ "t.balance, t.transaction_date, t.remark, t.status,t.reference_id FROM Transaction t JOIN Accounts a ON "
 			+ "t.viewer_account_number = a.account_number WHERE a.user_id = ? AND a.branch_id = ? AND "
 			+ "FROM_UNIXTIME(t.transaction_date / 1000) >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) ORDER BY t.transaction_id DESC;";
 
@@ -52,7 +52,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 					account.getBalance() + amountToDeposit);
 			if (isBalanceUpdated) {
 				isAmountDepositedAndLoggedInTransaction = logTransaction(account, account.getAccountNumber(),
-						amountToDeposit, TransactionType.DEPOSIT.name());
+						amountToDeposit, TransactionType.DEPOSIT.name(), System.currentTimeMillis());
 				if (isAmountDepositedAndLoggedInTransaction) {
 					connection.commit();
 				} else {
@@ -78,7 +78,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 					account.getBalance() - amountToWithdraw);
 			if (isBalanceUpdated) {
 				isAmountWithdrawnAndLoggedInTransaction = logTransaction(account, account.getAccountNumber(),
-						amountToWithdraw, TransactionType.WITHDRAW.name());
+						amountToWithdraw, TransactionType.WITHDRAW.name(), System.currentTimeMillis());
 				if (isAmountWithdrawnAndLoggedInTransaction) {
 					connection.commit();
 				} else {
@@ -113,10 +113,13 @@ public class TransactionDaoImplementation implements TransactionDao {
 						newBalanceOfToAccount);
 
 				if (isToAccountBalanceUpdated) {
+					long referenceId = System.currentTimeMillis();
 					boolean isTransactionLoggedWithdraw = logTransaction(accountFromTransfer,
-							accountToTransfer.getAccountNumber(), amountToTransfer, TransactionType.WITHDRAW.name());
+							accountToTransfer.getAccountNumber(), amountToTransfer, TransactionType.WITHDRAW.name(),
+							referenceId);
 					boolean isTransactionLoggedDeposit = logTransaction(accountToTransfer,
-							accountFromTransfer.getAccountNumber(), amountToTransfer, TransactionType.DEPOSIT.name());
+							accountFromTransfer.getAccountNumber(), amountToTransfer, TransactionType.DEPOSIT.name(),
+							referenceId);
 
 					if (isTransactionLoggedWithdraw && isTransactionLoggedDeposit) {
 						connection.commit();
@@ -154,7 +157,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 
 			if (isFromAccountBalanceUpdated) {
 				isTransferSuccess = logTransaction(accountFromTransfer, accountNumberToTransfer,
-						amountToTransferWithOtherBank, TransactionType.WITHDRAW.name());
+						amountToTransferWithOtherBank, TransactionType.WITHDRAW.name(), System.currentTimeMillis());
 				if (isTransferSuccess) {
 					connection.commit();
 				} else {
@@ -233,7 +236,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 			throws SQLException {
 		while (resultSet.next()) {
 			Transaction transaction = getTransactionDetail(resultSet);
-			String accountNumber = transaction.getViwerAccount();
+			String accountNumber = transaction.getViewerAccount();
 			transactionList.computeIfAbsent(accountNumber, k -> new ArrayList<Transaction>()).add(transaction);
 		}
 	}
@@ -242,7 +245,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 		Transaction transaction = new Transaction();
 		transaction.setTransactionId(resultSet.getInt(1));
 		transaction.setUserId(resultSet.getInt(2));
-		transaction.setViwerAccount(resultSet.getString(3));
+		transaction.setViewerAccount(resultSet.getString(3));
 		transaction.setTransactedAccount(resultSet.getString(4));
 		transaction.setTransactionType(resultSet.getString(5));
 		transaction.setTransactedAmount(resultSet.getDouble(6));
@@ -250,6 +253,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 		transaction.setDateOfTransaction(resultSet.getLong(8));
 		transaction.setRemark(resultSet.getString(9));
 		transaction.setStatus(resultSet.getString(10));
+		transaction.setReferenceId(resultSet.getLong(11));
 		return transaction;
 	}
 
@@ -267,7 +271,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 	}
 
 	private boolean logTransaction(Account viewerAccount, String transactedAccountNumber, double amount,
-			String transactionType) throws CustomException {
+			String transactionType, long referenceId) throws CustomException {
 		boolean isLoggedSuccessfully = false;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(TRANSACTION_LOG)) {
@@ -278,8 +282,9 @@ public class TransactionDaoImplementation implements TransactionDao {
 			preparedStatement.setDouble(5, amount);
 			preparedStatement.setDouble(6, viewerAccount.getBalance());
 			preparedStatement.setLong(7, System.currentTimeMillis());
-			preparedStatement.setString(8, transactionType +" " +TransactionType.TRANSACTION.name());
+			preparedStatement.setString(8, transactionType + " " + TransactionType.TRANSACTION.name());
 			preparedStatement.setString(9, TransactionStatus.SUCCESS.name());
+			preparedStatement.setLong(10, referenceId);
 
 			int rowsAffected = preparedStatement.executeUpdate();
 

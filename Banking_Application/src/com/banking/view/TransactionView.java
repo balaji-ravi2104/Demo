@@ -34,23 +34,24 @@ public class TransactionView {
 		}
 	}
 
-	public void displayTransActionHistory(List<Transaction> transactionsHistory) throws CustomException {
+	public void displayTransactionHistory(List<Transaction> transactionsHistory) throws CustomException {
 		InputValidator.isNull(transactionsHistory, ErrorMessages.INPUT_NULL_MESSAGE);
 		if (transactionsHistory.isEmpty()) {
 			transactionMessages("No transaction history available!!");
 			return;
 		}
 		log.info("-".repeat(150));
-		log.info(String.format("| %-12s | %-8s | %-18s | %-18s | %-15s | %-12s | %-10s | %-20s | %-15s | %-10s |",
-				"TransactionId", "UserId", "ViewerAccount", "TransactedAccount", "TransactionType", "TransactionAmount",
-				"Balance", "TransactionDate", "Remark", "Status"));
+		log.info(String.format(
+				"| %-12s | %-8s | %-18s | %-18s | %-18s | %-15s | %-15s | %-15s | %-20s | %-20s | %-10s |",
+				"TransactionId", "UserId", "ReferenceId", "ViewerAccount", "TransactedAccount", "TransactionType",
+				"TransactionAmount", "Balance", "TransactionDate", "Remark", "Status"));
 		log.info("-".repeat(150));
 		for (Transaction transaction : transactionsHistory) {
 			log.info(String.format(
-					"| %-12d | %-8d | %-18s | %-18s | %-15s | %-12.2f | %-10.2f | %-20s | %-15s | %-10s |",
-					transaction.getTransactionId(), transaction.getUserId(), transaction.getViwerAccount(),
-					transaction.getTransactedAccount(), transaction.getTransactionType(),
-					transaction.getTransactedAmount(), transaction.getBalance(),
+					"| %-12d | %-8d | %-18d | %-18s | %-18s | %-15s | %-15.2f | %-15.2f | %-20s | %-20s | %-10s |",
+					transaction.getTransactionId(), transaction.getUserId(), transaction.getReferenceId(),
+					transaction.getViewerAccount(), transaction.getTransactedAccount(),
+					transaction.getTransactionType(), transaction.getTransactedAmount(), transaction.getBalance(),
 					DateUtils.formateLongToDate(transaction.getDateOfTransaction()), transaction.getRemark(),
 					transaction.getStatus()));
 		}
@@ -66,7 +67,7 @@ public class TransactionView {
 		for (String accountNumber : allTransactionHistoryMap.keySet()) {
 			List<Transaction> transactionList = allTransactionHistoryMap.get(accountNumber);
 			log.info("Transaction History OF Account Number :" + accountNumber);
-			displayTransActionHistory(transactionList);
+			displayTransactionHistory(transactionList);
 		}
 	}
 
