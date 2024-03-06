@@ -11,6 +11,8 @@ import java.util.Map;
 
 import com.banking.model.Account;
 import com.banking.model.Transaction;
+import com.banking.model.TransactionStatus;
+import com.banking.model.TransactionType;
 import com.banking.utils.CustomException;
 import com.banking.utils.DatabaseConnection;
 import com.banking.utils.ErrorMessages;
@@ -38,44 +40,52 @@ public class TransactionDaoImplementation implements TransactionDao {
 			+ "FROM_UNIXTIME(t.transaction_date / 1000) >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) ORDER BY t.transaction_id DESC;";
 
 	@Override
-	public boolean deposit(Account selectedAccount, double amountToDeposit) throws CustomException {
-		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
+	public boolean deposit(Account account, double amountToDeposit) throws CustomException {
+		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isAmountDepositedAndLoggedInTransaction = false;
-		try {
+		try (Connection connection = DatabaseConnection.getConnection()) {
+			connection.setAutoCommit(false);
 			if (amountToDeposit <= 0) {
 				throw new CustomException("Amount to be Deposited Should be Greater than ZERO!!!");
 			}
-			boolean isBalanceUpdated = updateAccountBalance(selectedAccount,
-					selectedAccount.getBalance() + amountToDeposit);
+			boolean isBalanceUpdated = updateAccountBalance(connection, account,
+					account.getBalance() + amountToDeposit);
 			if (isBalanceUpdated) {
-				isAmountDepositedAndLoggedInTransaction = logTransaction(selectedAccount,
-						selectedAccount.getAccountNumber(), amountToDeposit, "Deposit");
+				isAmountDepositedAndLoggedInTransaction = logTransaction(account, account.getAccountNumber(),
+						amountToDeposit, TransactionType.DEPOSIT.name());
+				if (isAmountDepositedAndLoggedInTransaction) {
+					connection.commit();
+				} else {
+					connection.rollback();
+				}
 			}
-		} catch (CustomException e) {
-			throw e;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Depositing Money", e);
 		}
 		return isAmountDepositedAndLoggedInTransaction;
 	}
 
 	@Override
-	public boolean withdraw(Account selectedAccount, double amountToWithdraw) throws CustomException {
-		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
+	public boolean withdraw(Account account, double amountToWithdraw) throws CustomException {
+		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isAmountWithdrawnAndLoggedInTransaction = false;
-		try {
-			if (selectedAccount.getBalance() < amountToWithdraw) {
+		try (Connection connection = DatabaseConnection.getConnection()) {
+			connection.setAutoCommit(false);
+			if (account.getBalance() < amountToWithdraw) {
 				throw new CustomException("Insufficient Balance");
 			}
-			boolean isBalanceUpdated = updateAccountBalance(selectedAccount,
-					selectedAccount.getBalance() - amountToWithdraw);
+			boolean isBalanceUpdated = updateAccountBalance(connection, account,
+					account.getBalance() - amountToWithdraw);
 			if (isBalanceUpdated) {
-				isAmountWithdrawnAndLoggedInTransaction = logTransaction(selectedAccount,
-						selectedAccount.getAccountNumber(), amountToWithdraw, "Withdraw");
+				isAmountWithdrawnAndLoggedInTransaction = logTransaction(account, account.getAccountNumber(),
+						amountToWithdraw, TransactionType.WITHDRAW.name());
+				if (isAmountWithdrawnAndLoggedInTransaction) {
+					connection.commit();
+				} else {
+					connection.rollback();
+				}
 			}
-		} catch (CustomException e) {
-			throw e;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			throw new CustomException("Error While Withdrawing Money", e);
 		}
 		return isAmountWithdrawnAndLoggedInTransaction;
@@ -94,17 +104,19 @@ public class TransactionDaoImplementation implements TransactionDao {
 			connection.setAutoCommit(false);
 
 			double newBalanceOfFromAccount = accountFromTransfer.getBalance() - amountToTransfer;
-			boolean isFromAccountBalanceUpdated = updateAccountBalance(accountFromTransfer, newBalanceOfFromAccount);
+			boolean isFromAccountBalanceUpdated = updateAccountBalance(connection, accountFromTransfer,
+					newBalanceOfFromAccount);
 
 			if (isFromAccountBalanceUpdated) {
 				double newBalanceOfToAccount = accountToTransfer.getBalance() + amountToTransfer;
-				boolean isToAccountBalanceUpdated = updateAccountBalance(accountToTransfer, newBalanceOfToAccount);
+				boolean isToAccountBalanceUpdated = updateAccountBalance(connection, accountToTransfer,
+						newBalanceOfToAccount);
 
 				if (isToAccountBalanceUpdated) {
 					boolean isTransactionLoggedWithdraw = logTransaction(accountFromTransfer,
-							accountToTransfer.getAccountNumber(), amountToTransfer, "Withdraw");
+							accountToTransfer.getAccountNumber(), amountToTransfer, TransactionType.WITHDRAW.name());
 					boolean isTransactionLoggedDeposit = logTransaction(accountToTransfer,
-							accountFromTransfer.getAccountNumber(), amountToTransfer, "Deposit");
+							accountFromTransfer.getAccountNumber(), amountToTransfer, TransactionType.DEPOSIT.name());
 
 					if (isTransactionLoggedWithdraw && isTransactionLoggedDeposit) {
 						connection.commit();
@@ -137,11 +149,17 @@ public class TransactionDaoImplementation implements TransactionDao {
 			connection.setAutoCommit(false);
 			double newBalanceOfFromAccount = accountFromTransfer.getBalance() - amountToTransferWithOtherBank;
 
-			boolean isFromAccountBalanceUpdated = updateAccountBalance(accountFromTransfer, newBalanceOfFromAccount);
+			boolean isFromAccountBalanceUpdated = updateAccountBalance(connection, accountFromTransfer,
+					newBalanceOfFromAccount);
 
 			if (isFromAccountBalanceUpdated) {
 				isTransferSuccess = logTransaction(accountFromTransfer, accountNumberToTransfer,
-						amountToTransferWithOtherBank, "Withdraw");
+						amountToTransferWithOtherBank, TransactionType.WITHDRAW.name());
+				if (isTransferSuccess) {
+					connection.commit();
+				} else {
+					connection.rollback();
+				}
 			}
 		} catch (SQLException e) {
 		}
@@ -260,31 +278,31 @@ public class TransactionDaoImplementation implements TransactionDao {
 			preparedStatement.setDouble(5, amount);
 			preparedStatement.setDouble(6, viewerAccount.getBalance());
 			preparedStatement.setLong(7, System.currentTimeMillis());
-			preparedStatement.setString(8, transactionType + " Transaction");
-			preparedStatement.setString(9, "Success");
+			preparedStatement.setString(8, transactionType +" " +TransactionType.TRANSACTION.name());
+			preparedStatement.setString(9, TransactionStatus.SUCCESS.name());
 
 			int rowsAffected = preparedStatement.executeUpdate();
 
 			isLoggedSuccessfully = (rowsAffected > 0);
 
 		} catch (SQLException e) {
-			throw new CustomException("Error While Logging In Transaction", e);
+			throw new CustomException("Error While Logging Details fIn Transaction", e);
 		}
 		return isLoggedSuccessfully;
 	}
 
-	private boolean updateAccountBalance(Account selectedAccount, double amountToUpdate) throws CustomException {
-		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
+	private boolean updateAccountBalance(Connection connection, Account account, double amountToUpdate)
+			throws CustomException {
+		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isBalanceUpdated = false;
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)) {
+		try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)) {
 
 			preparedStatement.setDouble(1, amountToUpdate);
-			preparedStatement.setString(2, selectedAccount.getAccountNumber());
+			preparedStatement.setString(2, account.getAccountNumber());
 
 			int rowsAffected = preparedStatement.executeUpdate();
 			if (rowsAffected > 0) {
-				selectedAccount.setBalance(amountToUpdate);
+				account.setBalance(amountToUpdate);
 				isBalanceUpdated = true;
 			}
 		} catch (SQLException e) {

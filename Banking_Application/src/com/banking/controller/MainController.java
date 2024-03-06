@@ -235,7 +235,7 @@ public class MainController {
 					log.info("Enter the Amount to Transfer");
 					double amountToTransfer = mainView.promptDoubleInput();
 					Account accountToTransfer = accountController.getAccountDetails(accountNumber, branchId);
-					System.out.println(accountToTransfer);
+					//System.out.println(accountToTransfer);
 					if (accountToTransfer == null) {
 						transactionView.transactionMessages("Transaction Failed!!! Try Again!!");
 						break;

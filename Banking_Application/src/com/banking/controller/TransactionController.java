@@ -6,6 +6,7 @@ import java.util.Map;
 import com.banking.dao.TransactionDao;
 import com.banking.dao.TransactionDaoImplementation;
 import com.banking.model.Account;
+import com.banking.model.AccountStatus;
 import com.banking.model.Transaction;
 import com.banking.utils.CustomException;
 import com.banking.utils.ErrorMessages;
@@ -28,28 +29,28 @@ public class TransactionController {
 		this.transactionView = new TransactionView();
 	}
 
-	public boolean depositAmount(Account selectedAccount, double amountToDeposite) throws CustomException {
-		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
+	public boolean depositAmount(Account account, double amountToDeposite) throws CustomException {
+		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isDepositeSuccess = false;
 		if (!validateAmount(amountToDeposite)) {
 			return isDepositeSuccess;
 		}
 		try {
-			isDepositeSuccess = transactionDao.deposit(selectedAccount, amountToDeposite);
+			isDepositeSuccess = transactionDao.deposit(account, amountToDeposite);
 		} catch (Exception e) {
 			throw new CustomException("Error while Depositing Money!!", e);
 		}
 		return isDepositeSuccess;
 	}
 
-	public boolean withdrawAmount(Account selectedAccount, double amountToWithdraw) throws CustomException {
-		InputValidator.isNull(selectedAccount, ErrorMessages.INPUT_NULL_MESSAGE);
+	public boolean withdrawAmount(Account account, double amountToWithdraw) throws CustomException {
+		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isWithdrawSuccess = false;
-		if (!validateAmount(amountToWithdraw) || !validateWithdrawAmount(selectedAccount, amountToWithdraw)) {
+		if (!validateAmount(amountToWithdraw) || !validateWithdrawAmount(account, amountToWithdraw)) {
 			return isWithdrawSuccess;
 		}
 		try {
-			isWithdrawSuccess = transactionDao.withdraw(selectedAccount, amountToWithdraw);
+			isWithdrawSuccess = transactionDao.withdraw(account, amountToWithdraw);
 		} catch (Exception e) {
 			throw new CustomException("Error while Depositing Money!!", e);
 		}
@@ -62,6 +63,10 @@ public class TransactionController {
 		InputValidator.isNull(accountToTransfer, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isTransactionSuccess = false;
 		if (!validateAmount(amountToTransfer) || !validateWithdrawAmount(accountFromTransfer, amountToTransfer)) {
+			return isTransactionSuccess;
+		}
+		if (accountToTransfer.getStatus().equalsIgnoreCase(AccountStatus.INACTIVE.name())) {
+			transactionView.transactionMessages("The Account is INACTIVE!! Please Try With Different Account!!");
 			return isTransactionSuccess;
 		}
 		try {
@@ -145,9 +150,9 @@ public class TransactionController {
 		return isValid;
 	}
 
-	private boolean validateWithdrawAmount(Account selectedAccount, double amountToWithdraw) {
+	private boolean validateWithdrawAmount(Account account, double amountToWithdraw) {
 		boolean isValid = true;
-		if (amountToWithdraw > selectedAccount.getBalance()) {
+		if (amountToWithdraw > account.getBalance()) {
 			transactionView.transactionMessages("Insufficient Balance!! Can't able to Tranfer or Withdraw!!!");
 			isValid = false;
 		}
