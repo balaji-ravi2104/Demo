@@ -6,26 +6,29 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value=" getCountForBranchId"/>
+		<item key="selection" value="getDateOfTransaction"/>
 		<list key="findhistory">
+			<item value="getDateOfTransaction"/>
+			<item value="getEmployeeDetail"/>
+			<item value="newUser"/>
+			<item value="s"/>
+			<item value=" | ClassNotFoundException"/>
+			<item value="Class"/>
+			<item value="getCustomerDetails"/>
+			<item value="User"/>
+			<item value="addCustomer"/>
+			<item value="UserType"/>
+			<item value=" UserType"/>
 			<item value=" getCountForBranchId"/>
 			<item value="System.out.println"/>
 			<item value="user"/>
 			<item value="object2"/>
-			<item value="err"/>
-			<item value="MyClass"/>
-			<item value="hjk"/>
-			<item value="&quot;.txt&quot;"/>
-			<item value="mills"/>
-			<item value="catch (DateTimeException | ZoneRulesException | IllegalArgumentException | SecurityException e) {&#x0A;            &#x0A;        }"/>
-			<item value="storeProperties"/>
-			<item value="addOneAndOneValue"/>
-			<item value="addDiffKeyAndValue"/>
-			<item value="ArrayList"/>
-			<item value="@Override"/>
 		</list>
 		<list key="replacehistory">
+			<item value="newEmployee"/>
+			<item value="newCustomer"/>
 			<item value=""/>
+			<item value="customer"/>
 			<item value="log.info"/>
 			<item value="dataArrayObject1"/>
 			<item value="out"/>

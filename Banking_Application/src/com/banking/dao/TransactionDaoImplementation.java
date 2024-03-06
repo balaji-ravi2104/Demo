@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -215,7 +213,6 @@ public class TransactionDaoImplementation implements TransactionDao {
 
 	private void getCustomersTransactionDetail(ResultSet resultSet, Map<String, List<Transaction>> transactionList)
 			throws SQLException {
-
 		while (resultSet.next()) {
 			Transaction transaction = getTransactionDetail(resultSet);
 			String accountNumber = transaction.getViwerAccount();
@@ -232,7 +229,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 		transaction.setTransactionType(resultSet.getString(5));
 		transaction.setTransactedAmount(resultSet.getDouble(6));
 		transaction.setBalance(resultSet.getDouble(7));
-		transaction.setDateOfTransaction(resultSet.getDate(8));
+		transaction.setDateOfTransaction(resultSet.getLong(8));
 		transaction.setRemark(resultSet.getString(9));
 		transaction.setStatus(resultSet.getString(10));
 		return transaction;
@@ -242,7 +239,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 		Transaction transaction;
 		while (resultSet.next()) {
 			transaction = new Transaction();
-			transaction.setDateOfTransaction(resultSet.getDate(1));
+			transaction.setDateOfTransaction(resultSet.getLong(1));
 			transaction.setTransactionType(resultSet.getString(2));
 			transaction.setTransactedAmount(resultSet.getDouble(3));
 			transaction.setBalance(resultSet.getDouble(4));
@@ -262,7 +259,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 			preparedStatement.setString(4, transactionType);
 			preparedStatement.setDouble(5, amount);
 			preparedStatement.setDouble(6, viewerAccount.getBalance());
-			preparedStatement.setTimestamp(7, Timestamp.from(Instant.now()));
+			preparedStatement.setLong(7, System.currentTimeMillis());
 			preparedStatement.setString(8, transactionType + " Transaction");
 			preparedStatement.setString(9, "Success");
 

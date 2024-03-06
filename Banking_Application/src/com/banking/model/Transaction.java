@@ -1,7 +1,5 @@
 package com.banking.model;
 
-import java.sql.Date;
-
 public class Transaction {
 	private int transactionId;
 	private int userId;
@@ -11,7 +9,7 @@ public class Transaction {
 	private String transactionType;
 	private double transactedAmount;
 	private double balance;
-	private Date dateOfTransaction;
+	private long dateOfTransaction;
 	private String remark;
 	private String status;
 
@@ -55,11 +53,11 @@ public class Transaction {
 		this.balance = balance;
 	}
 
-	public Date getDateOfTransaction() {
+	public long getDateOfTransaction() {
 		return dateOfTransaction;
 	}
 
-	public void setDateOfTransaction(Date dateOfTransaction) {
+	public void setDateOfTransaction(long dateOfTransaction) {
 		this.dateOfTransaction = dateOfTransaction;
 	}
 

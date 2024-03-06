@@ -25,6 +25,19 @@ public class AccountController {
 	public AccountController() {
 	}
 
+	public Account getPrimaryAccount(int userId) throws CustomException {
+		Account account = null;
+		if (!userController.validateUser(userId)) {
+			return account;
+		}
+		try {
+			account = accountDao.getCustomerPrimaryAccount(userId);
+		} catch (Exception e) {
+			throw new CustomException("Error while Getting Primary Account", e);
+		}
+		return account;
+	}
+
 	public boolean isAccountExistsInTheBranch(String accountNumber, int branchId) throws CustomException {
 		InputValidator.isNull(accountNumber, "Account Number Cannot be Null!!!");
 		boolean isAccountExists = false;
@@ -92,8 +105,8 @@ public class AccountController {
 		return customerAccounts;
 	}
 
-	public Map<Integer, List<Account>> getCustomerAccountsInAllBranch(int userId) throws CustomException {
-		Map<Integer, List<Account>> customerAccounts = null;
+	public Map<Integer, Map<String, Account>> getCustomerAccountsInAllBranch(int userId) throws CustomException {
+		Map<Integer, Map<String, Account>> customerAccounts = null;
 		if (!userController.validateUser(userId)) {
 			return customerAccounts;
 		}

@@ -20,6 +20,8 @@ public class AccountDaoImplementation implements AccountDao {
 	private static final String CREATE_NEW_ACCOUNT = "INSERT INTO Accounts (user_id, account_number, "
 			+ "branch_id, account_type, balance) VALUES (?,?,?,?,?);";
 
+	private static final String GET_PRIMARY_ACCOUNT = "SELECT * FROM Accounts Where user_id = ? AND Primary_Account = true;";
+
 	private static final String GET_COUNT_OF_ACCOUNT_IN_BRANCH = "SELECT COUNT(*) FROM Accounts WHERE branch_id = ?";
 
 	private static final String GET_ACCOUNT_DETAILS = "SELECT * FROM Accounts WHERE account_number = ?;";
@@ -28,17 +30,35 @@ public class AccountDaoImplementation implements AccountDao {
 
 	private static final String GET_ALL_ACCOUNTS_OF_CUSTOMER = "SELECT * FROM Accounts WHERE user_id = ?;";
 
-	private static final String CHECK_CUSTOMER_ACCOUNT_EXISTS_QUERY_IN_BRANCH = "SELECT COUNT(*) FROM Accounts "
+	private static final String CHECK_CUSTOMER_ACCOUNT_EXISTS_IN_BRANCH = "SELECT COUNT(*) FROM Accounts "
 			+ "WHERE account_number = ? and branch_id = ?;";
 
 	private static final String UPDATE_BANK_ACCOUNT_STATUS = "UPDATE Accounts SET status = ? WHERE account_number = ?;";
+
+	@Override
+	public Account getCustomerPrimaryAccount(int userId) throws CustomException {
+		Account account = null;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(GET_PRIMARY_ACCOUNT)) {
+			preparedStatement.setInt(1, userId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					account = new Account();
+					getAccount(resultSet, account);
+				}
+			}
+		} catch (SQLException e) {
+			throw new CustomException("Error While Checking Account Existing!!!", e);
+		}
+		return account;
+	}
 
 	@Override
 	public boolean checkAccountExists(String accountNumber, int branchId) throws CustomException {
 		boolean isAccountExists = false;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection
-						.prepareStatement(CHECK_CUSTOMER_ACCOUNT_EXISTS_QUERY_IN_BRANCH)) {
+						.prepareStatement(CHECK_CUSTOMER_ACCOUNT_EXISTS_IN_BRANCH)) {
 			preparedStatement.setString(1, accountNumber);
 			preparedStatement.setInt(2, branchId);
 
@@ -117,14 +137,14 @@ public class AccountDaoImplementation implements AccountDao {
 	}
 
 	@Override
-	public Map<Integer, List<Account>> getCustomersAllAccount(int userId) throws CustomException {
-		Map<Integer, List<Account>> allAccounts = null;
+	public Map<Integer, Map<String, Account>> getCustomersAllAccount(int userId) throws CustomException {
+		Map<Integer, Map<String, Account>> allAccounts = null;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_ACCOUNTS_OF_CUSTOMER)) {
 
 			preparedStatement.setInt(1, userId);
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				allAccounts = new TreeMap<Integer, List<Account>>();
+				allAccounts = new TreeMap<Integer, Map<String, Account>>();
 				getAccountsByBranch(resultSet, allAccounts);
 			}
 
@@ -134,14 +154,18 @@ public class AccountDaoImplementation implements AccountDao {
 		return allAccounts;
 	}
 
-	private void getAccountsByBranch(ResultSet resultSet, Map<Integer, List<Account>> allAccounts) throws SQLException {
+	private void getAccountsByBranch(ResultSet resultSet, Map<Integer, Map<String, Account>> allAccounts)
+			throws SQLException {
 		Account account;
 		while (resultSet.next()) {
 			account = new Account();
-			account = getAccount(resultSet, account);
+			getAccount(resultSet, account);
 			int branchId = account.getBranchId();
+			String accountNumber = account.getAccountNumber();
 
-			allAccounts.computeIfAbsent(branchId, k -> new ArrayList<>()).add(account);
+			allAccounts.computeIfAbsent(branchId, k -> new TreeMap<String, Account>());
+			Map<String, Account> branchAccounts = allAccounts.get(branchId);
+			branchAccounts.put(accountNumber, account);
 		}
 	}
 
@@ -161,26 +185,6 @@ public class AccountDaoImplementation implements AccountDao {
 			throw new CustomException("Error While Reterving All Account of a Customer!!!", e);
 		}
 		return accounts;
-	}
-
-	@Override
-	public boolean checkCustomerAccountPresentInBranch(String accountNumber, int branchId) throws CustomException {
-		boolean userIdExists = false;
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection
-						.prepareStatement(CHECK_CUSTOMER_ACCOUNT_EXISTS_QUERY_IN_BRANCH)) {
-			preparedStatement.setString(1, accountNumber);
-			preparedStatement.setInt(2, branchId);
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				if (resultSet.next()) {
-					int count = resultSet.getInt(1);
-					userIdExists = (count > 0);
-				}
-			}
-		} catch (SQLException e) {
-			throw new CustomException("Error While Checking Customer Account Details", e);
-		}
-		return userIdExists;
 	}
 
 	@Override
@@ -233,7 +237,7 @@ public class AccountDaoImplementation implements AccountDao {
 		return accountCount;
 	}
 
-	private Account getAccount(ResultSet resultSet, Account account) throws SQLException {
+	private void getAccount(ResultSet resultSet, Account account) throws SQLException {
 		account.setAccountId(resultSet.getInt(1));
 		account.setUserId(resultSet.getInt(2));
 		account.setAccountNumber(resultSet.getString(3));
@@ -241,7 +245,6 @@ public class AccountDaoImplementation implements AccountDao {
 		account.setAccountType(resultSet.getString(5));
 		account.setBalance(resultSet.getDouble(6));
 		account.setStatus(resultSet.getString(7));
-		return account;
 	}
 
 }

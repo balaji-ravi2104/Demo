@@ -100,7 +100,7 @@ public class UserDaoImplementation implements UserDao {
 			createUserStatement.setString(5, customer.getEmail());
 			createUserStatement.setString(6, customer.getContactNumber());
 			createUserStatement.setString(7, customer.getAddress());
-			createUserStatement.setDate(8, Date.valueOf(customer.getDateOfBirth()));
+			createUserStatement.setLong(8, customer.getDateOfBirth());
 			createUserStatement.setString(9, customer.getTypeOfUser());
 
 			int rowsAffected = createUserStatement.executeUpdate();
@@ -136,7 +136,7 @@ public class UserDaoImplementation implements UserDao {
 			createUserStatement.setString(5, newEmployee.getEmail());
 			createUserStatement.setString(6, newEmployee.getContactNumber());
 			createUserStatement.setString(7, newEmployee.getAddress());
-			createUserStatement.setDate(8, Date.valueOf(newEmployee.getDateOfBirth()));
+			createUserStatement.setLong(8, newEmployee.getDateOfBirth());
 			createUserStatement.setString(9, newEmployee.getTypeOfUser());
 
 			int rowsAffected = createUserStatement.executeUpdate();
@@ -457,7 +457,7 @@ public class UserDaoImplementation implements UserDao {
 		customerDetails.setEmail(resultSet.getString(5));
 		customerDetails.setContactNumber(resultSet.getString(6));
 		customerDetails.setAddress(resultSet.getString(7));
-		customerDetails.setDateOfBirth(resultSet.getDate(8).toString());
+		customerDetails.setDateOfBirth(resultSet.getLong(8));
 		customerDetails.setStatus(resultSet.getString(9));
 		customerDetails.setAadharNumber(resultSet.getString(10));
 		customerDetails.setPanNumber(resultSet.getString(11));
@@ -472,7 +472,7 @@ public class UserDaoImplementation implements UserDao {
 		user.setEmail(resultSet.getString(5));
 		user.setContactNumber(resultSet.getString(6));
 		user.setAddress(resultSet.getString(7));
-		user.setDateOfBirth(resultSet.getString(8));
+		user.setDateOfBirth(resultSet.getLong(8));
 		user.setTypeOfUser(resultSet.getString(9));
 		user.setStatus(resultSet.getString(10));
 	}

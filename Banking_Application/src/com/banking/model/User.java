@@ -9,7 +9,7 @@ public class User {
 	private String email;
 	private String contactNumber;
 	private String address;
-	private String dateOfBirth;
+	private long dateOfBirth;
 	private String typeOfUser;
 	private String Status;
 
@@ -85,11 +85,11 @@ public class User {
 		this.address = address;
 	}
 
-	public String getDateOfBirth() {
+	public long getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(String dateOfBirth) {
+	public void setDateOfBirth(long dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 

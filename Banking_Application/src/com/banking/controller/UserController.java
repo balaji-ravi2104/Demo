@@ -233,10 +233,6 @@ public class UserController {
 			log.log(Level.WARNING, "Type Of the User Cannot't Be Empty!!");
 			isValid = false;
 		}
-		if (!InputValidator.validateDateOfBirth(user.getDateOfBirth())) {
-			log.log(Level.WARNING, "Invalid Date Of Birth!! Please Provide(YYYY-MM-DD)");
-			isValid = false;
-		}
 		if (!InputValidator.validateAadharNumber(user.getAadharNumber())) {
 			log.log(Level.WARNING, "Invalid Aadhar Number!!");
 			isValid = false;
@@ -289,6 +285,9 @@ public class UserController {
 		boolean isValid = true;
 		for (Entry<K, V> entry : fieldsToUpdate.entrySet()) {
 			Field fieldName = (Field) entry.getKey();
+			if (Field.DateOfBirth.name().equals(fieldName.name())) {
+				continue;
+			}
 			String fieldValue = (String) entry.getValue();
 			switch (fieldName) {
 			case FirstName:
@@ -324,12 +323,6 @@ public class UserController {
 			case Address:
 				if (InputValidator.validateString(fieldValue)) {
 					log.log(Level.WARNING, "Address Cannot be Empty");
-					isValid = false;
-				}
-				break;
-			case DateOfBirth:
-				if (!InputValidator.validateDateOfBirth(fieldValue)) {
-					log.log(Level.WARNING, "Invalid Date Of Birth!! Please Provide(YYYY-MM-DD)");
 					isValid = false;
 				}
 				break;

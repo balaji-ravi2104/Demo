@@ -17,6 +17,7 @@ import com.banking.model.UserType;
 import com.banking.utils.CommonUtils;
 import com.banking.utils.CommonUtils.Field;
 import com.banking.utils.CustomException;
+import com.banking.utils.DateUtils;
 import com.banking.utils.PasswordGenerator;
 import com.banking.utils.ThreadLocalStroage;
 import com.banking.view.AccountView;
@@ -143,11 +144,20 @@ public class MainController {
 	}
 
 	private void performCustomerOperations(User user) {
-		Account selectedAccount = accountSelectionOperation(user);
+		Account selectedAccount = null;
+		boolean isActiveAccount = false;
+		try {
+			selectedAccount = accountController.getPrimaryAccount(user.getUserId());
+		} catch (CustomException e) {
+			log.warning("Error While Choosing Primary Account!!!");
+		}
 		// System.out.println(selectedAccount);
 		if (selectedAccount == null) {
-			log.info("You Can Logout And Contact the Bank!!");
+			log.info("Error While Choosing Primary Account!!!");
 			return;
+		}
+		if (selectedAccount.getStatus().equalsIgnoreCase(AccountStatus.ACTIVE.name())) {
+			isActiveAccount = true;
 		}
 		boolean isCustomerAlive = true;
 		while (isCustomerAlive) {
@@ -183,6 +193,10 @@ public class MainController {
 					break;
 				case 4:
 					log.info("4.Deposite Money");
+					if (!isActiveAccount) {
+						accountView.displayAccountsInActiveMessage();
+						break;
+					}
 					log.info("Enter the Amount to Deposite");
 					double amountToDeposite = mainView.promptDoubleInput();
 					boolean isAmountDeposited = transactionController.depositAmount(selectedAccount, amountToDeposite);
@@ -194,6 +208,10 @@ public class MainController {
 					break;
 				case 5:
 					log.info("5.Withdraw Money!!");
+					if (!isActiveAccount) {
+						accountView.displayAccountsInActiveMessage();
+						break;
+					}
 					log.info("Enter the Amount to Withdraw");
 					double amountToWithdraw = mainView.promptDoubleInput();
 					boolean isAmountWithdrawed = transactionController.withdrawAmount(selectedAccount,
@@ -206,6 +224,10 @@ public class MainController {
 					break;
 				case 6:
 					log.info("6.Transfer Within Bank");
+					if (!isActiveAccount) {
+						accountView.displayAccountsInActiveMessage();
+						break;
+					}
 					log.info("Enter the Account Number to Transfer the Amount");
 					String accountNumber = mainView.promptStringInput();
 					log.info("Enter the Branch Id");
@@ -228,6 +250,10 @@ public class MainController {
 					break;
 				case 7:
 					log.info("7.Transfer With Other Bank!!");
+					if (!isActiveAccount) {
+						accountView.displayAccountsInActiveMessage();
+						break;
+					}
 					log.info("Enter the Account Number to Transfer the Amount");
 					String accountNumberToTransfer = mainView.promptStringInput();
 					log.info("Enter the Amount to Transfer");
@@ -269,6 +295,10 @@ public class MainController {
 				case 10:
 					log.info("10.Switch Account");
 					selectedAccount = accountSelectionOperation(user);
+					isActiveAccount = false;
+					if (selectedAccount.getStatus().equalsIgnoreCase(AccountStatus.ACTIVE.name())) {
+						isActiveAccount = true;
+					}
 					break;
 				case 11:
 					isCustomerAlive = false;
@@ -305,14 +335,8 @@ public class MainController {
 			for (Account account : accounts) {
 				log.info("((" + accountNumber + "))");
 				accountView.displayAccountDetails(account);
-				if (account.getStatus().equalsIgnoreCase("ACTIVE")) {
-					accountMap.put(accountNumber, account);
-					accountNumber++;
-				}
-			}
-			if (accountMap.isEmpty()) {
-				log.info("You don't have any active accounts.");
-				return selectedAccount;
+				accountMap.put(accountNumber, account);
+				accountNumber++;
 			}
 			while (!isAccountSelected) {
 				log.info("Please choose an account to continue:");
@@ -367,13 +391,14 @@ public class MainController {
 					log.info("Enter the Gender");
 					String gender = mainView.promptStringInput();
 					log.info("Enter the Email");
-					String email = mainView.promptStringInput().trim();
+					String email = mainView.promptStringInput();
 					log.info("Enter the Contact Number");
-					String number = mainView.promptStringInput().trim();
+					String number = mainView.promptStringInput();
 					log.info("Enter the Address");
-					String address = mainView.promptStringInput().trim();
+					String address = mainView.promptStringInput();
 					log.info("Enter the date of birth(YYYY-MM-DD)");
 					String dob = mainView.promptStringInput().trim();
+					long dateOfBirth = DateUtils.formatDate(DateUtils.formatDateString(dob));
 					log.info("Enter the PAN Number");
 					String panNumber = mainView.promptStringInput();
 					log.info("Enter the Aadhar Number");
@@ -387,7 +412,7 @@ public class MainController {
 					newCustomer.setEmail(email);
 					newCustomer.setContactNumber(number);
 					newCustomer.setAddress(address);
-					newCustomer.setDateOfBirth(dob);
+					newCustomer.setDateOfBirth(dateOfBirth);
 					newCustomer.setTypeOfUser(typeOfUser);
 					newCustomer.setPanNumber(panNumber);
 					newCustomer.setAadharNumber(aadharNumber);
@@ -425,7 +450,7 @@ public class MainController {
 					mainView.displayFieldName(fieldMap);
 					log.info("Enter the UserId to Update");
 					int userIdToUpdate = mainView.promptForUserID();
-					Map<Field, String> fieldsToUpdate = new HashMap<>();
+					Map<Field, Object> fieldsToUpdate = new HashMap<>();
 					log.info("Enter the Number Of Field To be Updated");
 					int count = mainView.promtForIntegerInput();
 					log.info("Please Enter the Field Number to Update");
@@ -454,6 +479,11 @@ public class MainController {
 						}
 						log.info("Enter the Value to Update");
 						String value = mainView.promptStringInput();
+						if (choice == 7) {
+							fieldsToUpdate.put(fieldMap.get(choice),
+									DateUtils.formatDate(DateUtils.formatDateString(value)));
+							continue;
+						}
 						fieldsToUpdate.put(fieldMap.get(choice), value);
 					}
 					if (fieldsToUpdate.size() == count) {
@@ -619,13 +649,14 @@ public class MainController {
 					log.info("Enter the Gender");
 					String gender = mainView.promptStringInput();
 					log.info("Enter the Email");
-					String email = mainView.promptStringInput().trim();
+					String email = mainView.promptStringInput();
 					log.info("Enter the Contact Number");
-					String number = mainView.promptStringInput().trim();
+					String number = mainView.promptStringInput();
 					log.info("Enter the Address");
-					String address = mainView.promptStringInput().trim();
+					String address = mainView.promptStringInput();
 					log.info("Enter the date of birth(YYYY-MM-DD)");
-					String dob = mainView.promptStringInput().trim();
+					String dob = mainView.promptStringInput();
+					long dateOfBirth = DateUtils.formatDate(DateUtils.formatDateString(dob));
 					log.info("Enter the Branch Id:");
 					int branchId = mainView.promtForIntegerInput();
 					String typeOfUser = UserType.EMPLOYEE.name();
@@ -637,7 +668,7 @@ public class MainController {
 					newEmployee.setEmail(email);
 					newEmployee.setContactNumber(number);
 					newEmployee.setAddress(address);
-					newEmployee.setDateOfBirth(dob);
+					newEmployee.setDateOfBirth(dateOfBirth);
 					newEmployee.setTypeOfUser(typeOfUser);
 					newEmployee.setBranchId(branchId);
 					boolean isEmployeeCreated = userController.registerNewEmployee(newEmployee);
@@ -689,13 +720,14 @@ public class MainController {
 					log.info("Enter the Gender");
 					gender = mainView.promptStringInput();
 					log.info("Enter the Email");
-					email = mainView.promptStringInput().trim();
+					email = mainView.promptStringInput();
 					log.info("Enter the Contact Number");
-					number = mainView.promptStringInput().trim();
+					number = mainView.promptStringInput();
 					log.info("Enter the Address");
-					address = mainView.promptStringInput().trim();
+					address = mainView.promptStringInput();
 					log.info("Enter the date of birth(YYYY-MM-DD)");
-					dob = mainView.promptStringInput().trim();
+					dob = mainView.promptStringInput();
+					long dateofBirth = DateUtils.formatDate(DateUtils.formatDateString(dob));
 					log.info("Enter the PAN Number");
 					String panNumber = mainView.promptStringInput();
 					log.info("Enter the Aadhar Number");
@@ -709,7 +741,7 @@ public class MainController {
 					newCustomer.setEmail(email);
 					newCustomer.setContactNumber(number);
 					newCustomer.setAddress(address);
-					newCustomer.setDateOfBirth(dob);
+					newCustomer.setDateOfBirth(dateofBirth);
 					newCustomer.setTypeOfUser(typeOfUser);
 					newCustomer.setPanNumber(panNumber);
 					newCustomer.setAadharNumber(aadharNumber);
@@ -799,7 +831,7 @@ public class MainController {
 					log.info("Enter the userID");
 					userId = mainView.promptForUserID();
 					Customer customer = userController.getCustomerDetailsById(userId);
-					Map<Integer, List<Account>> allAccountDetails = accountController
+					Map<Integer, Map<String,Account>> allAccountDetails = accountController
 							.getCustomerAccountsInAllBranch(userId);
 					if (allAccountDetails == null || customer == null) {
 						log.warning("Error While Getting Customer Detail!! Try Again!!");
@@ -857,7 +889,7 @@ public class MainController {
 					mainView.displayFieldName(fieldMap);
 					log.info("Enter the UserId to Update");
 					int userIdToUpdate = mainView.promptForUserID();
-					Map<Field, String> fieldsToUpdate = new HashMap<>();
+					Map<Field, Object> fieldsToUpdate = new HashMap<>();
 					log.info("Enter the Number Of Field To be Updated");
 					int count = mainView.promtForIntegerInput();
 					log.info("Please Enter the Field Number to Update");
@@ -886,6 +918,11 @@ public class MainController {
 						}
 						log.info("Enter the Value to Update");
 						String value = mainView.promptStringInput();
+						if (choice == 7) {
+							fieldsToUpdate.put(fieldMap.get(choice),
+									DateUtils.formatDate(DateUtils.formatDateString(value)));
+							continue;
+						}
 						fieldsToUpdate.put(fieldMap.get(choice), value);
 					}
 					if (fieldsToUpdate.size() == count) {

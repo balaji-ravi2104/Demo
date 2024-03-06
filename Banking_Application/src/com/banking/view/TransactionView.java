@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import com.banking.model.Transaction;
 import com.banking.utils.CustomException;
+import com.banking.utils.DateUtils;
 import com.banking.utils.ErrorMessages;
 import com.banking.utils.InputValidator;
 
@@ -69,7 +70,7 @@ public class TransactionView {
 		}
 		for (Transaction transaction : statement) {
 			log.info("-".repeat(60));
-			log.info("Date : " + transaction.getDateOfTransaction());
+			log.info("Date : " + DateUtils.formateLongToDate(transaction.getDateOfTransaction()));
 			log.info("Transaction Type : " + transaction.getTransactionType());
 			log.info("Transaction Amount : " + transaction.getTransactedAmount());
 			log.info("Balance : " + transaction.getBalance());
@@ -93,8 +94,9 @@ public class TransactionView {
 					"| %-12d | %-8d | %-18s | %-18s | %-15s | %-12.2f | %-10.2f | %-20s | %-15s | %-10s |",
 					transaction.getTransactionId(), transaction.getUserId(), transaction.getViwerAccount(),
 					transaction.getTransactedAccount(), transaction.getTransactionType(),
-					transaction.getTransactedAmount(), transaction.getBalance(), transaction.getDateOfTransaction(),
-					transaction.getRemark(), transaction.getStatus()));
+					transaction.getTransactedAmount(), transaction.getBalance(),
+					DateUtils.formateLongToDate(transaction.getDateOfTransaction()), transaction.getRemark(),
+					transaction.getStatus()));
 		}
 		log.info("-".repeat(150));
 	}

@@ -1,6 +1,4 @@
 package com.banking.view;
-
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -53,10 +51,6 @@ public class AccountView {
 				+ selectedAccount.getBalance());
 	}
 
-	public void displayAllAccountsInActiveMessage() {
-		log.info("Your All Accounts are InActive!! Please Contact the Bank!!!");
-	}
-
 	public void displayAccountStatusUpdatedSuccess() {
 		log.info("Bank Account Status Updated SuccessFully!!!");
 	}
@@ -65,13 +59,18 @@ public class AccountView {
 		log.info("Bank Account Status Updation Failed!!! Tyr Again!!");
 	}
 
-	public void displayCustomersAllBranchAccount(Map<Integer, List<Account>> allAccountDetails) throws CustomException {
-		for (Map.Entry<Integer, List<Account>> entry : allAccountDetails.entrySet()) {
+	public void displayCustomersAllBranchAccount(Map<Integer, Map<String, Account>> allAccountDetails)
+			throws CustomException {
+		for (Map.Entry<Integer, Map<String, Account>> entry : allAccountDetails.entrySet()) {
 			int branchId = entry.getKey();
-			log.info("Accounts of the Customer in Branch Id : "+branchId);
-			for(Account account : entry.getValue()) {
-				displayAccountDetails(account);
+			log.info("Accounts of the Customer in Branch Id : " + branchId);
+			for (Map.Entry<String, Account> entry2 : entry.getValue().entrySet()) {
+				displayAccountDetails(entry2.getValue());
 			}
 		}
+	}
+
+	public void displayAccountsInActiveMessage() {
+		log.info("This Account is InActive!! No Transactions Allowed!!!");
 	}
 }
