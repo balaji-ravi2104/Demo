@@ -7,7 +7,7 @@ public class Transaction {
 	private long referenceId;
 	private String viewerAccount;
 	private String transactedAccount;
-	private String transactionType;
+	private TransactionType transactionType;
 	private double transactedAmount;
 	private double balance;
 	private long dateOfTransaction;
@@ -62,11 +62,12 @@ public class Transaction {
 		this.transactedAccount = transactedAccount;
 	}
 
-	public String getTransactionType() {
+	public TransactionType getTransactionType() {
 		return transactionType;
 	}
 
-	public void setTransactionType(String transactionType) {
+	public void setTransactionType(int transactionTypeId) {
+		TransactionType transactionType = TransactionType.fromValue(transactionTypeId);
 		this.transactionType = transactionType;
 	}
 

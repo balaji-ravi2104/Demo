@@ -108,18 +108,18 @@ public class MainController {
 				String password = mainView.promptForPassword();
 
 				User user = userController.login(userId, password);
-				if (user != null && user.getStatus().equalsIgnoreCase(AccountStatus.INACTIVE.name())) {
-					log.warning("Your Account Have Been Blocked!! Please Contact Bank!!");
+				if (user != null && user.getStatus() == AccountStatus.INACTIVE) {
+					log.warning("Your Login Account Has Been Blocked!! Please Contact Bank!!");
 					break;
 				}
 				if (user != null) {
 					log.info("Logged in Successfully!!");
 					ThreadLocalStroage.setUser(user);
 					isLoggedIn = true;
-					String userType = user.getTypeOfUser();
-					if (userType.equalsIgnoreCase(UserType.CUSTOMER.name())) {
+					UserType userType = user.getTypeOfUser();
+					if (userType == UserType.CUSTOMER) {
 						performCustomerOperations(user);
-					} else if (userType.equalsIgnoreCase(UserType.EMPLOYEE.name())) {
+					} else if (userType == UserType.EMPLOYEE) {
 						performEmployeeOperations(user);
 					} else {
 						preformAdminOperation(user);
@@ -156,7 +156,7 @@ public class MainController {
 			log.info("Error While Choosing Primary Account!!!");
 			return;
 		}
-		if (selectedAccount.getStatus().equalsIgnoreCase(AccountStatus.ACTIVE.name())) {
+		if (selectedAccount.getAccountStatus() == AccountStatus.ACTIVE) {
 			isActiveAccount = true;
 		}
 		boolean isCustomerAlive = true;
@@ -234,14 +234,17 @@ public class MainController {
 					int branchId = mainView.promtForIntegerInput();
 					log.info("Enter the Amount to Transfer");
 					double amountToTransfer = mainView.promptDoubleInput();
+					mainView.promptNewLine();
+					log.info("Enter the Small Description");
+					String remark = mainView.promptStringInput();
 					Account accountToTransfer = accountController.getAccountDetails(accountNumber, branchId);
-					//System.out.println(accountToTransfer);
+					// System.out.println(accountToTransfer);
 					if (accountToTransfer == null) {
 						transactionView.transactionMessages("Transaction Failed!!! Try Again!!");
 						break;
 					}
 					boolean isTransactionSuccess = transactionController.transferWithinBank(selectedAccount,
-							accountToTransfer, amountToTransfer);
+							accountToTransfer, amountToTransfer, remark);
 					if (isTransactionSuccess) {
 						transactionView.transactionMessages("Transaction Successfull!!!");
 					} else {
@@ -258,8 +261,11 @@ public class MainController {
 					String accountNumberToTransfer = mainView.promptStringInput();
 					log.info("Enter the Amount to Transfer");
 					double amountToTransferWithOtherBank = mainView.promptDoubleInput();
+					mainView.promptNewLine();
+					log.info("Enter the Small Description");
+					remark = mainView.promptStringInput();
 					boolean isTransferSuccess = transactionController.transferWithOtherBank(selectedAccount,
-							accountNumberToTransfer, amountToTransferWithOtherBank);
+							accountNumberToTransfer, amountToTransferWithOtherBank, remark);
 					if (isTransferSuccess) {
 						transactionView.transactionMessages("Transaction Successfull!!!");
 					} else {
@@ -296,7 +302,7 @@ public class MainController {
 					log.info("10.Switch Account");
 					selectedAccount = accountSelectionOperation(user);
 					isActiveAccount = false;
-					if (selectedAccount.getStatus().equalsIgnoreCase(AccountStatus.ACTIVE.name())) {
+					if (selectedAccount.getAccountStatus() == AccountStatus.ACTIVE) {
 						isActiveAccount = true;
 					}
 					break;
@@ -403,7 +409,6 @@ public class MainController {
 					String panNumber = mainView.promptStringInput();
 					log.info("Enter the Aadhar Number");
 					String aadharNumber = mainView.promptStringInput();
-					String typeOfUser = UserType.CUSTOMER.name();
 					Customer newCustomer = new Customer();
 					newCustomer.setPassword(password);
 					newCustomer.setFirstName(firstName);
@@ -413,7 +418,7 @@ public class MainController {
 					newCustomer.setContactNumber(number);
 					newCustomer.setAddress(address);
 					newCustomer.setDateOfBirth(dateOfBirth);
-					newCustomer.setTypeOfUser(typeOfUser);
+					newCustomer.setTypeOfUser(UserType.CUSTOMER.getValue());
 					newCustomer.setPanNumber(panNumber);
 					newCustomer.setAadharNumber(aadharNumber);
 					boolean isUserCreated = userController.registerNewCustomer(newCustomer);
@@ -428,14 +433,15 @@ public class MainController {
 					log.info("Enter the userID");
 					int userId = mainView.promptForUserID();
 					mainView.promptNewLine();
-					log.info("Enter the Type of Account");
-					String typeOfAccount = mainView.promptStringInput();
 					log.info("Enter the Balance");
 					double balance = mainView.promptDoubleInput();
+					accountView.displayAccountTypes();
+					log.info("Enter the Account Type");
+					int type = mainView.promtForIntegerInput();
 					Account account = new Account();
 					account.setUserId(userId);
 					account.setBranchId(employeeBranchId);
-					account.setAccountType(typeOfAccount);
+					account.setAccountType(type);
 					account.setBalance(balance);
 					boolean isAccountCreated = accountController.createAccount(account);
 					if (isAccountCreated) {
@@ -569,7 +575,7 @@ public class MainController {
 					double amountToDeposite = mainView.promptDoubleInput();
 					Account accountToDeposite = accountController.getAccountDetails(accountNumber, employeeBranchId);
 					// System.out.println(accountToDeposite);
-					if (accountToDeposite.getStatus().equalsIgnoreCase(AccountStatus.INACTIVE.name())) {
+					if (accountToDeposite.getAccountStatus() == AccountStatus.INACTIVE) {
 						transactionView
 								.transactionMessages("The Account is INACTIVE!! Please Try With Different Account!!");
 						break;
@@ -586,14 +592,12 @@ public class MainController {
 					log.info("10.ACTIVATE or DE-ACTIVATE Customer Bank Account");
 					log.info("Enter the Account number");
 					accountNumber = mainView.promptStringInput();
+					accountView.displayAccountStatus();
 					log.info("Choose the Status to Update");
-					log.info("1.ACTIVE");
-					log.info("2.INACTIVE");
 					log.info("Enter the Value to Update");
-					int subChoice = mainView.promtForIntegerInput();
-					String status = subChoice == 1 ? AccountStatus.ACTIVE.name() : AccountStatus.INACTIVE.name();
+					int statusChoice = mainView.promtForIntegerInput();
 					boolean isAccountStatusChanged = accountController.activateDeactivateCustomerAccount(accountNumber,
-							employeeBranchId, status);
+							employeeBranchId, statusChoice);
 					if (isAccountStatusChanged) {
 						accountView.accountViewMessages("Bank Account Status Updated SuccessFully!!!");
 					} else {
@@ -664,7 +668,6 @@ public class MainController {
 					long dateOfBirth = DateUtils.formatDate(DateUtils.formatDateString(dob));
 					log.info("Enter the Branch Id:");
 					int branchId = mainView.promtForIntegerInput();
-					String typeOfUser = UserType.EMPLOYEE.name();
 					Employee newEmployee = new Employee();
 					newEmployee.setPassword(password);
 					newEmployee.setFirstName(firstName);
@@ -674,7 +677,7 @@ public class MainController {
 					newEmployee.setContactNumber(number);
 					newEmployee.setAddress(address);
 					newEmployee.setDateOfBirth(dateOfBirth);
-					newEmployee.setTypeOfUser(typeOfUser);
+					newEmployee.setTypeOfUser(UserType.EMPLOYEE.getValue());
 					newEmployee.setBranchId(branchId);
 					boolean isEmployeeCreated = userController.registerNewEmployee(newEmployee);
 					if (isEmployeeCreated) {
@@ -737,7 +740,6 @@ public class MainController {
 					String panNumber = mainView.promptStringInput();
 					log.info("Enter the Aadhar Number");
 					String aadharNumber = mainView.promptStringInput();
-					typeOfUser = UserType.CUSTOMER.name();
 					Customer newCustomer = new Customer();
 					newCustomer.setPassword(password);
 					newCustomer.setFirstName(firstName);
@@ -747,7 +749,7 @@ public class MainController {
 					newCustomer.setContactNumber(number);
 					newCustomer.setAddress(address);
 					newCustomer.setDateOfBirth(dateofBirth);
-					newCustomer.setTypeOfUser(typeOfUser);
+					newCustomer.setTypeOfUser(UserType.CUSTOMER.getValue());
 					newCustomer.setPanNumber(panNumber);
 					newCustomer.setAadharNumber(aadharNumber);
 					boolean isUserCreated = userController.registerNewCustomer(newCustomer);
@@ -764,14 +766,15 @@ public class MainController {
 					mainView.promptNewLine();
 					log.info("Enter the Branch Id");
 					branchId = mainView.promtForIntegerInput();
-					log.info("Enter the Type of Account");
-					String typeOfAccount = mainView.promptStringInput();
 					log.info("Enter the Balance");
 					double balance = mainView.promptDoubleInput();
+					accountView.displayAccountTypes();
+					log.info("Enter the Account Type");
+					int type = mainView.promtForIntegerInput();
 					Account account = new Account();
 					account.setUserId(userId);
 					account.setBranchId(branchId);
-					account.setAccountType(typeOfAccount);
+					account.setAccountType(type);
 					account.setBalance(balance);
 					boolean isAccountCreated = accountController.createAccount(account);
 					if (isAccountCreated) {
@@ -786,14 +789,12 @@ public class MainController {
 					String accountNumber = mainView.promptStringInput();
 					log.info("Enter the Branch Id");
 					branchId = mainView.promtForIntegerInput();
+					accountView.displayAccountStatus();
 					log.info("Choose the Status to Update");
-					log.info("1.ACTIVE");
-					log.info("2.INACTIVE");
 					log.info("Enter the Value to Update");
-					int subChoice = mainView.promtForIntegerInput();
-					String status = subChoice == 1 ? AccountStatus.ACTIVE.name() : AccountStatus.INACTIVE.name();
+					int statusChoice = mainView.promtForIntegerInput();
 					boolean isAccountStatusChanged = accountController.activateDeactivateCustomerAccount(accountNumber,
-							branchId, status);
+							branchId, statusChoice);
 					if (isAccountStatusChanged) {
 						accountView.accountViewMessages("Bank Account Status Updated SuccessFully!!!");
 					} else {
@@ -910,7 +911,7 @@ public class MainController {
 							log.info("1.ACTIVE");
 							log.info("2.INACTIVE");
 							log.info("Enter the Value to Update");
-							subChoice = mainView.promtForIntegerInput();
+							int subChoice = mainView.promtForIntegerInput();
 							if (subChoice == 1) {
 								fieldsToUpdate.put(fieldMap.get(choice), AccountStatus.ACTIVE.name());
 							} else if (subChoice == 2) {
@@ -946,6 +947,10 @@ public class MainController {
 					log.info("Invalid option! Please choose again.");
 					break;
 				}
+			} catch (IllegalArgumentException e) {
+				log.warning(e.getMessage());
+				mainView.promptNewLine();
+				continue;
 			} catch (InputMismatchException e) {
 				mainView.displayInputMissMatchMessage();
 				mainView.promptNewLine();
@@ -956,6 +961,7 @@ public class MainController {
 				continue;
 			}
 		}
+
 	}
 
 	private void logout() {

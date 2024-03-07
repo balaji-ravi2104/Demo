@@ -18,7 +18,7 @@ import com.banking.utils.InputValidator;
 public class AccountDaoImplementation implements AccountDao {
 
 	private static final String CREATE_NEW_ACCOUNT = "INSERT INTO Accounts (user_id, account_number, "
-			+ "branch_id, account_type, balance,Primary_Account) VALUES (?,?,?,?,?,?);";
+			+ "branch_id,balance,Primary_Account,TypeId) VALUES (?,?,?,?,?,?);";
 
 	private static final String GET_ACCOUNT_COUNT = "SELECT COUNT(*) FROM Accounts WHERE user_id = ?;";
 
@@ -35,7 +35,7 @@ public class AccountDaoImplementation implements AccountDao {
 	private static final String CHECK_CUSTOMER_ACCOUNT_EXISTS_IN_BRANCH = "SELECT COUNT(*) FROM Accounts "
 			+ "WHERE account_number = ? and branch_id = ?;";
 
-	private static final String UPDATE_BANK_ACCOUNT_STATUS = "UPDATE Accounts SET status = ? WHERE account_number = ?;";
+	private static final String UPDATE_BANK_ACCOUNT_STATUS = "UPDATE Accounts SET StatusId = ? WHERE account_number = ?;";
 
 	@Override
 	public boolean createAccount(Account account, boolean isPrimary) throws CustomException {
@@ -48,9 +48,9 @@ public class AccountDaoImplementation implements AccountDao {
 			preparedStatement.setInt(1, account.getUserId());
 			preparedStatement.setString(2, accountNumber);
 			preparedStatement.setInt(3, account.getBranchId());
-			preparedStatement.setString(4, account.getAccountType());
-			preparedStatement.setDouble(5, account.getBalance());
-			preparedStatement.setBoolean(6, isPrimary);
+			preparedStatement.setDouble(4, account.getBalance());
+			preparedStatement.setBoolean(5, isPrimary);
+			preparedStatement.setInt(6, account.getAccountType().getValue());
 
 			int rowsAffected = preparedStatement.executeUpdate();
 			isAccountCreated = rowsAffected > 0;
@@ -208,12 +208,12 @@ public class AccountDaoImplementation implements AccountDao {
 	}
 
 	@Override
-	public boolean activateDeactivateCustomerAccount(String accountNumber, int branchId, String status)
+	public boolean activateDeactivateCustomerAccount(String accountNumber, int branchId, int status)
 			throws CustomException {
 		boolean isAccountStatusChanged = false;
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BANK_ACCOUNT_STATUS)) {
-			preparedStatement.setString(1, status);
+			preparedStatement.setInt(1, status);
 			preparedStatement.setString(2, accountNumber);
 			int rowsAffected = preparedStatement.executeUpdate();
 			isAccountStatusChanged = (rowsAffected > 0);
@@ -262,9 +262,10 @@ public class AccountDaoImplementation implements AccountDao {
 		account.setUserId(resultSet.getInt(2));
 		account.setAccountNumber(resultSet.getString(3));
 		account.setBranchId(resultSet.getInt(4));
-		account.setAccountType(resultSet.getString(5));
-		account.setBalance(resultSet.getDouble(6));
-		account.setStatus(resultSet.getString(7));
+		account.setBalance(resultSet.getDouble(5));
+		account.setPrimaryAccount(resultSet.getBoolean(6));
+		account.setAccountStatus(resultSet.getInt(7));
+		account.setAccountType(resultSet.getInt(8));
 	}
 
 }

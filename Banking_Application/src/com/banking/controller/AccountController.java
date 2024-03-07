@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 import com.banking.dao.AccountDao;
 import com.banking.dao.AccountDaoImplementation;
 import com.banking.model.Account;
+import com.banking.model.AccountStatus;
+import com.banking.model.AccountType;
 import com.banking.utils.CustomException;
 import com.banking.utils.ErrorMessages;
 import com.banking.utils.InputValidator;
@@ -57,15 +59,14 @@ public class AccountController {
 		boolean isAccountCreated = false;
 		boolean isPrimary = false;
 		if (!userController.validateUser(account.getUserId())
-				|| !branchController.validateBranchId(account.getBranchId())
-				|| validateAccountType(account.getAccountType()) || validateBalance(account.getBalance())) {
+				|| !branchController.validateBranchId(account.getBranchId()) || validateBalance(account.getBalance())) {
 			return isAccountCreated;
 		}
 		if (!accountDao.customerHasAccount(account.getUserId())) {
 			isPrimary = true;
 		}
 		try {
-			isAccountCreated = accountDao.createAccount(account,isPrimary);
+			isAccountCreated = accountDao.createAccount(account, isPrimary);
 		} catch (Exception e) {
 			throw new CustomException("Erroe While Creating Account!!", e);
 		}
@@ -122,12 +123,11 @@ public class AccountController {
 		return customerAccounts;
 	}
 
-	public boolean activateDeactivateCustomerAccount(String accountNumber, int branchId, String status)
+	public boolean activateDeactivateCustomerAccount(String accountNumber, int branchId, int status)
 			throws CustomException {
 		InputValidator.isNull(accountNumber, ErrorMessages.INPUT_NULL_MESSAGE);
-		InputValidator.isNull(status, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isAccountStatusChanged = false;
-		if (!validateAccountAndBranch(accountNumber, branchId)) {
+		if (!validateAccountAndBranch(accountNumber, branchId) || validateAccountStatus(status)) {
 			return isAccountStatusChanged;
 		}
 		try {
@@ -138,14 +138,23 @@ public class AccountController {
 		return isAccountStatusChanged;
 	}
 
-	private boolean validateAccountType(String accountType) throws CustomException {
+	private boolean validateAccountStatus(int status) {
 		boolean isValid = false;
-		if (InputValidator.validateString(accountType)) {
-			log.warning("Account Type Cannot be Empty!!!");
+		if (status <= 0 || status > AccountStatus.values().length) {
+			log.warning("Invalid Account Status Updation Choice!!");
 			isValid = true;
 		}
 		return isValid;
 	}
+
+//	private boolean validateAccountType(int accountType) throws CustomException {
+//		boolean isValid = false;
+//		if (accountType <= 0 || accountType > AccountType.values().length) {
+//			log.warning("Invalid Account Type!! Please Choose the Valid Choice!!!");
+//			isValid = true;
+//		}
+//		return isValid;
+//	}
 
 	private boolean validateBalance(double balance) {
 		boolean isValid = false;

@@ -21,47 +21,47 @@ import com.banking.utils.InputValidator;
 public class UserDaoImplementation implements UserDao {
 
 	private static final String GET_USER = "SELECT  u.userId,u.FirstName,u.LastName,u.Gender,u.Email,"
-			+ "u.ContactNumber,u.Address,u.DateOfBirth,u.Type,u.Status FROM Users u WHERE u.userId = ? and u.password = ?";
+			+ "u.ContactNumber,u.Address,u.DateOfBirth,u.TypeId,u.StatusId FROM Users u WHERE u.userId = ? and u.password = ?";
 
 	private static final String GET_EMPLOYEE_BRANCH = "SELECT branch_id FROM Employee WHERE User_id = ?";
 
-	private static final String CREATE_EMPLOYEE = "INSERT INTO Employee (User_id,Employee_Role,branch_id) Values (?,?,?);";
+	private static final String CREATE_EMPLOYEE = "INSERT INTO Employee (User_id,branch_id) Values (?,?);";
 
 	private static final String CREATE_NEW_USER = "INSERT INTO Users (Password, FirstName, LastName, Gender, Email, "
-			+ "ContactNumber, Address, DateOfBirth, Type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+			+ "ContactNumber, Address, DateOfBirth, TypeId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	private static final String CREATE_CUSTOMER = "INSERT INTO Customer (User_id, Pan, Aadhar) VALUES (?, ?, ?);";
 
 	private static final String CHECK_USER_ID_EXISTS = "SELECT COUNT(*) FROM Users u WHERE u.UserId = ? "
-			+ "AND u.Type = 'Customer';";
+			+ "AND u.TypeId = 1;";
 
 	private static final String CHECK_CUSTOMER_ID_EXISTS_QUERY_IN_BRANCH = "SELECT COUNT(*) FROM Users u JOIN "
-			+ "Accounts a ON u.UserId = a.user_id WHERE u.UserId = ? AND a.branch_id = ? AND u.Type = 'Customer';";
+			+ "Accounts a ON u.UserId = a.user_id WHERE u.UserId = ? AND a.branch_id = ? AND u.TypeId = 1;";
 
 	private static final String GET_CUSTOMER_DETAIL_BY_ACCOUNT_NUMBER = "SELECT u.UserId, u.FirstName, u.LastName, u.Gender, "
-			+ "u.Email,u.ContactNumber,u.Address,u.DateOfBirth,u.status,c.Pan, c.Aadhar FROM Users u "
+			+ "u.Email,u.ContactNumber,u.Address,u.DateOfBirth,u.StatusId,c.Pan, c.Aadhar FROM Users u "
 			+ "JOIN Customer c ON u.UserId = c.User_id JOIN Accounts a ON u.UserId = a.User_id WHERE a.account_number = ?";
 
 	private static final String GET_CUSTOMER_DETAIL_BY_ID = "SELECT u.UserId, u.FirstName, u.LastName, u.Gender, "
-			+ "u.Email,u.ContactNumber,u.Address,u.DateOfBirth,u.status,c.Pan, c.Aadhar FROM Users u "
+			+ "u.Email,u.ContactNumber,u.Address,u.DateOfBirth,u.StatusId,c.Pan, c.Aadhar FROM Users u "
 			+ "JOIN Customer c ON u.UserId = c.User_id WHERE u.UserId = ?";
 
 	private static final String UPDATE_PASSWORD = "UPDATE Users SET Password = ? WHERE UserId = ?;";
 
 	private static final String CHECK_EMPLOYEE_ID_EXISTS_QUERY = "SELECT COUNT(*) FROM Users u WHERE u.UserId = ? AND "
-			+ "u.Type = 'Employee';";
+			+ "u.TypeId = 2;";
 
 	private static final String GET_EMPLOYEE_DETAILS = "SELECT u.UserId,u.FirstName,u.LastName,u.Gender,u.Email,u.ContactNumber,"
-			+ " u.Address,u.DateOfBirth,u.Type,u.status,e.branch_id FROM Users u INNER JOIN Employee e ON u.UserId = e.user_id where "
+			+ " u.Address,u.DateOfBirth,u.TypeId,u.StatusId,e.branch_id FROM Users u INNER JOIN Employee e ON u.UserId = e.user_id where "
 			+ "u.UserId = ?";
 
 	private static final String GET_ALL_EMPLOYEE_IN_ONE_BRANCH = "SELECT u.UserId,u.FirstName,u.LastName,u.Gender,u.Email,"
-			+ "u.ContactNumber,u.Address,u.DateOfBirth,u.Type,u.status,e.branch_id FROM Users u INNER JOIN Employee e ON "
-			+ "u.UserId = e.user_id where e.branch_id = ? AND u.Type = 'Employee'";
+			+ "u.ContactNumber,u.Address,u.DateOfBirth,u.TypeId,u.StatusId,e.branch_id FROM Users u INNER JOIN Employee e ON "
+			+ "u.UserId = e.user_id where e.branch_id = ? AND u.TypeId = 2";
 
 	private static final String GET_ALL_EMPLOYEE_FROM_ALL_BRANCH = "SELECT u.UserId,u.FirstName,u.LastName,u.Gender,u.Email,"
-			+ "u.ContactNumber,u.Address,u.DateOfBirth,u.Type,u.status,e.branch_id FROM Users u INNER JOIN Employee e ON "
-			+ "u.UserId = e.user_id WHERE u.Type = 'Employee' ORDER BY e.branch_id;";
+			+ "u.ContactNumber,u.Address,u.DateOfBirth,u.TypeId,u.StatusId,e.branch_id FROM Users u INNER JOIN Employee e ON "
+			+ "u.UserId = e.user_id WHERE u.TypeId = 2 ORDER BY e.branch_id;";
 
 	@Override
 	public User authendicateUser(int userID, String password) throws CustomException {
@@ -92,6 +92,7 @@ public class UserDaoImplementation implements UserDao {
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement createUserStatement = connection.prepareStatement(CREATE_NEW_USER,
 						Statement.RETURN_GENERATED_KEYS)) {
+			connection.setAutoCommit(false);
 			createUserStatement.setString(1, customer.getPassword());
 			createUserStatement.setString(2, customer.getFirstName());
 			createUserStatement.setString(3, customer.getLastName());
@@ -100,7 +101,7 @@ public class UserDaoImplementation implements UserDao {
 			createUserStatement.setString(6, customer.getContactNumber());
 			createUserStatement.setString(7, customer.getAddress());
 			createUserStatement.setLong(8, customer.getDateOfBirth());
-			createUserStatement.setString(9, customer.getTypeOfUser());
+			createUserStatement.setInt(9, customer.getTypeOfUser().getValue());
 
 			int rowsAffected = createUserStatement.executeUpdate();
 			if (rowsAffected > 0) {
@@ -109,11 +110,17 @@ public class UserDaoImplementation implements UserDao {
 					if (generatedKeys.next()) {
 						userId = generatedKeys.getInt(1);
 					} else {
+						connection.rollback();
 						throw new SQLException("Creating user failed, no User ID obtained.");
 					}
 				}
 				rowsAffected = addCustomerPanAadhar(userId, customer);
-				isCustomerCreated = (rowsAffected > 0);
+				if (rowsAffected > 0) {
+					isCustomerCreated = true;
+					connection.commit();
+				} else {
+					connection.rollback();
+				}
 			}
 		} catch (SQLException e) {
 			throw new CustomException("Error Creating new User", e);
@@ -128,6 +135,7 @@ public class UserDaoImplementation implements UserDao {
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement createUserStatement = connection.prepareStatement(CREATE_NEW_USER,
 						Statement.RETURN_GENERATED_KEYS)) {
+			connection.setAutoCommit(false);
 			createUserStatement.setString(1, newEmployee.getPassword());
 			createUserStatement.setString(2, newEmployee.getFirstName());
 			createUserStatement.setString(3, newEmployee.getLastName());
@@ -136,7 +144,7 @@ public class UserDaoImplementation implements UserDao {
 			createUserStatement.setString(6, newEmployee.getContactNumber());
 			createUserStatement.setString(7, newEmployee.getAddress());
 			createUserStatement.setLong(8, newEmployee.getDateOfBirth());
-			createUserStatement.setString(9, newEmployee.getTypeOfUser());
+			createUserStatement.setInt(9, newEmployee.getTypeOfUser().getValue());
 
 			int rowsAffected = createUserStatement.executeUpdate();
 			if (rowsAffected > 0) {
@@ -145,11 +153,17 @@ public class UserDaoImplementation implements UserDao {
 					if (generatedKeys.next()) {
 						userId = generatedKeys.getInt(1);
 					} else {
+						connection.rollback();
 						throw new SQLException("Creating user failed, no User ID obtained.");
 					}
 				}
 				rowsAffected = addEmployeeToBranch(userId, newEmployee);
-				isCustomerCreated = (rowsAffected > 0);
+				if (rowsAffected > 0) {
+					isCustomerCreated = true;
+					connection.commit();
+				} else {
+					connection.rollback();
+				}
 			}
 		} catch (SQLException e) {
 			throw new CustomException("Error Creating new User", e);
@@ -381,8 +395,7 @@ public class UserDaoImplementation implements UserDao {
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement createCustomerStatement = connection.prepareStatement(CREATE_EMPLOYEE)) {
 			createCustomerStatement.setInt(1, userId);
-			createCustomerStatement.setString(2, employee.getTypeOfUser());
-			createCustomerStatement.setInt(3, employee.getBranchId());
+			createCustomerStatement.setInt(2, employee.getBranchId());
 
 			return createCustomerStatement.executeUpdate();
 		} catch (SQLException e) {
@@ -457,7 +470,7 @@ public class UserDaoImplementation implements UserDao {
 		customerDetails.setContactNumber(resultSet.getString(6));
 		customerDetails.setAddress(resultSet.getString(7));
 		customerDetails.setDateOfBirth(resultSet.getLong(8));
-		customerDetails.setStatus(resultSet.getString(9));
+		customerDetails.setStatus(resultSet.getInt(9));
 		customerDetails.setAadharNumber(resultSet.getString(10));
 		customerDetails.setPanNumber(resultSet.getString(11));
 		return customerDetails;
@@ -472,8 +485,8 @@ public class UserDaoImplementation implements UserDao {
 		user.setContactNumber(resultSet.getString(6));
 		user.setAddress(resultSet.getString(7));
 		user.setDateOfBirth(resultSet.getLong(8));
-		user.setTypeOfUser(resultSet.getString(9));
-		user.setStatus(resultSet.getString(10));
+		user.setTypeOfUser(resultSet.getInt(9));
+		user.setStatus(resultSet.getInt(10));
 	}
 
 //	private void getCustomerPanAndAadhar(int userID, User user) throws CustomException {

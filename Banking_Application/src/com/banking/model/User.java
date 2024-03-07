@@ -10,15 +10,16 @@ public class User {
 	private String contactNumber;
 	private String address;
 	private long dateOfBirth;
-	private String typeOfUser;
-	private String Status;
+	private UserType typeOfUser;
+	private AccountStatus status;
 
-	public String getStatus() {
-		return Status;
+	public AccountStatus getStatus() {
+		return status;
 	}
 
-	public void setStatus(String status) {
-		Status = status;
+	public void setStatus(int status) {
+		AccountStatus accountStatus = AccountStatus.fromValue(status);
+		this.status = accountStatus;
 	}
 
 	public int getUserId() {
@@ -93,12 +94,13 @@ public class User {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	public String getTypeOfUser() {
+	public UserType getTypeOfUser() {
 		return typeOfUser;
 	}
 
-	public void setTypeOfUser(String typeOfUser) {
-		this.typeOfUser = typeOfUser;
+	public void setTypeOfUser(int typeOfUser) {
+		UserType type = UserType.fromValue(typeOfUser);
+		this.typeOfUser = type;
 	}
 
 	@Override
@@ -106,7 +108,7 @@ public class User {
 		return "User [userId=" + userId + ", password=" + password + ", firstName=" + firstName + ", lastName="
 				+ lastName + ", gender=" + gender + ", email=" + email + ", contactNumber=" + contactNumber
 				+ ", address=" + address + ", dateOfBirth=" + dateOfBirth + ", typeOfUser=" + typeOfUser + ", Status="
-				+ Status + "]";
+				+ status + "]";
 	}
 
 }

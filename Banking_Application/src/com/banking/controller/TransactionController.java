@@ -57,21 +57,22 @@ public class TransactionController {
 		return isWithdrawSuccess;
 	}
 
-	public boolean transferWithinBank(Account accountFromTransfer, Account accountToTransfer, double amountToTransfer)
-			throws CustomException {
+	public boolean transferWithinBank(Account accountFromTransfer, Account accountToTransfer, double amountToTransfer,
+			String remark) throws CustomException {
 		InputValidator.isNull(accountFromTransfer, ErrorMessages.INPUT_NULL_MESSAGE);
 		InputValidator.isNull(accountToTransfer, ErrorMessages.INPUT_NULL_MESSAGE);
+		InputValidator.isNull(remark, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isTransactionSuccess = false;
 		if (!validateAmount(amountToTransfer) || !validateWithdrawAmount(accountFromTransfer, amountToTransfer)) {
 			return isTransactionSuccess;
 		}
-		if (accountToTransfer.getStatus().equalsIgnoreCase(AccountStatus.INACTIVE.name())) {
+		if (accountToTransfer.getAccountStatus() == AccountStatus.INACTIVE) {
 			transactionView.transactionMessages("The Account is INACTIVE!! Please Try With Different Account!!");
 			return isTransactionSuccess;
 		}
 		try {
 			isTransactionSuccess = transactionDao.transferMoneyWithinBank(accountFromTransfer, accountToTransfer,
-					amountToTransfer);
+					amountToTransfer,remark);
 		} catch (Exception e) {
 			throw new CustomException("Error while Transferring Money!! " + e.getMessage(), e);
 		}
@@ -79,9 +80,10 @@ public class TransactionController {
 	}
 
 	public boolean transferWithOtherBank(Account accountFromTransfer, String accountNumberToTransfer,
-			double amountToTransferWithOtherBank) throws CustomException {
+			double amountToTransferWithOtherBank, String remark) throws CustomException {
 		InputValidator.isNull(accountFromTransfer, ErrorMessages.INPUT_NULL_MESSAGE);
 		InputValidator.isNull(accountNumberToTransfer, ErrorMessages.INPUT_NULL_MESSAGE);
+		InputValidator.isNull(remark,ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isTransactionSuccess = false;
 		if (!validateAmount(amountToTransferWithOtherBank)
 				|| !validateWithdrawAmount(accountFromTransfer, amountToTransferWithOtherBank)) {
@@ -89,7 +91,7 @@ public class TransactionController {
 		}
 		try {
 			isTransactionSuccess = transactionDao.transferMoneyWithOtherBank(accountFromTransfer,
-					accountNumberToTransfer, amountToTransferWithOtherBank);
+					accountNumberToTransfer, amountToTransferWithOtherBank,remark);
 		} catch (Exception e) {
 			throw new CustomException("Error while Transferring Money!! " + e.getMessage(), e);
 		}

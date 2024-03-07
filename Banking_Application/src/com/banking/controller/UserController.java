@@ -229,10 +229,6 @@ public class UserController {
 			log.log(Level.WARNING, "Address Cannot be Empty");
 			isValid = false;
 		}
-		if (InputValidator.validateString(user.getTypeOfUser())) {
-			log.log(Level.WARNING, "Type Of the User Cannot't Be Empty!!");
-			isValid = false;
-		}
 		if (!InputValidator.validateAadharNumber(user.getAadharNumber())) {
 			log.log(Level.WARNING, "Invalid Aadhar Number!!");
 			isValid = false;

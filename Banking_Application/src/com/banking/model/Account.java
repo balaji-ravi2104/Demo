@@ -4,10 +4,11 @@ public class Account {
 	private int accountId;
 	private int userId;
 	private String accountNumber;
+	private AccountType accountType;
 	private int branchId;
-	private String accountType;
 	private double balance;
-	private String status;
+	private AccountStatus accountStatus;
+	private boolean primaryAccount;
 
 	public int getAccountId() {
 		return accountId;
@@ -33,20 +34,21 @@ public class Account {
 		this.accountNumber = accountNumber;
 	}
 
+	public AccountType getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(int accountTypeId) {
+		AccountType accountType = AccountType.fromValue(accountTypeId);
+		this.accountType = accountType;
+	}
+
 	public int getBranchId() {
 		return branchId;
 	}
 
 	public void setBranchId(int branchId) {
 		this.branchId = branchId;
-	}
-
-	public String getAccountType() {
-		return accountType;
-	}
-
-	public void setAccountType(String accountType) {
-		this.accountType = accountType;
 	}
 
 	public double getBalance() {
@@ -57,19 +59,28 @@ public class Account {
 		this.balance = balance;
 	}
 
-	public String getStatus() {
-		return status;
+	public AccountStatus getAccountStatus() {
+		return accountStatus;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setAccountStatus(int accountStatusId) {
+		AccountStatus accountStatus = AccountStatus.fromValue(accountStatusId);
+		this.accountStatus = accountStatus;
+	}
+
+	public boolean isPrimaryAccount() {
+		return primaryAccount;
+	}
+
+	public void setPrimaryAccount(boolean primaryAccount) {
+		this.primaryAccount = primaryAccount;
 	}
 
 	@Override
 	public String toString() {
 		return "Account [accountId=" + accountId + ", userId=" + userId + ", accountNumber=" + accountNumber
-				+ ", branchId=" + branchId + ", accountType=" + accountType + ", balance=" + balance + ", status="
-				+ status + "]";
+				+ ", accountType=" + accountType + ", branchId=" + branchId + ", balance=" + balance
+				+ ", accountStatus=" + accountStatus + ", primaryAccount=" + primaryAccount + "]";
 	}
 
 }

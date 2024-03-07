@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.banking.model.Account;
+import com.banking.model.AccountStatus;
+import com.banking.model.AccountType;
 import com.banking.utils.CustomException;
 import com.banking.utils.ErrorMessages;
 import com.banking.utils.InputValidator;
@@ -34,7 +36,8 @@ public class AccountView {
 		log.info(String.format("| %-15s | %-15s |", "Branch Id", account.getBranchId()));
 		log.info(String.format("| %-15s | %-15s |", "Account Type", account.getAccountType()));
 		log.info(String.format("| %-15s | %-15s |", "Balance", account.getBalance()));
-		log.info(String.format("| %-15s | %-15s |", "Account Status", account.getStatus()));
+		log.info(String.format("| %-15s | %-15s |", "Primary Account", account.isPrimaryAccount() ? "YES" : "NO"));
+		log.info(String.format("| %-15s | %-15s |", "Account Status", account.getAccountStatus()));
 		log.info("-------------------------------------------------------");
 	}
 
@@ -54,4 +57,19 @@ public class AccountView {
 			}
 		}
 	}
+
+	public void displayAccountTypes() {
+		log.info("Available Account Types:");
+		for (AccountType type : AccountType.values()) {
+			log.info(type.getValue() + " : " + type.name());
+		}
+	}
+
+	public void displayAccountStatus() {
+		log.info("Avaliable Account Status");
+		for (AccountStatus status : AccountStatus.values()) {
+			log.info(status.getValue() + " : " + status.name());
+		}
+	}
+
 }
