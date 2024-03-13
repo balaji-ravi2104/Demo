@@ -1,15 +1,16 @@
-package com.banking.dao;
+package com.banking.dao.implementation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.banking.dao.BranchDao;
 import com.banking.utils.CustomException;
 import com.banking.utils.DatabaseConnection;
 
 public class BranchDaoImplementation implements BranchDao {
-	private static final String BRANCH_ID_EXISTS = "SELECT COUNT(*) FROM Branches WHERE Branch_id = ?";
+	private static final String BRANCH_ID_EXISTS = "SELECT COUNT(*) FROM Branches WHERE branchid = ?";
 
 	@Override
 	public boolean checkBranchIdExists(int branchId) throws CustomException {

@@ -11,7 +11,7 @@ public class User {
 	private String address;
 	private long dateOfBirth;
 	private UserType typeOfUser;
-	private AccountStatus status;
+	private AccountStatus status;	
 
 	public AccountStatus getStatus() {
 		return status;

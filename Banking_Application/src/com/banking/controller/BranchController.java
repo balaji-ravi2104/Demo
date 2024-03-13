@@ -3,7 +3,7 @@ package com.banking.controller;
 import java.util.logging.Logger;
 
 import com.banking.dao.BranchDao;
-import com.banking.dao.BranchDaoImplementation;
+import com.banking.dao.implementation.BranchDaoImplementation;
 import com.banking.utils.CustomException;
 
 public class BranchController {

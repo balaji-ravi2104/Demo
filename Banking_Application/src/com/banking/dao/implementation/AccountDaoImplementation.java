@@ -1,4 +1,4 @@
-package com.banking.dao;
+package com.banking.dao.implementation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.banking.dao.AccountDao;
 import com.banking.model.Account;
 import com.banking.utils.CustomException;
 import com.banking.utils.DatabaseConnection;
@@ -18,11 +19,11 @@ import com.banking.utils.InputValidator;
 public class AccountDaoImplementation implements AccountDao {
 
 	private static final String CREATE_NEW_ACCOUNT = "INSERT INTO Accounts (user_id, account_number, "
-			+ "branch_id,balance,Primary_Account,TypeId) VALUES (?,?,?,?,?,?);";
+			+ "branch_id,balance,primaryAccount,TypeId) VALUES (?,?,?,?,?,?);";
 
 	private static final String GET_ACCOUNT_COUNT = "SELECT COUNT(*) FROM Accounts WHERE user_id = ?;";
 
-	private static final String GET_PRIMARY_ACCOUNT = "SELECT * FROM Accounts Where user_id = ? AND Primary_Account = true;";
+	private static final String GET_PRIMARY_ACCOUNT = "SELECT * FROM Accounts Where user_id = ? AND primaryAccount = true;";
 
 	private static final String GET_COUNT_OF_ACCOUNT_IN_BRANCH = "SELECT COUNT(*) FROM Accounts WHERE branch_id = ?";
 
@@ -264,8 +265,8 @@ public class AccountDaoImplementation implements AccountDao {
 		account.setBranchId(resultSet.getInt(4));
 		account.setBalance(resultSet.getDouble(5));
 		account.setPrimaryAccount(resultSet.getBoolean(6));
-		account.setAccountStatus(resultSet.getInt(7));
-		account.setAccountType(resultSet.getInt(8));
+		account.setAccountType(resultSet.getInt(7));
+		account.setAccountStatus(resultSet.getInt(8));
 	}
 
 }

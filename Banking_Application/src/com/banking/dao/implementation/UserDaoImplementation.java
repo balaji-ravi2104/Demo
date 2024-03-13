@@ -1,4 +1,4 @@
-package com.banking.dao;
+package com.banking.dao.implementation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.banking.dao.UserDao;
 import com.banking.model.Customer;
 import com.banking.model.Employee;
 import com.banking.model.User;
@@ -92,7 +93,6 @@ public class UserDaoImplementation implements UserDao {
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement createUserStatement = connection.prepareStatement(CREATE_NEW_USER,
 						Statement.RETURN_GENERATED_KEYS)) {
-			connection.setAutoCommit(false);
 			createUserStatement.setString(1, customer.getPassword());
 			createUserStatement.setString(2, customer.getFirstName());
 			createUserStatement.setString(3, customer.getLastName());
@@ -110,16 +110,12 @@ public class UserDaoImplementation implements UserDao {
 					if (generatedKeys.next()) {
 						userId = generatedKeys.getInt(1);
 					} else {
-						connection.rollback();
 						throw new SQLException("Creating user failed, no User ID obtained.");
 					}
 				}
-				rowsAffected = addCustomerPanAadhar(userId, customer);
-				if (rowsAffected > 0) {
+				int rowsAffected1 = addCustomerPanAadhar(userId, customer);
+				if (rowsAffected1 > 0) {
 					isCustomerCreated = true;
-					connection.commit();
-				} else {
-					connection.rollback();
 				}
 			}
 		} catch (SQLException e) {
@@ -135,7 +131,6 @@ public class UserDaoImplementation implements UserDao {
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement createUserStatement = connection.prepareStatement(CREATE_NEW_USER,
 						Statement.RETURN_GENERATED_KEYS)) {
-			connection.setAutoCommit(false);
 			createUserStatement.setString(1, newEmployee.getPassword());
 			createUserStatement.setString(2, newEmployee.getFirstName());
 			createUserStatement.setString(3, newEmployee.getLastName());
@@ -153,16 +148,12 @@ public class UserDaoImplementation implements UserDao {
 					if (generatedKeys.next()) {
 						userId = generatedKeys.getInt(1);
 					} else {
-						connection.rollback();
 						throw new SQLException("Creating user failed, no User ID obtained.");
 					}
 				}
 				rowsAffected = addEmployeeToBranch(userId, newEmployee);
 				if (rowsAffected > 0) {
 					isCustomerCreated = true;
-					connection.commit();
-				} else {
-					connection.rollback();
 				}
 			}
 		} catch (SQLException e) {
@@ -385,7 +376,8 @@ public class UserDaoImplementation implements UserDao {
 			createCustomerStatement.setString(2, customer.getPanNumber());
 			createCustomerStatement.setString(3, customer.getAadharNumber());
 
-			return createCustomerStatement.executeUpdate();
+			int rowsAfftected = createCustomerStatement.executeUpdate();
+			return rowsAfftected;
 		} catch (SQLException e) {
 			throw new CustomException("Error While Creating Customer ", e);
 		}

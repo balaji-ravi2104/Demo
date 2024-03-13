@@ -1,4 +1,4 @@
-package com.banking.model;
+	package com.banking.model;
 
 public class Customer extends User {
 	String panNumber;

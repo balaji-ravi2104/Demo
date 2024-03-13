@@ -3,7 +3,6 @@ package com.banking.model;
 public class Transaction {
 	private int transactionId;
 	private int userId;
-	private int branchId;
 	private long referenceId;
 	private String viewerAccount;
 	private String transactedAccount;
@@ -12,7 +11,7 @@ public class Transaction {
 	private double balance;
 	private long dateOfTransaction;
 	private String remark;
-	private String status;
+	private TransactionStatus status;
 
 	public int getTransactionId() {
 		return transactionId;
@@ -28,14 +27,6 @@ public class Transaction {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
-	}
-
-	public int getBranchId() {
-		return branchId;
-	}
-
-	public void setBranchId(int branchId) {
-		this.branchId = branchId;
 	}
 
 	public long getReferenceId() {
@@ -103,21 +94,21 @@ public class Transaction {
 		this.remark = remark;
 	}
 
-	public String getStatus() {
+	public TransactionStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setStatus(int status) {
+		TransactionStatus transactionStatus = TransactionStatus.fromValue(status);
+		this.status = transactionStatus;
 	}
 
 	@Override
 	public String toString() {
-		return "Transaction [transactionId=" + transactionId + ", userId=" + userId + ", branchId=" + branchId
-				+ ", referenceId=" + referenceId + ", viewerAccount=" + viewerAccount + ", transactedAccount="
-				+ transactedAccount + ", transactionType=" + transactionType + ", transactedAmount=" + transactedAmount
-				+ ", balance=" + balance + ", dateOfTransaction=" + dateOfTransaction + ", remark=" + remark
-				+ ", status=" + status + "]";
+		return "Transaction [transactionId=" + transactionId + ", userId=" + userId + ", referenceId=" + referenceId
+				+ ", viewerAccount=" + viewerAccount + ", transactedAccount=" + transactedAccount + ", transactionType="
+				+ transactionType + ", transactedAmount=" + transactedAmount + ", balance=" + balance
+				+ ", dateOfTransaction=" + dateOfTransaction + ", remark=" + remark + ", status=" + status + "]";
 	}
 
 }

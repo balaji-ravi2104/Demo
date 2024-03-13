@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import java.util.regex.PatternSyntaxException;
 
 import com.banking.dao.UserDao;
-import com.banking.dao.UserDaoImplementation;
+import com.banking.dao.implementation.UserDaoImplementation;
 import com.banking.model.Customer;
 import com.banking.model.Employee;
 import com.banking.model.User;

@@ -144,14 +144,8 @@ public class MainController {
 	}
 
 	private void performCustomerOperations(User user) {
-		Account selectedAccount = null;
+		Account selectedAccount = accountSelectionOperation(user, true);
 		boolean isActiveAccount = false;
-		try {
-			selectedAccount = accountController.getPrimaryAccount(user.getUserId());
-		} catch (CustomException e) {
-			log.warning("Error While Choosing Primary Account!!!");
-		}
-		// System.out.println(selectedAccount);
 		if (selectedAccount == null) {
 			log.info("Error While Choosing Primary Account!!!");
 			return;
@@ -300,7 +294,7 @@ public class MainController {
 					break;
 				case 10:
 					log.info("10.Switch Account");
-					selectedAccount = accountSelectionOperation(user);
+					selectedAccount = accountSelectionOperation(user, false);
 					isActiveAccount = false;
 					if (selectedAccount.getAccountStatus() == AccountStatus.ACTIVE) {
 						isActiveAccount = true;
@@ -326,13 +320,22 @@ public class MainController {
 		}
 	}
 
-	public Account accountSelectionOperation(User user) {
+	public Account accountSelectionOperation(User user, boolean flag) {
 		Account selectedAccount = null;
 		boolean isAccountSelected = false;
 		try {
 			List<Account> accounts = accountController.getAccountsOfCustomer(user.getUserId());
 			if (accounts.isEmpty()) {
 				log.info("You don't have any accounts.");
+				return selectedAccount;
+			}
+			if (flag) {
+				for (Account account : accounts) {
+					if (account.isPrimaryAccount()) {
+						selectedAccount = account;
+						break;
+					}
+				}
 				return selectedAccount;
 			}
 			Map<Integer, Account> accountMap = new HashMap<>();

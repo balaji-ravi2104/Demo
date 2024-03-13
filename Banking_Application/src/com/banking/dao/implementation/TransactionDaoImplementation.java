@@ -1,4 +1,4 @@
-package com.banking.dao;
+package com.banking.dao.implementation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.banking.dao.TransactionDao;
 import com.banking.model.Account;
 import com.banking.model.Transaction;
 import com.banking.model.TransactionStatus;
@@ -24,7 +25,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 
 	private static final String TRANSACTION_LOG = "INSERT INTO Transaction (user_id, viewer_account_number, "
 			+ "transacted_account_number, TypeId, transaction_amount, balance, transaction_date, "
-			+ "remark, status,reference_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?);";
+			+ "remark, StatusId,reference_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?);";
 
 	private static final String GET_STATEMENT = "SELECT transaction_date, TypeId,transaction_amount, "
 			+ "balance FROM Transaction WHERE viewer_account_number = ? AND FROM_UNIXTIME(transaction_date / 1000) >= "
@@ -35,7 +36,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 
 	private static final String GET_ALL_TRANSACTION_OF_CUSTOMER_IN_BRANCH = "SELECT t.transaction_id, t.user_id, "
 			+ "t.viewer_account_number, t.transacted_account_number, t.TypeId, t.transaction_amount, "
-			+ "t.balance, t.transaction_date, t.remark, t.status,t.reference_id FROM Transaction t JOIN Accounts a ON "
+			+ "t.balance, t.transaction_date, t.remark, t.statusId,t.reference_id FROM Transaction t JOIN Accounts a ON "
 			+ "t.viewer_account_number = a.account_number WHERE a.user_id = ? AND a.branch_id = ? AND "
 			+ "FROM_UNIXTIME(t.transaction_date / 1000) >= DATE_SUB(CURRENT_DATE(), INTERVAL ? MONTH) ORDER BY t.transaction_id DESC;";
 
@@ -256,7 +257,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 		transaction.setBalance(resultSet.getDouble(7));
 		transaction.setDateOfTransaction(resultSet.getLong(8));
 		transaction.setRemark(resultSet.getString(9));
-		transaction.setStatus(resultSet.getString(10));
+		transaction.setStatus(resultSet.getInt(10));
 		transaction.setReferenceId(resultSet.getLong(11));
 		return transaction;
 	}
@@ -287,7 +288,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 			preparedStatement.setDouble(6, viewerAccount.getBalance());
 			preparedStatement.setLong(7, System.currentTimeMillis());
 			preparedStatement.setString(8, remark);
-			preparedStatement.setString(9, TransactionStatus.SUCCESS.name());
+			preparedStatement.setInt(9, TransactionStatus.SUCCESS.getValue());
 			preparedStatement.setLong(10, referenceId);
 
 			int rowsAffected = preparedStatement.executeUpdate();
