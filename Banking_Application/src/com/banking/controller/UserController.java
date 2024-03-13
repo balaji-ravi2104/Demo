@@ -27,7 +27,7 @@ public class UserController {
 	private UserView userView = new UserView();
 	private AccountController accountController;
 
-	public static final Cache<Integer, Customer> userCache = new LRUCache<>(10);
+	public static final Cache<Integer, Customer> userCache = new LRUCache<>(50);
 
 	public UserController(AccountController accountController) {
 		this.accountController = accountController;
@@ -119,7 +119,7 @@ public class UserController {
 	public Customer getCustomerDetailsById(int userId, int employeeBranchId) throws CustomException {
 		Customer customerDetails = null;
 		if (userCache.get(userId) != null) {
-			System.out.println("Inside Cache User Id : "+userId);
+			System.out.println("Inside Cache User Id : " + userId);
 			return userCache.get(userId);
 		}
 		if (!validateUserIdAndBranchId(userId, employeeBranchId)) {

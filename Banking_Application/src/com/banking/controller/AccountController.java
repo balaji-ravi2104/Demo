@@ -22,9 +22,9 @@ public class AccountController {
 	private UserController userController;
 	private BranchController branchController = new BranchController();
 
-	public static final Cache<String, Account> accountCache = new LRUCache<String, Account>(10);
+	public static final Cache<String, Account> accountCache = new LRUCache<String, Account>(50);
 	public static final Cache<Integer, Map<String, Account>> allAccountCache = new LRUCache<Integer, Map<String, Account>>(
-			10);
+			50);
 
 	public AccountController(UserController userController) {
 		this.userController = userController;
