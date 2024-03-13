@@ -181,4 +181,13 @@ public class AccountController {
 		}
 		return isValid;
 	}
+
+	public boolean validateAccountAndBranch1(String accountNumber, int branchId) throws CustomException {
+		boolean isValid = true;
+		if (!isAccountExistsInTheBranch(accountNumber, branchId)) {
+			log.log(Level.WARNING, "Account Number Doesn't Exists in this Branch!!!");
+			isValid = false;
+		}
+		return isValid;
+	}
 }
