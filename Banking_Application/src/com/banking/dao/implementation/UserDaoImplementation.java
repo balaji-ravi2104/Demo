@@ -463,8 +463,8 @@ public class UserDaoImplementation implements UserDao {
 		customerDetails.setAddress(resultSet.getString(7));
 		customerDetails.setDateOfBirth(resultSet.getLong(8));
 		customerDetails.setStatus(resultSet.getInt(9));
-		customerDetails.setAadharNumber(resultSet.getString(10));
-		customerDetails.setPanNumber(resultSet.getString(11));
+		customerDetails.setPanNumber(resultSet.getString(10));
+		customerDetails.setAadharNumber(resultSet.getString(11));
 		return customerDetails;
 	}
 

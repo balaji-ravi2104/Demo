@@ -54,7 +54,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 			if (isBalanceUpdated) {
 				isAmountDepositedAndLoggedInTransaction = logTransaction(account, account.getAccountNumber(),
 						amountToDeposit, TransactionType.DEPOSIT.name(), TransactionType.DEPOSIT.getValue(),
-						System.currentTimeMillis());
+						account.getUserId() + System.currentTimeMillis());
 				if (isAmountDepositedAndLoggedInTransaction) {
 					connection.commit();
 				} else {
@@ -81,7 +81,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 			if (isBalanceUpdated) {
 				isAmountWithdrawnAndLoggedInTransaction = logTransaction(account, account.getAccountNumber(),
 						amountToWithdraw, TransactionType.WITHDRAW.name(), TransactionType.WITHDRAW.getValue(),
-						System.currentTimeMillis());
+						account.getUserId() + System.currentTimeMillis());
 				if (isAmountWithdrawnAndLoggedInTransaction) {
 					connection.commit();
 				} else {
@@ -116,7 +116,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 						newBalanceOfToAccount);
 
 				if (isToAccountBalanceUpdated) {
-					long referenceId = System.currentTimeMillis();
+					long referenceId = accountFromTransfer.getUserId() + System.currentTimeMillis();
 					boolean isTransactionLoggedWithdraw = logTransaction(accountFromTransfer,
 							accountToTransfer.getAccountNumber(), amountToTransfer, remark,
 							TransactionType.WITHDRAW.getValue(), referenceId);
@@ -162,7 +162,7 @@ public class TransactionDaoImplementation implements TransactionDao {
 			if (isFromAccountBalanceUpdated) {
 				isTransferSuccess = logTransaction(accountFromTransfer, accountNumberToTransfer,
 						amountToTransferWithOtherBank, remark, TransactionType.WITHDRAW.getValue(),
-						System.currentTimeMillis());
+						accountFromTransfer.getUserId() + System.currentTimeMillis());
 				if (isTransferSuccess) {
 					connection.commit();
 				} else {

@@ -23,8 +23,6 @@ public class AccountDaoImplementation implements AccountDao {
 
 	private static final String GET_ACCOUNT_COUNT = "SELECT COUNT(*) FROM Accounts WHERE user_id = ?;";
 
-	private static final String GET_PRIMARY_ACCOUNT = "SELECT * FROM Accounts Where user_id = ? AND primaryAccount = true;";
-
 	private static final String GET_COUNT_OF_ACCOUNT_IN_BRANCH = "SELECT COUNT(*) FROM Accounts WHERE branch_id = ?";
 
 	private static final String GET_ACCOUNT_DETAILS = "SELECT * FROM Accounts WHERE account_number = ?;";
@@ -60,24 +58,6 @@ public class AccountDaoImplementation implements AccountDao {
 			throw new CustomException("Error While Creating new Account!!!", e);
 		}
 		return isAccountCreated;
-	}
-
-	@Override
-	public Account getCustomerPrimaryAccount(int userId) throws CustomException {
-		Account account = null;
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement(GET_PRIMARY_ACCOUNT)) {
-			preparedStatement.setInt(1, userId);
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				if (resultSet.next()) {
-					account = new Account();
-					getAccount(resultSet, account);
-				}
-			}
-		} catch (SQLException e) {
-			throw new CustomException("Error While Checking Account Existing!!!", e);
-		}
-		return account;
 	}
 
 	@Override
@@ -268,5 +248,4 @@ public class AccountDaoImplementation implements AccountDao {
 		account.setAccountType(resultSet.getInt(7));
 		account.setAccountStatus(resultSet.getInt(8));
 	}
-
 }

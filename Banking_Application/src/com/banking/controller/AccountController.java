@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.banking.cache.Cache;
+import com.banking.cache.LRUCache;
 import com.banking.dao.AccountDao;
 import com.banking.dao.implementation.AccountDaoImplementation;
 import com.banking.model.Account;
@@ -19,24 +22,15 @@ public class AccountController {
 	private UserController userController;
 	private BranchController branchController = new BranchController();
 
+	public static final Cache<String, Account> accountCache = new LRUCache<String, Account>(10);
+	public static final Cache<Integer, Map<String, Account>> allAccountCache = new LRUCache<Integer, Map<String, Account>>(
+			10);
+
 	public AccountController(UserController userController) {
 		this.userController = userController;
 	}
 
 	public AccountController() {
-	}
-
-	public Account getPrimaryAccount(int userId) throws CustomException {
-		Account account = null;
-		if (!userController.validateUser(userId)) {
-			return account;
-		}
-		try {
-			account = accountDao.getCustomerPrimaryAccount(userId);
-		} catch (Exception e) {
-			throw new CustomException("Error while Getting Primary Account", e);
-		}
-		return account;
 	}
 
 	public boolean isAccountExistsInTheBranch(String accountNumber, int branchId) throws CustomException {
@@ -61,6 +55,7 @@ public class AccountController {
 				|| !branchController.validateBranchId(account.getBranchId()) || validateBalance(account.getBalance())) {
 			return isAccountCreated;
 		}
+		allAccountCache.rem(account.getUserId());
 		if (!accountDao.customerHasAccount(account.getUserId())) {
 			isPrimary = true;
 		}
@@ -75,11 +70,18 @@ public class AccountController {
 	public Account getAccountDetails(String accountNumber, int branchId) throws CustomException {
 		InputValidator.isNull(accountNumber, ErrorMessages.INPUT_NULL_MESSAGE);
 		Account account = null;
+		if (accountCache.get(accountNumber) != null) {
+			// System.out.println("Inside Cache Account Number " + accountNumber);
+			return accountCache.get(accountNumber);
+		}
 		if (!validateAccountAndBranch(accountNumber, branchId)) {
 			return account;
 		}
 		try {
 			account = accountDao.getAccountDetail(accountNumber);
+			if (account != null) {
+				accountCache.set(accountNumber, account);
+			}
 		} catch (Exception e) {
 			throw new CustomException("Error while Reterving Account Details !!", e);
 		}
@@ -98,11 +100,18 @@ public class AccountController {
 
 	public Map<String, Account> getCustomerAccountsInBranch(int userId, int employeeBranchId) throws CustomException {
 		Map<String, Account> customerAccounts = null;
+		if (allAccountCache.get(userId) != null) {
+			// System.out.println("Inside Cache User Id "+userId);
+			return allAccountCache.get(userId);
+		}
 		if (!userController.validateUserIdAndBranchId(userId, employeeBranchId)) {
 			return customerAccounts;
 		}
 		try {
 			customerAccounts = accountDao.getCustomerAccounts(userId, employeeBranchId);
+			if (customerAccounts != null) {
+				allAccountCache.set(userId, customerAccounts);
+			}
 		} catch (Exception e) {
 			throw new CustomException("Error while Reterving Customer Accounts!!", e);
 		}
@@ -146,15 +155,6 @@ public class AccountController {
 		return isValid;
 	}
 
-//	private boolean validateAccountType(int accountType) throws CustomException {
-//		boolean isValid = false;
-//		if (accountType <= 0 || accountType > AccountType.values().length) {
-//			log.warning("Invalid Account Type!! Please Choose the Valid Choice!!!");
-//			isValid = true;
-//		}
-//		return isValid;
-//	}
-
 	private boolean validateBalance(double balance) {
 		boolean isValid = false;
 		if (InputValidator.validateBalance(balance)) {
@@ -181,17 +181,4 @@ public class AccountController {
 		}
 		return isValid;
 	}
-
-//	private boolean validateAccount(Account account) {
-//		boolean isValidAccount = true;
-//		if (account == null) {
-//			transactionView.displayInvalidAccountMessage();
-//			isValidAccount = false;
-//		}
-//		if (account.getStatus().equalsIgnoreCase("INACTIVE")) {
-//			transactionView.displayAccountInActiveMessage();
-//			isValidAccount = false;
-//		}
-//		return isValidAccount;
-//	}
 }

@@ -1,6 +1,9 @@
 package com.banking.model;
 
-public class Employee extends User {
+import java.io.Serializable;
+
+public class Employee extends User implements Serializable{
+	private static final long serialVersionUID = 1L;
 	int branchId;
 
 	@Override

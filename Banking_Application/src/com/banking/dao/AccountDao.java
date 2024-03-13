@@ -8,11 +8,9 @@ import com.banking.utils.CustomException;
 
 public interface AccountDao {
 
-	Account getCustomerPrimaryAccount(int userId) throws CustomException;
+	boolean createAccount(Account account, boolean isPrimary) throws CustomException;
 
 	boolean checkAccountExists(String accountNumber, int branchId) throws CustomException;
-
-	boolean createAccount(Account account,boolean isPrimary) throws CustomException;
 
 	Account getAccountDetail(String accountNumber) throws CustomException;
 
@@ -20,7 +18,7 @@ public interface AccountDao {
 
 	boolean activateDeactivateCustomerAccount(String accountNumber, int branchId, int status) throws CustomException;
 
-	Map<String, Account> getCustomerAccounts(int userId, int employeeBranchId) throws CustomException;
+	Map<String, Account> getCustomerAccounts(int userId, int branchId) throws CustomException;
 
 	Map<Integer, Map<String, Account>> getCustomersAllAccount(int userId) throws CustomException;
 

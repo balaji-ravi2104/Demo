@@ -43,8 +43,8 @@ public class UserView {
 	public void displayCustomerDetails(Customer customerDetails) throws CustomException {
 		InputValidator.isNull(customerDetails, ErrorMessages.INPUT_NULL_MESSAGE);
 		displayUserProfile(customerDetails);
-		log.info(String.format("PAN Number", customerDetails.getPanNumber()));
-		log.info(String.format("Aadhar Number", customerDetails.getAadharNumber()));
+		log.info("PAN Number : " + customerDetails.getPanNumber());
+		log.info("Aadhar Number : " + customerDetails.getAadharNumber());
 		log.info("-".repeat(60));
 	}
 

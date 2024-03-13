@@ -44,7 +44,7 @@ public class TransactionView {
 		log.info(String.format(
 				"| %-12s | %-8s | %-18s | %-18s | %-18s | %-15s | %-15s | %-15s | %-20s | %-20s | %-10s |",
 				"TransactionId", "UserId", "ReferenceId", "ViewerAccount", "TransactedAccount", "TransactionType",
-				"TransactionAmount", "Balance", "TransactionDate", "Remark", "Status, ReferenceId"));
+				"TransactionAmount", "Balance", "TransactionDate", "Remark", "Status"));
 		log.info("-".repeat(150));
 		for (Transaction transaction : transactionsHistory) {
 			log.info(String.format(
