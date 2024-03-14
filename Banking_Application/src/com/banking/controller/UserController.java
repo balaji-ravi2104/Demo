@@ -26,9 +26,10 @@ public class UserController {
 	private BranchController branchController = new BranchController();
 	private UserView userView = new UserView();
 	private AccountController accountController;
+	public static final String cachePrefix = "Customer";
 
 	// public static final Cache<Integer, Customer> userCache = new LRUCache<>(50);
-	public static final Cache<Integer, Customer> userCache = new RedisCache<Integer, Customer>(6379);
+	public static final Cache<Integer, Customer> userCache = new RedisCache<Integer, Customer>(6379, cachePrefix);
 
 	public UserController(AccountController accountController) {
 		this.accountController = accountController;
@@ -122,9 +123,9 @@ public class UserController {
 		if (!validateUserIdAndBranchId(userId, employeeBranchId)) {
 			return customerDetails;
 		}
-		if (userCache.get(userId) != null) {
-			//System.out.println("Inside Cache User Id : " + userId);
-			return userCache.get(userId);
+		if (userCache.get(cachePrefix + userId) != null) {
+			System.out.println("Inside Cache User Id : " + userId);
+			return userCache.get(cachePrefix + userId);
 		}
 		try {
 			customerDetails = userDao.getCustomerDetailsById(userId);
@@ -140,8 +141,8 @@ public class UserController {
 	// For Admin Purpose
 	public Customer getCustomerDetailsById(int userId) throws CustomException {
 		Customer customerDetails = null;
-		if (userCache.get(userId) != null) {
-			return userCache.get(userId);
+		if (userCache.get(cachePrefix + userId) != null) {
+			return userCache.get(cachePrefix + userId);
 		}
 		if (!validateUser(userId)) {
 			return customerDetails;

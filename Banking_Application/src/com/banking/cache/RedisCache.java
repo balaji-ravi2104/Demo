@@ -13,9 +13,11 @@ import redis.clients.jedis.Jedis;
 public class RedisCache<K, V> implements Cache<K, V> {
 
 	private final Jedis jedis;
+	private final String prefix;
 
-	public RedisCache(int port) {
+	public RedisCache(int port, String prefix) {
 		this.jedis = new Jedis("localhost", port);
+		this.prefix = prefix;
 	}
 
 	@Override
@@ -25,7 +27,7 @@ public class RedisCache<K, V> implements Cache<K, V> {
 
 			oos.writeObject(value);
 			byte[] serializedValue = bos.toByteArray();
-			jedis.set(key.toString().getBytes(), serializedValue);
+			jedis.set((prefix + key).getBytes(), serializedValue);
 
 		} catch (IOException e) {
 			// e.printStackTrace();
@@ -34,7 +36,7 @@ public class RedisCache<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public V get(K key) throws CustomException {
+	public V get(String key) throws CustomException {
 		byte[] bytes = jedis.get(key.toString().getBytes());
 		V deserializedValue = null;
 
@@ -56,7 +58,7 @@ public class RedisCache<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public void rem(K key) {
+	public void rem(String key) {
 		jedis.del(key.toString().getBytes());
 
 	}

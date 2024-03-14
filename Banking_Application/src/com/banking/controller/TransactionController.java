@@ -36,8 +36,8 @@ public class TransactionController {
 			return isDepositeSuccess;
 		}
 
-		AccountController.accountCache.rem(account.getAccountNumber());
-		AccountController.listOfAccounts.rem(account.getUserId());
+		AccountController.accountCache.rem(AccountController.accountCachePrefix + account.getAccountNumber());
+		AccountController.listOfAccounts.rem(AccountController.listAccountCachePrefix + account.getUserId());
 
 		try {
 			isDepositeSuccess = transactionDao.deposit(account, amountToDeposite);
@@ -54,8 +54,8 @@ public class TransactionController {
 			return isWithdrawSuccess;
 		}
 
-		AccountController.accountCache.rem(account.getAccountNumber());
-		AccountController.listOfAccounts.rem(account.getUserId());
+		AccountController.accountCache.rem(AccountController.accountCachePrefix + account.getAccountNumber());
+		AccountController.listOfAccounts.rem(AccountController.listAccountCachePrefix + account.getUserId());
 
 		try {
 			isWithdrawSuccess = transactionDao.withdraw(account, amountToWithdraw);
@@ -79,10 +79,12 @@ public class TransactionController {
 			return isTransactionSuccess;
 		}
 
-		AccountController.accountCache.rem(accountFromTransfer.getAccountNumber());
-		AccountController.listOfAccounts.rem(accountFromTransfer.getUserId());
-		AccountController.accountCache.rem(accountToTransfer.getAccountNumber());
-		AccountController.listOfAccounts.rem(accountToTransfer.getUserId());
+		AccountController.accountCache
+				.rem(AccountController.accountCachePrefix + accountFromTransfer.getAccountNumber());
+		AccountController.listOfAccounts
+				.rem(AccountController.listAccountCachePrefix + accountFromTransfer.getUserId());
+		AccountController.accountCache.rem(AccountController.accountCachePrefix + accountToTransfer.getAccountNumber());
+		AccountController.listOfAccounts.rem(AccountController.listAccountCachePrefix + accountToTransfer.getUserId());
 
 		try {
 			isTransactionSuccess = transactionDao.transferMoneyWithinBank(accountFromTransfer, accountToTransfer,
@@ -105,7 +107,8 @@ public class TransactionController {
 		}
 
 		AccountController.accountCache.rem(accountFromTransfer.getAccountNumber());
-		AccountController.listOfAccounts.rem(accountFromTransfer.getUserId());
+		AccountController.listOfAccounts
+				.rem(AccountController.listAccountCachePrefix + accountFromTransfer.getUserId());
 		try {
 			isTransactionSuccess = transactionDao.transferMoneyWithOtherBank(accountFromTransfer,
 					accountNumberToTransfer, amountToTransferWithOtherBank, remark);

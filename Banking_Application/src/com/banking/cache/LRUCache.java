@@ -3,6 +3,8 @@ package com.banking.cache;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.banking.utils.CustomException;
+
 public class LRUCache<K, V> extends LinkedHashMap<K, V> implements Cache<K, V> {
 
 	private static final long serialVersionUID = 1L;
@@ -24,13 +26,18 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public void rem(K key) {
+	public void rem(String key) {
 		super.remove(key);
 	}
 
 	@Override
 	public void close() {
 		super.clear();
+	}
+
+	@Override
+	public V get(String string) throws CustomException {
+		return super.get(string);
 	}
 
 }

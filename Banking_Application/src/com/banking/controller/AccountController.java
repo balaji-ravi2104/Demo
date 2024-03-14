@@ -21,14 +21,17 @@ public class AccountController {
 	private AccountDao accountDao = new AccountDaoImplementation();
 	private UserController userController;
 	private BranchController branchController = new BranchController();
+	public static final String accountCachePrefix = "Account";
+	public static final String listAccountCachePrefix = "ListAccount";
 
 	// public static final Cache<String, Account> accountCache = new
 	// LRUCache<String, Account>(50);
 	// public static final Cache<Integer, List<Account>> listOfAccounts = new
 	// LRUCache<Integer, List<Account>>(50);
 
-	public static final Cache<String, Account> accountCache = new RedisCache<String, Account>(6380);
-	public static final Cache<Integer, List<Account>> listOfAccounts = new RedisCache<Integer, List<Account>>(6380);
+	public static final Cache<String, Account> accountCache = new RedisCache<String, Account>(6379, accountCachePrefix);
+	public static final Cache<Integer, List<Account>> listOfAccounts = new RedisCache<Integer, List<Account>>(6379,
+			listAccountCachePrefix);
 
 	public AccountController(UserController userController) {
 		this.userController = userController;
@@ -59,7 +62,7 @@ public class AccountController {
 				|| !branchController.validateBranchId(account.getBranchId()) || validateBalance(account.getBalance())) {
 			return isAccountCreated;
 		}
-		listOfAccounts.rem(account.getUserId());
+		listOfAccounts.rem(listAccountCachePrefix + account.getUserId());
 		if (!accountDao.customerHasAccount(account.getUserId())) {
 			isPrimary = true;
 		}
@@ -77,9 +80,9 @@ public class AccountController {
 		if (!validateAccountAndBranch(accountNumber, branchId)) {
 			return account;
 		}
-		if (accountCache.get(accountNumber) != null) {
+		if (accountCache.get(accountCachePrefix + accountNumber) != null) {
 			// System.out.println("Inside Cache Account Number " + accountNumber);
-			return accountCache.get(accountNumber);
+			return accountCache.get(accountCachePrefix + accountNumber);
 		}
 		try {
 			account = accountDao.getAccountDetail(accountNumber);
@@ -94,9 +97,9 @@ public class AccountController {
 
 	public List<Account> getAccountsOfCustomer(int userId) throws CustomException {
 		List<Account> accounts = null;
-		if (listOfAccounts.get(userId) != null) {
-			// System.out.println("List Of Accounts From Inside Cache");
-			return listOfAccounts.get(userId);
+		if (listOfAccounts.get(listAccountCachePrefix + userId) != null) {
+			System.out.println("List Of Accounts From Inside Cache");
+			return listOfAccounts.get(listAccountCachePrefix + (userId));
 		}
 		try {
 			accounts = accountDao.getAllAccountsOfCustomer(userId);

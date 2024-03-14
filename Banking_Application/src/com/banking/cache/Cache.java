@@ -6,9 +6,9 @@ public interface Cache<K, V> {
 
 	void set(K key, V value) throws CustomException;
 
-	V get(K key) throws CustomException;
+	V get(String key) throws CustomException;
 
-	void rem(K key);
+	void rem(String key);
 
 	void close();
 }
