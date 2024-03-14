@@ -509,9 +509,13 @@ public class MainController {
 					log.info("Enter the Account Number");
 					String accountNumber = mainView.promptStringInput();
 					Customer customerDetail = userController.getCustomerDetails(accountNumber, employeeBranchId);
+					if (customerDetail == null) {
+						userView.userViewMessages("Customer Details Reterving Failed!! Please Try Again!!");
+						break;
+					}
 					Account customerAccount = accountController.getAccountDetails(accountNumber, employeeBranchId);
-					if (customerDetail == null || customerAccount == null) {
-						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
+					if (customerAccount == null) {
+						userView.userViewMessages("Customer Account Details Reterving Failed!! Please Try Again!!");
 						break;
 					}
 					userView.displayCustomerDetails(customerDetail);
@@ -522,10 +526,14 @@ public class MainController {
 					log.info("Enter the userID");
 					userId = mainView.promptForUserID();
 					Customer customerDetails = userController.getCustomerDetailsById(userId, employeeBranchId);
+					if (customerDetails == null) {
+						userView.userViewMessages("Customer Details Reterving Failed!! Please Try Again!!");
+						break;
+					}
 					Map<String, Account> accountDetails = accountController.getCustomerAccountsInBranch(userId,
 							employeeBranchId);
-					if (accountDetails == null || customerDetails == null) {
-						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
+					if (accountDetails == null) {
+						userView.userViewMessages("Customer Account Details Reterving Failed!! Please Try Again!!");
 						break;
 					}
 					userView.displayCustomerDetails(customerDetails);
@@ -695,7 +703,7 @@ public class MainController {
 					int employeeId = mainView.promtForIntegerInput();
 					Employee employeeDetails = userController.getEmployeeDetails(employeeId);
 					if (employeeDetails == null) {
-						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
+						userView.userViewMessages("Employee Detail Reterving Failed!! Please Try Again!!");
 						break;
 					}
 					userView.displayEmployeeProfile(employeeDetails);
@@ -707,7 +715,7 @@ public class MainController {
 					Map<Integer, Employee> employeesList = userController
 							.getEmployeeFromOneBranch(branchIdToGetEmployees);
 					if (employeesList == null) {
-						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
+						userView.userViewMessages("Employees Details Reterving Failed!! Please Try Again!!");
 						break;
 					}
 					userView.displayListOfEmployees(employeesList);
@@ -716,7 +724,7 @@ public class MainController {
 					log.info("4. View All Employees From Accross All Branch");
 					Map<Integer, Map<Integer, Employee>> allEmployeesList = userController.getEmployeeFromAllBranch();
 					if (allEmployeesList == null) {
-						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
+						userView.userViewMessages("Employees Details Reterving Failed!! Please Try Again!!");
 						break;
 					}
 					userView.displayEmployeesByBranch(allEmployeesList);
@@ -811,9 +819,13 @@ public class MainController {
 					log.info("Enter the Branch Id");
 					branchId = mainView.promtForIntegerInput();
 					Customer customerDetail = userController.getCustomerDetails(accountNumber, branchId);
+					if (customerDetail == null) {
+						userView.userViewMessages("Customer Details Reterving Failed!! Please Try Again!!");
+						break;
+					}
 					Account customerAccount = accountController.getAccountDetails(accountNumber, branchId);
-					if (customerDetail == null || customerAccount == null) {
-						userView.userViewMessages("Error While Reterving Detail!! Please Try Again!!");
+					if (customerAccount == null) {
+						userView.userViewMessages("Customer Account Details Reterving Failed!! Please Try Again!!");
 						break;
 					}
 					userView.displayCustomerDetails(customerDetail);
@@ -826,10 +838,14 @@ public class MainController {
 					log.info("Enter the branch Id");
 					branchId = mainView.promtForIntegerInput();
 					Customer customerDetails = userController.getCustomerDetailsById(userId, branchId);
+					if (customerDetails == null) {
+						userView.userViewMessages("Customer Details Reterving Failed!! Please Try Again!!");
+						break;
+					}
 					Map<String, Account> accountDetails = accountController.getCustomerAccountsInBranch(userId,
 							branchId);
-					if (accountDetails == null || customerDetails == null) {
-						log.warning("Error While Getting Customer Detail!! Try Again!!");
+					if (accountDetails == null) {
+						userView.userViewMessages("Customer Account Details Reterving Failed!! Please Try Again!!");
 						break;
 					}
 					userView.displayCustomerDetails(customerDetails);
@@ -840,10 +856,14 @@ public class MainController {
 					log.info("Enter the userID");
 					userId = mainView.promptForUserID();
 					Customer customer = userController.getCustomerDetailsById(userId);
+					if (customer == null) {
+						userView.userViewMessages("Customer Details Reterving Failed!! Please Try Again!!");
+						break;
+					}
 					Map<Integer, Map<String, Account>> allAccountDetails = accountController
 							.getCustomerAccountsInAllBranch(userId);
-					if (allAccountDetails == null || customer == null) {
-						log.warning("Error While Getting Customer Detail!! Try Again!!");
+					if (allAccountDetails == null) {
+						userView.userViewMessages("Customer Account Details Reterving Failed!! Please Try Again!!");
 						break;
 					}
 					userView.displayCustomerDetails(customer);

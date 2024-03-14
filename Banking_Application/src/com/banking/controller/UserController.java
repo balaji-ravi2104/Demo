@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import java.util.regex.PatternSyntaxException;
 
 import com.banking.cache.Cache;
-import com.banking.cache.LRUCache;
+import com.banking.cache.RedisCache;
 import com.banking.dao.UserDao;
 import com.banking.dao.implementation.UserDaoImplementation;
 import com.banking.model.Customer;
@@ -27,7 +27,8 @@ public class UserController {
 	private UserView userView = new UserView();
 	private AccountController accountController;
 
-	public static final Cache<Integer, Customer> userCache = new LRUCache<>(50);
+	// public static final Cache<Integer, Customer> userCache = new LRUCache<>(50);
+	public static final Cache<Integer, Customer> userCache = new RedisCache<Integer, Customer>(6379);
 
 	public UserController(AccountController accountController) {
 		this.accountController = accountController;
@@ -118,12 +119,12 @@ public class UserController {
 	// For Employee Purpose
 	public Customer getCustomerDetailsById(int userId, int employeeBranchId) throws CustomException {
 		Customer customerDetails = null;
-		if (userCache.get(userId) != null) {
-			System.out.println("Inside Cache User Id : " + userId);
-			return userCache.get(userId);
-		}
 		if (!validateUserIdAndBranchId(userId, employeeBranchId)) {
 			return customerDetails;
+		}
+		if (userCache.get(userId) != null) {
+			//System.out.println("Inside Cache User Id : " + userId);
+			return userCache.get(userId);
 		}
 		try {
 			customerDetails = userDao.getCustomerDetailsById(userId);

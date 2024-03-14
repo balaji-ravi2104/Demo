@@ -37,8 +37,7 @@ public class TransactionController {
 		}
 
 		AccountController.accountCache.rem(account.getAccountNumber());
-
-		AccountController.allAccountCache.rem(account.getUserId());
+		AccountController.listOfAccounts.rem(account.getUserId());
 
 		try {
 			isDepositeSuccess = transactionDao.deposit(account, amountToDeposite);
@@ -56,8 +55,7 @@ public class TransactionController {
 		}
 
 		AccountController.accountCache.rem(account.getAccountNumber());
-
-		AccountController.allAccountCache.rem(account.getUserId());
+		AccountController.listOfAccounts.rem(account.getUserId());
 
 		try {
 			isWithdrawSuccess = transactionDao.withdraw(account, amountToWithdraw);
@@ -80,10 +78,12 @@ public class TransactionController {
 			transactionView.transactionMessages("The Account is INACTIVE!! Please Try With Different Account!!");
 			return isTransactionSuccess;
 		}
+
 		AccountController.accountCache.rem(accountFromTransfer.getAccountNumber());
-		AccountController.allAccountCache.rem(accountFromTransfer.getUserId());
+		AccountController.listOfAccounts.rem(accountFromTransfer.getUserId());
 		AccountController.accountCache.rem(accountToTransfer.getAccountNumber());
-		AccountController.allAccountCache.rem(accountToTransfer.getUserId());
+		AccountController.listOfAccounts.rem(accountToTransfer.getUserId());
+
 		try {
 			isTransactionSuccess = transactionDao.transferMoneyWithinBank(accountFromTransfer, accountToTransfer,
 					amountToTransfer, remark);
@@ -103,9 +103,9 @@ public class TransactionController {
 				|| !validateWithdrawAmount(accountFromTransfer, amountToTransferWithOtherBank)) {
 			return isTransactionSuccess;
 		}
-		AccountController.accountCache.rem(accountFromTransfer.getAccountNumber());
 
-		AccountController.allAccountCache.rem(accountFromTransfer.getUserId());
+		AccountController.accountCache.rem(accountFromTransfer.getAccountNumber());
+		AccountController.listOfAccounts.rem(accountFromTransfer.getUserId());
 		try {
 			isTransactionSuccess = transactionDao.transferMoneyWithOtherBank(accountFromTransfer,
 					accountNumberToTransfer, amountToTransferWithOtherBank, remark);

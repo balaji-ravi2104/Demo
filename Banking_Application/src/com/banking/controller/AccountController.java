@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.banking.cache.Cache;
-import com.banking.cache.LRUCache;
+import com.banking.cache.RedisCache;
 import com.banking.dao.AccountDao;
 import com.banking.dao.implementation.AccountDaoImplementation;
 import com.banking.model.Account;
@@ -22,9 +22,13 @@ public class AccountController {
 	private UserController userController;
 	private BranchController branchController = new BranchController();
 
-	public static final Cache<String, Account> accountCache = new LRUCache<String, Account>(50);
-	public static final Cache<Integer, Map<String, Account>> allAccountCache = new LRUCache<Integer, Map<String, Account>>(
-			50);
+	// public static final Cache<String, Account> accountCache = new
+	// LRUCache<String, Account>(50);
+	// public static final Cache<Integer, List<Account>> listOfAccounts = new
+	// LRUCache<Integer, List<Account>>(50);
+
+	public static final Cache<String, Account> accountCache = new RedisCache<String, Account>(6380);
+	public static final Cache<Integer, List<Account>> listOfAccounts = new RedisCache<Integer, List<Account>>(6380);
 
 	public AccountController(UserController userController) {
 		this.userController = userController;
@@ -55,7 +59,7 @@ public class AccountController {
 				|| !branchController.validateBranchId(account.getBranchId()) || validateBalance(account.getBalance())) {
 			return isAccountCreated;
 		}
-		allAccountCache.rem(account.getUserId());
+		listOfAccounts.rem(account.getUserId());
 		if (!accountDao.customerHasAccount(account.getUserId())) {
 			isPrimary = true;
 		}
@@ -70,12 +74,12 @@ public class AccountController {
 	public Account getAccountDetails(String accountNumber, int branchId) throws CustomException {
 		InputValidator.isNull(accountNumber, ErrorMessages.INPUT_NULL_MESSAGE);
 		Account account = null;
+		if (!validateAccountAndBranch(accountNumber, branchId)) {
+			return account;
+		}
 		if (accountCache.get(accountNumber) != null) {
 			// System.out.println("Inside Cache Account Number " + accountNumber);
 			return accountCache.get(accountNumber);
-		}
-		if (!validateAccountAndBranch(accountNumber, branchId)) {
-			return account;
 		}
 		try {
 			account = accountDao.getAccountDetail(accountNumber);
@@ -90,28 +94,26 @@ public class AccountController {
 
 	public List<Account> getAccountsOfCustomer(int userId) throws CustomException {
 		List<Account> accounts = null;
+		if (listOfAccounts.get(userId) != null) {
+			//System.out.println("List Of Accounts From Inside Cache");
+			return listOfAccounts.get(userId);
+		}
 		try {
 			accounts = accountDao.getAllAccountsOfCustomer(userId);
+			listOfAccounts.set(userId, accounts);
 		} catch (Exception e) {
 			throw new CustomException("Error while Reterving Accounts!!", e);
 		}
 		return accounts;
 	}
 
-	public Map<String, Account> getCustomerAccountsInBranch(int userId, int employeeBranchId) throws CustomException {
+	public Map<String, Account> getCustomerAccountsInBranch(int userId, int branchId) throws CustomException {
 		Map<String, Account> customerAccounts = null;
-		if (allAccountCache.get(userId) != null) {
-			// System.out.println("Inside Cache User Id "+userId);
-			return allAccountCache.get(userId);
-		}
-		if (!userController.validateUserIdAndBranchId(userId, employeeBranchId)) {
+		if (!userController.validateUserIdAndBranchId(userId, branchId)) {
 			return customerAccounts;
 		}
 		try {
-			customerAccounts = accountDao.getCustomerAccounts(userId, employeeBranchId);
-			if (customerAccounts != null) {
-				allAccountCache.set(userId, customerAccounts);
-			}
+			customerAccounts = accountDao.getCustomerAccounts(userId, branchId);
 		} catch (Exception e) {
 			throw new CustomException("Error while Reterving Customer Accounts!!", e);
 		}
