@@ -21,6 +21,9 @@ public class TransactionController {
 	private UserController userController;
 	private TransactionView transactionView;
 
+	private static final Object accountCacheLock = new Object();
+	private static final Object listOfAccountsLock = new Object();
+
 	public TransactionController() {
 		this.accountController = new AccountController();
 		this.transactionDao = new TransactionDaoImplementation();
@@ -36,8 +39,12 @@ public class TransactionController {
 			return isDepositeSuccess;
 		}
 
-		AccountController.accountCache.rem(AccountController.accountCachePrefix + account.getAccountNumber());
-		AccountController.listOfAccounts.rem(AccountController.listAccountCachePrefix + account.getUserId());
+		synchronized (accountCacheLock) {
+			AccountController.accountCache.rem(AccountController.accountCachePrefix + account.getAccountNumber());
+		}
+		synchronized (listOfAccountsLock) {
+			AccountController.listOfAccounts.rem(AccountController.listAccountCachePrefix + account.getUserId());
+		}
 
 		try {
 			isDepositeSuccess = transactionDao.deposit(account, amountToDeposite);
@@ -54,8 +61,12 @@ public class TransactionController {
 			return isWithdrawSuccess;
 		}
 
-		AccountController.accountCache.rem(AccountController.accountCachePrefix + account.getAccountNumber());
-		AccountController.listOfAccounts.rem(AccountController.listAccountCachePrefix + account.getUserId());
+		synchronized (accountCacheLock) {
+			AccountController.accountCache.rem(AccountController.accountCachePrefix + account.getAccountNumber());
+		}
+		synchronized (listOfAccountsLock) {
+			AccountController.listOfAccounts.rem(AccountController.listAccountCachePrefix + account.getUserId());
+		}
 
 		try {
 			isWithdrawSuccess = transactionDao.withdraw(account, amountToWithdraw);
@@ -79,12 +90,19 @@ public class TransactionController {
 			return isTransactionSuccess;
 		}
 
-		AccountController.accountCache
-				.rem(AccountController.accountCachePrefix + accountFromTransfer.getAccountNumber());
-		AccountController.listOfAccounts
-				.rem(AccountController.listAccountCachePrefix + accountFromTransfer.getUserId());
-		AccountController.accountCache.rem(AccountController.accountCachePrefix + accountToTransfer.getAccountNumber());
-		AccountController.listOfAccounts.rem(AccountController.listAccountCachePrefix + accountToTransfer.getUserId());
+		synchronized (accountCacheLock) {
+			AccountController.accountCache
+					.rem(AccountController.accountCachePrefix + accountFromTransfer.getAccountNumber());
+			AccountController.accountCache
+					.rem(AccountController.accountCachePrefix + accountToTransfer.getAccountNumber());
+		}
+
+		synchronized (listOfAccountsLock) {
+			AccountController.listOfAccounts
+					.rem(AccountController.listAccountCachePrefix + accountFromTransfer.getUserId());
+			AccountController.listOfAccounts
+					.rem(AccountController.listAccountCachePrefix + accountToTransfer.getUserId());
+		}
 
 		try {
 			isTransactionSuccess = transactionDao.transferMoneyWithinBank(accountFromTransfer, accountToTransfer,
@@ -106,9 +124,14 @@ public class TransactionController {
 			return isTransactionSuccess;
 		}
 
-		AccountController.accountCache.rem(accountFromTransfer.getAccountNumber());
-		AccountController.listOfAccounts
-				.rem(AccountController.listAccountCachePrefix + accountFromTransfer.getUserId());
+		synchronized (accountCacheLock) {
+			AccountController.accountCache
+					.rem(AccountController.accountCachePrefix + accountFromTransfer.getAccountNumber());
+		}
+		synchronized (listOfAccountsLock) {
+			AccountController.listOfAccounts
+					.rem(AccountController.listAccountCachePrefix + accountFromTransfer.getUserId());
+		}
 		try {
 			isTransactionSuccess = transactionDao.transferMoneyWithOtherBank(accountFromTransfer,
 					accountNumberToTransfer, amountToTransferWithOtherBank, remark);

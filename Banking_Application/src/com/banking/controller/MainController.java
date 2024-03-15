@@ -461,7 +461,7 @@ public class MainController {
 					int userIdToUpdate = mainView.promptForUserID();
 					Map<Field, Object> fieldsToUpdate = new HashMap<>();
 					log.info("Enter the Number Of Field To be Updated");
-					int count = mainView.promtForIntegerInput();
+					int count = mainView.promtForIntegerInput(); 
 					log.info("Please Enter the Field Number to Update");
 					for (int i = 1; i <= count; i++) {
 						log.info("Enter the choice(Number) from the list");

@@ -28,6 +28,8 @@ public class UserController {
 	private AccountController accountController;
 	public static final String cachePrefix = "Customer";
 
+	private static final Object userCacheLock = new Object();
+
 	// public static final Cache<Integer, Customer> userCache = new LRUCache<>(50);
 	public static final Cache<Integer, Customer> userCache = new RedisCache<Integer, Customer>(6379, cachePrefix);
 
@@ -82,19 +84,6 @@ public class UserController {
 		}
 	}
 
-	public boolean isUserExistsInTheBranch(int userId, int branchId) throws CustomException {
-		boolean isExists = false;
-		if (!validateUser(userId) || !branchController.validateBranchId(branchId)) {
-			return isExists;
-		}
-		try {
-			isExists = userDao.checkCustomerIdPresentInBranch(userId, branchId);
-		} catch (Exception e) {
-			throw new CustomException("Error while Checking User Exists!!", e);
-		}
-		return isExists;
-	}
-
 	public int getEmployeeBranch(int userId) throws CustomException {
 		try {
 			return userDao.getEmployeeBranch(userId);
@@ -116,24 +105,26 @@ public class UserController {
 		}
 		return customerDetails;
 	}
-
+ 
 	// For Employee Purpose
-	public Customer getCustomerDetailsById(int userId, int employeeBranchId) throws CustomException {
+	public Customer getCustomerDetailsById(int userId, int branchId) throws CustomException {
 		Customer customerDetails = null;
-		if (!validateUserIdAndBranchId(userId, employeeBranchId)) {
+		if (!validateUserIdAndBranchId(userId, branchId)) {
 			return customerDetails;
 		}
-		if (userCache.get(cachePrefix + userId) != null) {
-			System.out.println("Inside Cache User Id : " + userId);
-			return userCache.get(cachePrefix + userId);
-		}
-		try {
-			customerDetails = userDao.getCustomerDetailsById(userId);
-			if (customerDetails != null) {
-				userCache.set(userId, customerDetails);
+		synchronized (userCacheLock) {
+			if (userCache.get(cachePrefix + userId) != null) {
+				System.out.println("Inside Cache(Employee Purpose) User Id : " + userId);
+				return userCache.get(cachePrefix + userId);
 			}
-		} catch (Exception e) {
-			throw new CustomException("Error while Getting Customer Details!!", e);
+			try {
+				customerDetails = userDao.getCustomerDetailsById(userId);
+				if (customerDetails != null) {
+					userCache.set(userId, customerDetails);
+				}
+			} catch (Exception e) {
+				throw new CustomException("Error while Getting Customer Details!!", e);
+			}
 		}
 		return customerDetails;
 	}
@@ -141,19 +132,22 @@ public class UserController {
 	// For Admin Purpose
 	public Customer getCustomerDetailsById(int userId) throws CustomException {
 		Customer customerDetails = null;
-		if (userCache.get(cachePrefix + userId) != null) {
-			return userCache.get(cachePrefix + userId);
-		}
 		if (!validateUser(userId)) {
 			return customerDetails;
 		}
-		try {
-			customerDetails = userDao.getCustomerDetailsById(userId);
-			if (customerDetails != null) {
-				userCache.set(userId, customerDetails);
+		synchronized (userCacheLock) {
+			if (userCache.get(cachePrefix + userId) != null) {
+				System.out.println("Inside Cache(Admin Purpose) User Id : " + userId);
+				return userCache.get(cachePrefix + userId);
 			}
-		} catch (Exception e) {
-			throw new CustomException("Error while Getting Customer Details!!", e);
+			try {
+				customerDetails = userDao.getCustomerDetailsById(userId);
+				if (customerDetails != null) {
+					userCache.set(userId, customerDetails);
+				}
+			} catch (Exception e) {
+				throw new CustomException("Error while Getting Customer Details!!", e);
+			}
 		}
 		return customerDetails;
 	}
@@ -171,6 +165,22 @@ public class UserController {
 			throw new CustomException("Error while Updating User", e);
 		}
 		return isCustomerUpdated;
+	}
+
+	public boolean isUserExistsInTheBranch(int userId, int branchId) throws CustomException {
+		boolean isExists = false;
+		if (!validateUser(userId)) {
+			return isExists;
+		}
+		if (!branchController.validateBranchId(branchId)) {
+			return isExists;
+		}
+		try {
+			isExists = userDao.checkCustomerIdPresentInBranch(userId, branchId);
+		} catch (Exception e) {
+			throw new CustomException("Error while Checking User Exists!!", e);
+		}
+		return isExists;
 	}
 
 	public boolean updatePassword(int userId, String password) throws CustomException {

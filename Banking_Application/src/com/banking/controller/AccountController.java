@@ -24,6 +24,10 @@ public class AccountController {
 	public static final String accountCachePrefix = "Account";
 	public static final String listAccountCachePrefix = "ListAccount";
 
+	private final Object createAccountLock = new Object();
+	private final Object getAccountDetailsLock = new Object();
+	private final Object getAccountsOfCustomerLock = new Object();
+
 	// public static final Cache<String, Account> accountCache = new
 	// LRUCache<String, Account>(50);
 	// public static final Cache<Integer, List<Account>> listOfAccounts = new
@@ -40,6 +44,28 @@ public class AccountController {
 	public AccountController() {
 	}
 
+	public boolean createAccount(Account account) throws CustomException {
+		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
+		boolean isAccountCreated = false;
+		boolean isPrimary = false;
+		if (!userController.validateUser(account.getUserId())
+				|| !branchController.validateBranchId(account.getBranchId()) || validateBalance(account.getBalance())) {
+			return isAccountCreated;
+		}
+		synchronized (createAccountLock) {
+			listOfAccounts.rem(listAccountCachePrefix + account.getUserId());
+			if (!accountDao.customerHasAccount(account.getUserId())) {
+				isPrimary = true;
+			}
+			try {
+				isAccountCreated = accountDao.createAccount(account, isPrimary);
+			} catch (Exception e) {
+				throw new CustomException("Erroe While Creating Account!!", e);
+			}
+		}
+		return isAccountCreated;
+	}
+
 	public boolean isAccountExistsInTheBranch(String accountNumber, int branchId) throws CustomException {
 		InputValidator.isNull(accountNumber, "Account Number Cannot be Null!!!");
 		boolean isAccountExists = false;
@@ -54,58 +80,42 @@ public class AccountController {
 		return isAccountExists;
 	}
 
-	public boolean createAccount(Account account) throws CustomException {
-		InputValidator.isNull(account, ErrorMessages.INPUT_NULL_MESSAGE);
-		boolean isAccountCreated = false;
-		boolean isPrimary = false;
-		if (!userController.validateUser(account.getUserId())
-				|| !branchController.validateBranchId(account.getBranchId()) || validateBalance(account.getBalance())) {
-			return isAccountCreated;
-		}
-		listOfAccounts.rem(listAccountCachePrefix + account.getUserId());
-		if (!accountDao.customerHasAccount(account.getUserId())) {
-			isPrimary = true;
-		}
-		try {
-			isAccountCreated = accountDao.createAccount(account, isPrimary);
-		} catch (Exception e) {
-			throw new CustomException("Erroe While Creating Account!!", e);
-		}
-		return isAccountCreated;
-	}
-
 	public Account getAccountDetails(String accountNumber, int branchId) throws CustomException {
 		InputValidator.isNull(accountNumber, ErrorMessages.INPUT_NULL_MESSAGE);
 		Account account = null;
 		if (!validateAccountAndBranch(accountNumber, branchId)) {
 			return account;
 		}
-		if (accountCache.get(accountCachePrefix + accountNumber) != null) {
-			// System.out.println("Inside Cache Account Number " + accountNumber);
-			return accountCache.get(accountCachePrefix + accountNumber);
-		}
-		try {
-			account = accountDao.getAccountDetail(accountNumber);
-			if (account != null) {
-				accountCache.set(accountNumber, account);
+		synchronized (getAccountDetailsLock) {
+			if (accountCache.get(accountCachePrefix + accountNumber) != null) {
+				// System.out.println("Inside Cache Account Number " + accountNumber);
+				return accountCache.get(accountCachePrefix + accountNumber);
 			}
-		} catch (Exception e) {
-			throw new CustomException("Error while Reterving Account Details !!", e);
+			try {
+				account = accountDao.getAccountDetail(accountNumber);
+				if (account != null) {
+					accountCache.set(accountNumber, account);
+				}
+			} catch (Exception e) {
+				throw new CustomException("Error while Reterving Account Details !!", e);
+			}
 		}
 		return account;
 	}
 
 	public List<Account> getAccountsOfCustomer(int userId) throws CustomException {
 		List<Account> accounts = null;
-		if (listOfAccounts.get(listAccountCachePrefix + userId) != null) {
-			System.out.println("List Of Accounts From Inside Cache");
-			return listOfAccounts.get(listAccountCachePrefix + (userId));
-		}
-		try {
-			accounts = accountDao.getAllAccountsOfCustomer(userId);
-			listOfAccounts.set(userId, accounts);
-		} catch (Exception e) {
-			throw new CustomException("Error while Reterving Accounts!!", e);
+		synchronized (getAccountsOfCustomerLock) {
+			if (listOfAccounts.get(listAccountCachePrefix + userId) != null) {
+				// System.out.println("List Of Accounts From Inside Cache");
+				return listOfAccounts.get(listAccountCachePrefix + (userId));
+			}
+			try {
+				accounts = accountDao.getAllAccountsOfCustomer(userId);
+				listOfAccounts.set(userId, accounts);
+			} catch (Exception e) {
+				throw new CustomException("Error while Reterving Accounts!!", e);
+			}
 		}
 		return accounts;
 	}
