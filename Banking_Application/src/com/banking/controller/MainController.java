@@ -379,7 +379,7 @@ public class MainController {
 				log.info("2.Create Account");
 				log.info("3.Update Customer Details");
 				log.info("4.View Particular Customer Details");
-				log.info("5.View Particular Customer All Details Within Branch");
+				log.info("5.View Particular Customer All Details Within Branch");	
 				log.info("6.View Transaction History For a Particular Customer(Account)");
 				log.info("7.View All Transaction of A Customer In Branch");
 				log.info("8.Update Password");

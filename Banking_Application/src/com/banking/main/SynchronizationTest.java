@@ -7,7 +7,7 @@ import com.banking.utils.CustomException;
 public class SynchronizationTest {
 	public static void main(String[] args) {
 		// Create an instance of userController
-		UserController userController = new UserController();
+		// UserController userController = new UserController();
 
 		// Define the userId to be used for testing
 		int userId = 1008;
@@ -16,6 +16,7 @@ public class SynchronizationTest {
 		// method
 		Thread thread1 = new Thread(() -> {
 			try {
+				UserController userController = new UserController();
 				Customer customer = userController.getCustomerDetailsById(userId, 3007); // Employee purpose
 				System.out.println("Thread 1: Customer Details - " + customer);
 			} catch (CustomException e) {
@@ -25,6 +26,7 @@ public class SynchronizationTest {
 
 		Thread thread2 = new Thread(() -> {
 			try {
+				UserController userController = new UserController();
 				Customer customer = userController.getCustomerDetailsById(userId); // Admin purpose
 				System.out.println("Thread 2: Customer Details - " + customer);
 			} catch (CustomException e) {
@@ -34,6 +36,7 @@ public class SynchronizationTest {
 
 		Thread thread3 = new Thread(() -> {
 			try {
+				UserController userController = new UserController();
 				Customer customer = userController.getCustomerDetailsById(userId, 3007); // Employee purpose
 				System.out.println("Thread 3: Customer Details - " + customer);
 			} catch (CustomException e) {
@@ -43,6 +46,7 @@ public class SynchronizationTest {
 
 		Thread thread4 = new Thread(() -> {
 			try {
+				UserController userController = new UserController();
 				Customer customer = userController.getCustomerDetailsById(userId); // Admin purpose
 				System.out.println("Thread 4: Customer Details - " + customer);
 			} catch (CustomException e) {
