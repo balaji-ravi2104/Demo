@@ -54,9 +54,9 @@ public class UserController {
 	public boolean registerNewCustomer(Customer customer) throws CustomException {
 		InputValidator.isNull(customer, ErrorMessages.INPUT_NULL_MESSAGE);
 		boolean isRegistred = false;
-		if (!validateUserInput(customer)) {
-			return isRegistred;
-		}
+//		if (!validateUserInput(customer)) {
+//			return isRegistred;
+//		}
 		try {
 			isRegistred = userDao.addCustomer(customer);
 		} catch (Exception e) {

@@ -231,7 +231,7 @@ public class MainController {
 					mainView.promptNewLine();
 					log.info("Enter the Small Description");
 					String remark = mainView.promptStringInput();
-					Account accountToTransfer = accountController.getAccountDetails(accountNumber, branchId);
+					Account accountToTransfer = accountController.getAccountDetails(accountNumber);
 					// System.out.println(accountToTransfer);
 					if (accountToTransfer == null) {
 						transactionView.transactionMessages("Transaction Failed!!! Try Again!!");
@@ -513,7 +513,7 @@ public class MainController {
 						userView.userViewMessages("Customer Details Reterving Failed!! Please Try Again!!");
 						break;
 					}
-					Account customerAccount = accountController.getAccountDetails(accountNumber, employeeBranchId);
+					Account customerAccount = accountController.getAccountDetails(accountNumber);
 					if (customerAccount == null) {
 						userView.userViewMessages("Customer Account Details Reterving Failed!! Please Try Again!!");
 						break;
@@ -584,7 +584,7 @@ public class MainController {
 					accountNumber = mainView.promptStringInput();
 					log.info("Enter the Amount to Deposite");
 					double amountToDeposite = mainView.promptDoubleInput();
-					Account accountToDeposite = accountController.getAccountDetails(accountNumber, employeeBranchId);
+					Account accountToDeposite = accountController.getAccountDetails(accountNumber);
 					// System.out.println(accountToDeposite);
 					if (accountToDeposite.getAccountStatus() == AccountStatus.INACTIVE) {
 						transactionView
@@ -823,7 +823,7 @@ public class MainController {
 						userView.userViewMessages("Customer Details Reterving Failed!! Please Try Again!!");
 						break;
 					}
-					Account customerAccount = accountController.getAccountDetails(accountNumber, branchId);
+					Account customerAccount = accountController.getAccountDetails(accountNumber);
 					if (customerAccount == null) {
 						userView.userViewMessages("Customer Account Details Reterving Failed!! Please Try Again!!");
 						break;

@@ -80,12 +80,9 @@ public class AccountController {
 		return isAccountExists;
 	}
 
-	public Account getAccountDetails(String accountNumber, int branchId) throws CustomException {
+	public Account getAccountDetails(String accountNumber) throws CustomException {
 		InputValidator.isNull(accountNumber, ErrorMessages.INPUT_NULL_MESSAGE);
 		Account account = null;
-		if (!validateAccountAndBranch(accountNumber, branchId)) {
-			return account;
-		}
 		synchronized (getAccountDetailsLock) {
 			if (accountCache.get(accountCachePrefix + accountNumber) != null) {
 				// System.out.println("Inside Cache Account Number " + accountNumber);
