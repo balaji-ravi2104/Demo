@@ -16,5 +16,4 @@ public class LoggerRunner {
 //		logger.error("Simple error Message");
 //		logger.fatal("Simple fatal Message");
 	}
-
 }
