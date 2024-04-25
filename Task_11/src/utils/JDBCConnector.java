@@ -9,7 +9,7 @@ import exception.CustomException;
 public class JDBCConnector {
 	private static final String url = "jdbc:mysql://localhost:3306/employeeDB";
 	private static final String userName = "root";
-	private static final String password = "Balaji@123";
+	private static final String password = "";
 
 	public static Connection getConnection() throws ClassNotFoundException, CustomException {
 		Connection connection = null;

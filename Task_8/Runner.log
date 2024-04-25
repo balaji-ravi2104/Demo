@@ -252,3 +252,1314 @@ java.util.NoSuchElementException
 	at java.base/java.util.Scanner.nextInt(Scanner.java:2212)
 	at Task_8/runner.Runner.main(Runner.java:52)
 
+Apr 24, 2024 2:46:15 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Apr 24, 2024 2:46:15 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Apr 24, 2024 2:46:15 PM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+Apr 24, 2024 2:46:15 PM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+Apr 24, 2024 2:46:15 PM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+Apr 24, 2024 2:46:15 PM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+Apr 24, 2024 2:46:15 PM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+Apr 24, 2024 2:46:15 PM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+Apr 24, 2024 2:46:15 PM runner.Runner printDetails
+INFO: 8.Working with Enums
+Apr 24, 2024 2:46:15 PM runner.Runner printDetails
+INFO: 9.Singletom Demo
+Apr 24, 2024 2:46:15 PM runner.Runner printDetails
+INFO: 10.Time Based Operations
+Apr 24, 2024 2:46:15 PM runner.Runner main
+INFO: Enter your choice
+Apr 24, 2024 2:46:21 PM runner.Runner main
+INFO: 2.Store Data in Properties Class and Write it on the File
+Apr 24, 2024 2:46:21 PM runner.Runner main
+INFO: Enter the Count of Key and Values to Save In Properties
+Apr 24, 2024 2:46:24 PM runner.Runner main
+WARNING: Please enter the Valid Input
+java.util.InputMismatchException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:939)
+	at java.base/java.util.Scanner.next(Scanner.java:1594)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2258)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2212)
+	at Task_8/runner.Runner.main(Runner.java:101)
+
+Apr 24, 2024 2:46:24 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Apr 24, 2024 2:46:24 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Apr 24, 2024 2:46:24 PM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+Apr 24, 2024 2:46:24 PM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+Apr 24, 2024 2:46:24 PM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+Apr 24, 2024 2:46:24 PM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+Apr 24, 2024 2:46:24 PM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+Apr 24, 2024 2:46:24 PM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+Apr 24, 2024 2:46:24 PM runner.Runner printDetails
+INFO: 8.Working with Enums
+Apr 24, 2024 2:46:24 PM runner.Runner printDetails
+INFO: 9.Singletom Demo
+Apr 24, 2024 2:46:24 PM runner.Runner printDetails
+INFO: 10.Time Based Operations
+Apr 24, 2024 2:46:24 PM runner.Runner main
+INFO: Enter your choice
+Apr 24, 2024 2:46:46 PM runner.Runner main
+INFO: 10.Time Based Operations
+Apr 24, 2024 2:46:46 PM runner.Runner main
+INFO: 10.1 Get currentTime with Date, seconds etc
+Apr 24, 2024 2:46:46 PM runner.Runner main
+INFO: The Current time is 2024-04-24T14:46:46.845323
+Apr 24, 2024 2:46:46 PM runner.Runner main
+INFO: 10.2 Current Time in MilliSeconds is 1713950206851
+Apr 24, 2024 2:46:46 PM runner.Runner main
+INFO: 10.3 Enter the Zone to Get time and data etc..
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Aden
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Cuiaba
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+9
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+8
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Nairobi
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Marigot
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Aqtau
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Kwajalein
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/El_Salvador
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Pontianak
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Cairo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Pago_Pago
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Mbabane
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Kuching
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Honolulu
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Rarotonga
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Guatemala
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Hobart
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/London
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Belize
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Panama
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Chungking
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Managua
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Indiana/Petersburg
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Yerevan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Brussels
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: GMT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Warsaw
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Chicago
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Kashgar
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Chile/Continental
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Yap
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: CET
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-1
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-0
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Jersey
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Tegucigalpa
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-5
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Istanbul
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Eirunepe
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-4
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Miquelon
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-3
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Luxembourg
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-2
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-9
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/Catamarca
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-8
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-7
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-6
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Zaporozhye
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Canada/Yukon
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Canada/Atlantic
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/St_Helena
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Tasmania
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Libya
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Guernsey
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Grand_Turk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Samarkand
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/Cordoba
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Phnom_Penh
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Kigali
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Almaty
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/Alaska
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Dubai
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Isle_of_Man
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Araguaina
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Cuba
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Novosibirsk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/Salta
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+3
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Tunis
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+2
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+1
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Fakaofo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Tripoli
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+0
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Israel
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Banjul
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+7
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Indian/Comoro
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+6
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+5
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+4
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Port_Moresby
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/Arizona
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/Syowa
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Indian/Reunion
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Palau
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Kaliningrad
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Montevideo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Windhoek
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Karachi
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Mogadishu
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Perth
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Brazil/East
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Chita
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Easter
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/Davis
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/McMurdo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Macao
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Manaus
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Freetown
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Bucharest
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Tomsk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/Mendoza
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Macau
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Malta
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Mexico/BajaSur
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Tahiti
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Asmera
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Busingen
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/Rio_Gallegos
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Malabo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Skopje
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Catamarca
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Godthab
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Sarajevo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/ACT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: GB-Eire
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Lagos
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Cordoba
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Rome
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Dacca
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Indian/Mauritius
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Samoa
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Regina
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Fort_Wayne
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Dawson_Creek
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Algiers
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Mariehamn
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/St_Johns
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/St_Thomas
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Zurich
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Anguilla
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Dili
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Denver
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Bamako
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Saratov
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: GB
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Mexico/General
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Wallis
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Gibraltar
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Conakry
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Lubumbashi
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Istanbul
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Havana
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: NZ-CHAT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Choibalsan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Porto_Acre
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Omsk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Vaduz
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/Michigan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Dhaka
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Barbados
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Tiraspol
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/Cape_Verde
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Yekaterinburg
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Louisville
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Johnston
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Chatham
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Ljubljana
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Sao_Paulo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Jayapura
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Curacao
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Dushanbe
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Guyana
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Guayaquil
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Martinique
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Portugal
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Berlin
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Moscow
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Chisinau
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Puerto_Rico
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Rankin_Inlet
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Ponape
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Stockholm
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Budapest
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/Jujuy
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Eucla
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Shanghai
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Universal
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Zagreb
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Port_of_Spain
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Helsinki
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Beirut
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Tel_Aviv
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Bougainville
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/Central
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Sao_Tome
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Indian/Chagos
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Cayenne
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Yakutsk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Galapagos
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/North
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Paris
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Ndjamena
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Fiji
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Rainy_River
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Indian/Maldives
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Yancowinna
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/AST4
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Oral
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Yellowknife
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Enderbury
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Juneau
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Victoria
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Indiana/Vevay
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Tashkent
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Jakarta
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Ceuta
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Barnaul
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Recife
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Buenos_Aires
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Noronha
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Swift_Current
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Adelaide
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Metlakatla
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Djibouti
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Paramaribo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Qostanay
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Simferopol
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Sofia
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Nouakchott
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Prague
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Indiana/Vincennes
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/Mawson
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Kralendijk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/Troll
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Samara
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Indian/Christmas
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Antigua
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Gambier
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Indianapolis
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Inuvik
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Iqaluit
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Funafuti
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: UTC
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/Macquarie
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Canada/Pacific
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Moncton
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Gaborone
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Chuuk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Pyongyang
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/St_Vincent
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Gaza
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/Universal
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: PST8PDT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/Faeroe
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Qyzylorda
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Canada/Newfoundland
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Kentucky/Louisville
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Yakutat
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Ciudad_Juarez
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Ho_Chi_Minh
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/Casey
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Copenhagen
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Asmara
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/Azores
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Vienna
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: ROK
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Pitcairn
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Mazatlan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Queensland
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Nauru
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Tirane
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Kolkata
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/MST7
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Canberra
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: MET
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Broken_Hill
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Riga
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Dominica
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Abidjan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Mendoza
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Santarem
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Kwajalein
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Asuncion
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Ulan_Bator
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: NZ
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Boise
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Currie
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: EST5EDT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Guam
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Wake
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/Bermuda
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Costa_Rica
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Dawson
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Chongqing
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Eire
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Amsterdam
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Indiana/Knox
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/North_Dakota/Beulah
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Accra
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/Faroe
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Mexico/BajaNorte
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Maceio
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/UCT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Apia
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: GMT0
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Atka
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Niue
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Lord_Howe
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Dublin
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Truk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: MST7MDT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Monterrey
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Nassau
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Jamaica
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Bishkek
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Atikokan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/Stanley
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/NSW
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/Hawaii
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/CST6
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Indian/Mahe
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Aqtobe
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Sitka
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Vladivostok
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Libreville
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Maputo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Zulu
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Kentucky/Monticello
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/El_Aaiun
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Ouagadougou
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Coral_Harbour
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Marquesas
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Brazil/West
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Aruba
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/North_Dakota/Center
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Cayman
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Ulaanbaatar
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Baghdad
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/San_Marino
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Indiana/Tell_City
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Tijuana
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Saipan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/YST9
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Douala
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Chihuahua
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Ojinaga
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Hovd
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Anchorage
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Chile/EasterIsland
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Halifax
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/Rothera
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Indiana/Indianapolis
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/Mountain
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Damascus
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/San_Luis
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Santiago
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Baku
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/Ushuaia
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/Reykjavik
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Brazzaville
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Porto-Novo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/La_Paz
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/DumontDUrville
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Taipei
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/South_Pole
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Manila
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Bangkok
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Dar_es_Salaam
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Poland
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/Madeira
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/Palmer
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Thunder_Bay
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Addis_Ababa
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Yangon
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Uzhgorod
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Brazil/DeNoronha
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Ashkhabad
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/Zulu
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Indiana/Marengo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Creston
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Punta_Arenas
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Mexico_City
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Antarctica/Vostok
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Jerusalem
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Andorra
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/Samoa
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: PRC
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Vientiane
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Kiritimati
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Matamoros
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Blanc-Sablon
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Riyadh
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Iceland
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Pohnpei
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Ujung_Pandang
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/South_Georgia
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Lisbon
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Harbin
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Oslo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Novokuznetsk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: CST6CDT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/Canary
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Knox_IN
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Kuwait
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/HST10
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Efate
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Lome
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Bogota
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Menominee
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Adak
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Norfolk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Kirov
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Resolute
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Kanton
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Tarawa
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Kampala
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Krasnoyarsk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Greenwich
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/EST5
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Edmonton
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Podgorica
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/South
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Canada/Central
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Bujumbura
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Santo_Domingo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/Eastern
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Minsk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Auckland
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Casablanca
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Glace_Bay
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Canada/Eastern
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Qatar
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Kiev
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Singapore
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Magadan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/PST8
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Port-au-Prince
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Belfast
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/St_Barthelemy
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Ashgabat
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Luanda
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Nipigon
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Atlantic/Jan_Mayen
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Brazil/Acre
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Muscat
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Bahrain
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Vilnius
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Fortaleza
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT0
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/East-Indiana
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Hermosillo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Cancun
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Maseru
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Kosrae
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Kinshasa
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Kathmandu
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Seoul
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Sydney
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Lima
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/LHI
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/St_Lucia
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Madrid
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Bahia_Banderas
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Montserrat
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Brunei
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Santa_Isabel
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Canada/Mountain
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Cambridge_Bay
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Colombo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/West
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Indian/Antananarivo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Brisbane
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Indian/Mayotte
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/Indiana-Starke
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Urumqi
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/Aleutian
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Volgograd
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Lower_Princes
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Vancouver
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Blantyre
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Rio_Branco
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Danmarkshavn
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Detroit
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Thule
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Lusaka
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Hong_Kong
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Iran
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/La_Rioja
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Dakar
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/CST6CDT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Tortola
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Porto_Velho
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Sakhalin
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+10
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Scoresbysund
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Kamchatka
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Thimbu
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Harare
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+12
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT+11
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Navajo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Nome
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Tallinn
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Turkey
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Khartoum
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Johannesburg
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Bangui
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Belgrade
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Jamaica
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Bissau
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Tehran
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: WET
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Astrakhan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Juba
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Campo_Grande
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Belem
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/Greenwich
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Saigon
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Ensenada
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Midway
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Jujuy
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Timbuktu
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Bahia
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Goose_Bay
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Virgin
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Pangnirtung
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Katmandu
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Phoenix
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Niamey
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Whitehorse
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Noumea
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Tbilisi
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Kyiv
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Montreal
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Makassar
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/San_Juan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Hongkong
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: UCT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Nicosia
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Indiana/Winamac
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/MST7MDT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/ComodRivadavia
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Boa_Vista
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Grenada
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Atyrau
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Darwin
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Khandyga
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Kuala_Lumpur
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Famagusta
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Thimphu
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Rangoon
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Bratislava
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Calcutta
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/Tucuman
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Kabul
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Indian/Cocos
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Japan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Tongatapu
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/New_York
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-12
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-11
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Nuuk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-10
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/YST9YDT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Ulyanovsk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-14
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/GMT-13
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: W-SU
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Merida
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: EET
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Rosario
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Canada/Saskatchewan
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/St_Kitts
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Arctic/Longyearbyen
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Fort_Nelson
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Caracas
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Guadeloupe
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Hebron
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Indian/Kerguelen
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/PST8PDT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Africa/Monrovia
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Ust-Nera
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Egypt
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Srednekolymsk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/North_Dakota/New_Salem
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Anadyr
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Melbourne
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Irkutsk
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Shiprock
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Winnipeg
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Vatican
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Amman
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Etc/UTC
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/AST4ADT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Tokyo
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Toronto
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Asia/Singapore
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Australia/Lindeman
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Los_Angeles
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: SystemV/EST5EDT
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Majuro
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: America/Argentina/Buenos_Aires
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Nicosia
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Pacific/Guadalcanal
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Athens
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: US/Pacific
+Apr 24, 2024 2:46:46 PM runner.Runner printZoneDetails
+INFO: Europe/Monaco
+Apr 24, 2024 2:46:52 PM runner.Runner printExceptionDetails
+WARNING: Exception : 
+java.time.DateTimeException: Invalid ID for ZoneOffset, invalid format: 0
+	at java.base/java.time.ZoneOffset.of(ZoneOffset.java:241)
+	at java.base/java.time.ZoneId.of(ZoneId.java:402)
+	at java.base/java.time.ZoneId.of(ZoneId.java:356)
+	at Task_8/runner.Runner.main(Runner.java:243)
+
+Apr 24, 2024 2:46:52 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Apr 24, 2024 2:46:52 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+Apr 24, 2024 2:46:52 PM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+Apr 24, 2024 2:46:52 PM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+Apr 24, 2024 2:46:52 PM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+Apr 24, 2024 2:46:52 PM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+Apr 24, 2024 2:46:52 PM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+Apr 24, 2024 2:46:52 PM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+Apr 24, 2024 2:46:52 PM runner.Runner printDetails
+INFO: 8.Working with Enums
+Apr 24, 2024 2:46:52 PM runner.Runner printDetails
+INFO: 9.Singletom Demo
+Apr 24, 2024 2:46:52 PM runner.Runner printDetails
+INFO: 10.Time Based Operations
+Apr 24, 2024 2:46:52 PM runner.Runner main
+INFO: Enter your choice
+Apr 24, 2024 2:46:54 PM runner.Runner main
+INFO: Exiting
