@@ -15,14 +15,15 @@ public class TimeHelper {
 	public LocalDateTime getCurrentTime() {   
 		return LocalDateTime.now();
 	}
+	
+	public long getCurrentTimeInmilliSeconds() throws DateTimeException{
+		return System.currentTimeMillis(); 
+	}
 
 	public ZonedDateTime getCurrentTimeByZoneId(ZoneId id) throws DateTimeException{
 		return ZonedDateTime.now(id); 
 	}   
 
-	public long getCurrentTimeInmilliSeconds() throws DateTimeException{
-		return System.currentTimeMillis(); 
-	}
          
 	public DayOfWeek getWeekday(long milliSeconds) throws DateTimeException {
 		return getZonedDateTime(milliSeconds).getDayOfWeek(); 
@@ -46,8 +47,11 @@ public class TimeHelper {
 	}
 	
 	private ZonedDateTime getZonedDateTime(long milliSeconds) {
+		// Convert milliseconds since the epoch to an Instant
 		Instant instant = Instant.ofEpochMilli(milliSeconds);
+		// Get the default time zone
 		ZoneId id = getDefaultZoneId();
+		// Convert the Instant to a ZonedDateTime using the default time zone
 		ZonedDateTime zonedDateTime = instant.atZone(id);
 		return zonedDateTime;
 	}

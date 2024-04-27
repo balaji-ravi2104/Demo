@@ -35,7 +35,7 @@ public class ArrayListHelper{
         int[] result = new int[2];
         for(E s:list){
         	int firstIndex = list.indexOf(s);
-        	int lastIndex = list.indexOf(s);
+        	int lastIndex = list.lastIndexOf(s);
             if(firstIndex!=lastIndex){
                 result[0] = firstIndex;
                 result[1] = lastIndex;

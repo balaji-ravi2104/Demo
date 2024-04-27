@@ -3,6 +3,7 @@ package runner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import classes.Employee;
@@ -55,17 +56,16 @@ public class Runner {
 					}
 					break;
 				case 2:
-					logger.info("1.DeSerializing an Object");
+					logger.info("2.DeSerializing an Object");
 					try {
 						logger.info("Enter the file name to DeSerialize an Objects");
 						fileName = sc.nextLine();
 						List<Employee> empList = helper.deserializeObjects(fileName);
-						helper.deserializeObjects(fileName);
 
 						printEmployeeDetails(empList);
 					} catch (CustomException e) {
 						//e.printStackTrace();
-						logger.info("Error : " + e.getMessage());
+						logger.log(Level.WARNING,"Error : " + e.getMessage(),e);
 					}
 					break;
 				case 0:
@@ -92,7 +92,7 @@ public class Runner {
 			logger.info("Employee Id :" + employee.getId());
 			logger.info("Employee Name :" + employee.getName());
 			logger.info("Employee Dept :" + employee.getDept());
-			  logger.info("Employee serialVersionUID :" + employee.getSerialversionuid()); // Accessing serialVersionUID
+			  logger.info("Employee serialVersionUID :" + Employee.getSerialversionuid()); // Accessing serialVersionUID
 			logger.info("----------------------------------------------");
 		}
 	}

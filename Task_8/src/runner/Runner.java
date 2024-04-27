@@ -12,10 +12,10 @@ import java.util.InputMismatchException;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import democlasses.Rainbow;
 import democlasses.SingletonDemo;
@@ -145,8 +145,6 @@ public class Runner {
 						printExceptionDetails(e);
 					}
 					break;
-				case 4:
-					break;
 				case 5:
 					logger.log(Level.INFO,"5.Print Values, While Printing Object");
 					try {
@@ -166,7 +164,7 @@ public class Runner {
 						logger.log(Level.INFO,"Enter the Integer");
 						count = sc.nextInt();
 						Student student = new Student(stringValue, count);
-						logger.log(Level.INFO,student.toString());
+						logger.log(Level.INFO,"The Student Object is "+student);
 					} catch (InputMismatchException e) {
 						logger.log(Level.WARNING,"Please enter the Valid Input",e);
 						sc.nextLine();
@@ -211,9 +209,9 @@ public class Runner {
 						SingletonDemo singeltomDemo1 = SingletonDemo.getInstance();
 						SingletonDemo singeltomDemo2 = SingletonDemo.getInstance();
 						
-					    //SingletonDemo1 singletonDemo1 = SingletonDemo1.INSTANCE;
+					    //SingletonDemo1 singletonDemo1 = SingletonDemo1.INSTANCE; // ENUM
 					    
-					    //logger.log(Level.INFO,singletonDemo1.INSTANCE.toString());
+					    //logger.log(Level.INFO,singletonDemo1.INSTANCE.toString()); // O/P : INSTANCE
 
 						if (singeltomDemo1.equals(singeltomDemo2)) {
 							logger.log(Level.INFO,"Same");
