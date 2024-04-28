@@ -1770,3 +1770,12 @@ Apr 27, 2024 12:01:55 PM runner.Runner printDetails
 INFO: 10.Time Based Operations
 Apr 27, 2024 12:01:55 PM runner.Runner main
 INFO: Enter your choice
+Apr 27, 2024 7:04:44 PM runner.Runner main
+WARNING: An Exception Occured
+java.util.NoSuchElementException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:937)
+	at java.base/java.util.Scanner.next(Scanner.java:1594)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2258)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2212)
+	at Task_8/runner.Runner.main(Runner.java:52)
+
