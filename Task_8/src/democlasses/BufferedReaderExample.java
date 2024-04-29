@@ -17,8 +17,7 @@ public class BufferedReaderExample {
 			e.printStackTrace();
 		}
 
-		// Example using BufferedReader and InputStreamReader to read from System.in
-		// (standard input)
+		// Example using BufferedReader and InputStreamReader to read from System.in (standard input)
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
 			System.out.println("Enter some text:");
 			String input = reader.readLine();

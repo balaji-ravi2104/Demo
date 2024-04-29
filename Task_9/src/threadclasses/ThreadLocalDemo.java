@@ -14,7 +14,7 @@ public class ThreadLocalDemo extends Thread{
 		System.out.println(tl2.get());
 		
 		tl1.remove();
-		System.out.println(tl1.get()); // if list is empty returns null..
+		System.out.println(tl1.get()); // if Threadlocal has no value ,that is empty returns null..
 		
 		ThreadLocal<String> threadLocal = new ThreadLocal<String>();
 		
@@ -50,6 +50,8 @@ public class ThreadLocalDemo extends Thread{
 		
 		thread1.start();
 		thread2.start();
+		
+		// Each thread accessing a ThreadLocal object has its own, independently initialized copy of the variable.
 		
 		ThreadLocal<ThreadLocalDemo> threadLocal1 = ThreadLocal.withInitial(()-> new ThreadLocalDemo());
 		

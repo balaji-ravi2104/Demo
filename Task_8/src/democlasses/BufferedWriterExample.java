@@ -16,12 +16,11 @@ public class BufferedWriterExample {
 			e.printStackTrace();
 		}
 
-		// Example using BufferedWriter and OutputStreamWriter to write to System.out
-		// (standard output)
+		// Example using BufferedWriter and OutputStreamWriter to write to System.out (standard output)
 		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out))) {
 			writer.write("Hello, BufferedWriter!");
 			writer.newLine();
-			writer.write("This is another line.");
+			writer.write("This is From OutputStreamWriter.");
 			writer.flush(); // Flush to ensure all data is written to the output stream
 		} catch (IOException e) {
 			e.printStackTrace();
