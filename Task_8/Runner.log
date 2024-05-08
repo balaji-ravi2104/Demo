@@ -1779,3 +1779,36 @@ java.util.NoSuchElementException
 	at java.base/java.util.Scanner.nextInt(Scanner.java:2212)
 	at Task_8/runner.Runner.main(Runner.java:52)
 
+May 07, 2024 12:52:12 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+May 07, 2024 12:52:12 PM runner.Runner printDetails
+INFO: --------------------------------------------------------------
+May 07, 2024 12:52:12 PM runner.Runner printDetails
+INFO: 1. Create a File and Write Data on the File
+May 07, 2024 12:52:12 PM runner.Runner printDetails
+INFO: 2.Store Data in Properties Class and Write it on the File
+May 07, 2024 12:52:12 PM runner.Runner printDetails
+INFO: 3.Read Data from the file add it to the Properties Class
+May 07, 2024 12:52:12 PM runner.Runner printDetails
+INFO: 5.Print Values, While Printing Object
+May 07, 2024 12:52:12 PM runner.Runner printDetails
+INFO: 6.POJO class Operations with Parametrized Constructor
+May 07, 2024 12:52:12 PM runner.Runner printDetails
+INFO: 7.POJO class Operations With default Constructor
+May 07, 2024 12:52:12 PM runner.Runner printDetails
+INFO: 8.Working with Enums
+May 07, 2024 12:52:12 PM runner.Runner printDetails
+INFO: 9.Singletom Demo
+May 07, 2024 12:52:12 PM runner.Runner printDetails
+INFO: 10.Time Based Operations
+May 07, 2024 12:52:12 PM runner.Runner main
+INFO: Enter your choice
+May 07, 2024 12:52:15 PM runner.Runner main
+WARNING: An Exception Occured
+java.util.NoSuchElementException
+	at java.base/java.util.Scanner.throwFor(Scanner.java:937)
+	at java.base/java.util.Scanner.next(Scanner.java:1594)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2258)
+	at java.base/java.util.Scanner.nextInt(Scanner.java:2212)
+	at Task_8/runner.Runner.main(Runner.java:52)
+
